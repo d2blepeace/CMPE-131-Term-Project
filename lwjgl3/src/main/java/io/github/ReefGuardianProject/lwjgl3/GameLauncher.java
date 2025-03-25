@@ -2,8 +2,7 @@ package io.github.ReefGuardianProject.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import io.github.ReefGuardianProject.ReefGuardian;
-import io.github.ReefGuardianProject.ReefGuardian;
+import io.github.ReefGuardianProject.Boot;
 
 /** Launches the desktop (LWJGL3) application. */
 public class GameLauncher {
@@ -13,7 +12,7 @@ public class GameLauncher {
     }
 
     private static Lwjgl3Application createApplication() {
-        return new Lwjgl3Application(new ReefGuardian(), getDefaultConfiguration());
+        return new Lwjgl3Application(new Boot(), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
