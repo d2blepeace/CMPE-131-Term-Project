@@ -1,4 +1,4 @@
-package io.github.ReefGuardianProject;
+package io.github.ReefGuardianProject.core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -13,8 +13,7 @@ public class Assets {
     public static Music menuMusic;
 
     public static void load() {
-        //render menu screen for test
-        sprite = new SpriteBatch();
+        //render menu screen for test        sprite = new SpriteBatch();
         textureBack = new Texture(Gdx.files.internal("assets/ReefGuardian.png"));
         textureBack.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         spriteBack = new Sprite(textureBack);
