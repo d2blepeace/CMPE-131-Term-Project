@@ -8,8 +8,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import io.github.ReefGuardianProject.objects.BrickBlock;
+import io.github.ReefGuardianProject.objects.GameObjects;
+import io.github.ReefGuardianProject.objects.player.Honu;
 import com.badlogic.gdx.math.Rectangle;
-import io.github.ReefGuardianProject.player.Honu;
+import java.awt.*;
+import java.util.ArrayList;
 
 public class ReefGuardian implements ApplicationListener {
     private OrthographicCamera camera;
@@ -17,6 +21,7 @@ public class ReefGuardian implements ApplicationListener {
     private SpriteBatch batch;
     private Texture texture;
     private Honu honu, honu2;
+    private ArrayList<GameObjects> gameObjectsList = new ArrayList<GameObjects>();
     @Override
     public void create() {
         camera = new OrthographicCamera();
@@ -28,6 +33,13 @@ public class ReefGuardian implements ApplicationListener {
 
         honu2 = new Honu();
         honu2.setPosition(500, 300);
+
+        gameObjectsList.add(new BrickBlock(0,0));
+        gameObjectsList.add(new BrickBlock(64,0));
+        gameObjectsList.add(new BrickBlock(128,0));
+        gameObjectsList.add(new BrickBlock(256,128));
+
+
     }
 
     @Override
@@ -48,11 +60,26 @@ public class ReefGuardian implements ApplicationListener {
             //Update render here
             honu.draw(batch);
             honu2.draw(batch);
+            //object
+            for (GameObjects o : gameObjectsList) {
+                o.draw(batch);
+            }
         batch.end();
+
         //Updates
+
+        //Two Honus
         honu.update(Gdx.graphics.getDeltaTime());
         honu2.update(Gdx.graphics.getDeltaTime());
-        // Check collision between Honu objects
+
+        //Check for collision
+        Rectangle temp = new Rectangle(0,0,800,10);
+        for (GameObjects o : gameObjectsList) {
+            if (honu.bottom.overlaps(o.getHitBox())) {
+                honu.handleCollision(o.getHitBox());
+            }
+        }
+
 
         //Handling Input Controls
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -74,8 +101,6 @@ public class ReefGuardian implements ApplicationListener {
 
     }
 
-
-
     @Override
     public void resume() {
 
@@ -83,6 +108,6 @@ public class ReefGuardian implements ApplicationListener {
 
     @Override
     public void dispose() {
-        batch.dispose();
+
     }
 }
