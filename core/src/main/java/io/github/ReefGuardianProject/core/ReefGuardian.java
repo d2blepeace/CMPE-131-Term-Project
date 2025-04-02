@@ -73,10 +73,24 @@ public class ReefGuardian implements ApplicationListener {
         honu2.update(Gdx.graphics.getDeltaTime());
 
         //Check for collision
-        Rectangle temp = new Rectangle(0,0,800,10);
         for (GameObjects o : gameObjectsList) {
-            if (honu.bottom.overlaps(o.getHitBox())) {
-                honu.handleCollision(o.getHitBox());
+            switch (honu.hit(o.getHitBox())) {
+                case 1:
+                    //Collide top
+                    honu.action(1, 0, o.getHitBox().y + o.getHitBox().height);
+                    break;
+                case 2:
+                    //Collide right
+                    honu.action(2, o.getHitBox().x + o.getHitBox().width + 1, 0);
+                    break;
+                case 3:
+                   //Collide left
+                    honu.action(3, o.getHitBox().x - honu.getHitBox().width - 1, 0);
+                    break;
+                case 4:
+                    //Collide Bottom
+                    honu.action(4, 0, o.getHitBox().y - honu.getHitBox().height);
+                    break;
             }
         }
 

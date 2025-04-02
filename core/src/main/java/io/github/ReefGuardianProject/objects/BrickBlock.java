@@ -23,7 +23,8 @@
         }
 
         @Override
-        public void hit(Rectangle rectangle) {
+        public int hit(Rectangle rectangle) {
+            return -1;
         }
 
         @Override

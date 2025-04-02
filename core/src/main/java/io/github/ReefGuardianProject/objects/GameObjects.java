@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 //Abstract class that would be a guide for the game moving objects
 public abstract class GameObjects {
-    public abstract void hit(Rectangle rectangle);
+    public abstract int hit(Rectangle rectangle);
     public abstract void action(int type, float x, float y);
     public abstract void update(float delta);
     public abstract void setPosition(float x, float y);

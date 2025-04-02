@@ -10,7 +10,7 @@ import io.github.ReefGuardianProject.objects.GameObjects;
 import java.awt.*;
 
 public class Honu extends GameObjects {
-    public Rectangle bottom, top, right, left;
+    Rectangle bottom, top, right, left, full;
     Sprite sprite;
     Texture texture;
     int action;
@@ -19,7 +19,14 @@ public class Honu extends GameObjects {
     float speed;
     //Entry points of Honu
     public Honu() {
-        bottom = new Rectangle(0.0f,0.0f,64.0f,64.0f);
+        //Hitbox
+        //TODO: Check hitbox after updating the asset files
+        full = new Rectangle(0,0, 64, 64);
+        bottom = new Rectangle(0,0, 64, 64);
+        left = new Rectangle(0,16,32, 96);
+        right = new Rectangle(32, 16,32, 96);
+        top = new Rectangle(0, 64, 64, 16);
+
         texture = new Texture(Gdx.files.internal("sprite\\Honu.png"));
         sprite = new Sprite(texture, 0, 0, 64, 64);
 
@@ -27,75 +34,38 @@ public class Honu extends GameObjects {
         //Setup gravity
         velocityY = 0;
     }
-    public void hit(Rectangle r) {
-        // Calculate overlap in both axes
-        float overlapX = Math.min(bottom.x + bottom.width - r.x, r.x + r.width - bottom.x);
-        float overlapY = Math.min(bottom.y + bottom.height - r.y, r.y + r.height - bottom.y);
-
-        // Determine whether to resolve collision on X or Y axis
-        if (overlapX < overlapY) {
-            // Horizontal collision: Push Honu out sideways
-            if (bottom.x < r.x) {
-                setPosition(r.x - bottom.width, bottom.y); // Left side
-            } else {
-                setPosition(r.x + r.width, bottom.y); // Right side
-            }
-            velocityX = 0; // Stop horizontal movement
-        } else {
-            // Vertical collision: Push Honu out vertically
-            if (bottom.y < r.y) {
-                setPosition(bottom.x, r.y - bottom.height); // Bottom side (landing)
-            } else {
-                setPosition(bottom.x, r.y + r.height); // Top side (hitting head)
-            }
-            velocityY = 0; // Stop vertical movement
+    public int hit(Rectangle r) {
+        if (left.overlaps(r)) {
+            return 2;
         }
+        if (right.overlaps(r)) {
+            return 3;
+        }
+        if (bottom.overlaps(r)) {
+            return 1;
+        }
+        if (top.overlaps(r)) {
+            return 4;
+        }
+
+
+        return -1;
     }
 
     //Handling actions of Honu
     public void action(int actionType,float x, float y) {
         //Collision logic
-        // Landed on top of an object
-        if (actionType == 1) {
-            setPosition(bottom.x, y); // Stop Honu exactly at the top of the object
-            velocityY = 0;
-        }
-        else if (actionType == 2) {  // Collided from the left
-            setPosition(x - bottom.width, bottom.y); // Stop at left edge
-            velocityX = 0;
-        }
-        else if (actionType == 3) {  // Collided from the right
-            setPosition(x, bottom.y); // Stop at right edge (previously incorrect)
-            velocityX = 0;
-        }
-        else if (actionType == 4) {  // Hit from below (bumping into the object)
-            setPosition(bottom.x, y - bottom.height); // Prevent clipping through the bottom
-            velocityY = 0;
-        }
-    }
-    public void handleCollision(Rectangle r) {
-        // Calculate overlap in both axes
-        float overlapX = Math.min(bottom.x + bottom.width - r.x, r.x + r.width - bottom.x);
-        float overlapY = Math.min(bottom.y + bottom.height - r.y, r.y + r.height - bottom.y);
 
-        // Determine whether to resolve collision on X or Y axis
-        if (overlapX < overlapY) {
-            // Horizontal collision: Push Honu out sideways
-            if (bottom.x < r.x) {
-                setPosition(r.x - bottom.width, bottom.y); // Left side
-            } else {
-                setPosition(r.x + r.width, bottom.y); // Right side
-            }
-            velocityX = 0; // Stop horizontal movement
-        } else {
-            // Vertical collision: Push Honu out vertically
-            if (bottom.y < r.y) {
-                setPosition(bottom.x, r.y - bottom.height); // Bottom side
-            } else {
-                setPosition(bottom.x, r.y + r.height); // Top side
-            }
-            velocityY = 0; // Stop vertical movement
+        if (actionType == 1 ||actionType == 4) {
+            velocityY = 0;
+            setPosition(bottom.x, y);
         }
+        if (actionType == 2 || actionType == 3) {
+            velocityX = 0;
+            setPosition(x, bottom.y);
+        }
+
+
     }
     public void update(float delta) {
         float gravity = -0.8f;  // Reduced gravity underwater
@@ -119,11 +89,26 @@ public class Honu extends GameObjects {
 
         // Apply movement
         bottom.y += velocityY;
+        top.y +=  velocityY;
         setPosition(bottom.x, bottom.y);
     }
     public void setPosition(float x, float y) {
+        //TODO: check set position of Honu after updating assets
+        full.x = x;
+        full.y = y;
+
+        left.x = x;
+        left.y = y + 16;
+
+        right.x = x + 32;
+        right.y = y + 16;
+
+        top.x = x;
+        top.y = y + 64;
+
         bottom.x = x;
         bottom.y = y;
+
         sprite.setPosition(x, y);
     }
     public void moveLeft(float delta) {
