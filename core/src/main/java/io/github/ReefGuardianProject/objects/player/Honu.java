@@ -20,7 +20,7 @@ public class Honu extends GameObjects {
     //Entry points of Honu
     public Honu() {
         //Hitbox
-        //TODO: Check hitbox after updating the asset files
+        //TODO: Check hitbox after updating the asset files, especially bottom
         full = new Rectangle(0,0, 64, 64);
         bottom = new Rectangle(0,0, 64, 64);
         left = new Rectangle(0,16,32, 96);
@@ -112,20 +112,20 @@ public class Honu extends GameObjects {
         sprite.setPosition(x, y);
     }
     public void moveLeft(float delta) {
-        bottom.x -= (100 * delta);
+        bottom.x -= (200 * delta);
         sprite.setPosition(bottom.x, bottom.y);
     }
     public void moveRight(float delta) {
-        bottom.x += (100 * delta);
+        bottom.x += (200 * delta);
         sprite.setPosition(bottom.x, bottom.y);
     }
     public void moveUp(float delta) {
-        bottom.y += (100 * delta);
+        bottom.y += (200 * delta);
         sprite.setPosition(bottom.x, bottom.y);
     }
 
     public void moveDown(float delta) {
-        bottom.y -= (100 * delta);
+        bottom.y -= (200 * delta);
         sprite.setPosition(bottom.x, bottom.y);
     }
     public void draw(SpriteBatch batch) {
