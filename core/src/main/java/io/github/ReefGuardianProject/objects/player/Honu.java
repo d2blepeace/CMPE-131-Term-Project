@@ -7,8 +7,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.ReefGuardianProject.objects.GameObjects;
 
-import java.awt.*;
-
 public class Honu extends GameObjects {
     Rectangle bottom, top, right, left, full;
     Sprite sprite;

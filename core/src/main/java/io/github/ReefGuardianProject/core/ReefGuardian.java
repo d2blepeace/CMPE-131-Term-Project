@@ -39,16 +39,8 @@ public class ReefGuardian implements ApplicationListener {
         honu = new Honu();
         honu.setPosition(0, 200);
 
-        //Add brick blocks
-        /*
-        gameObjectsList.add(new BrickBlock(0,0));
-        gameObjectsList.add(new BrickBlock(64,0));
-        gameObjectsList.add(new BrickBlock(128,0));
-        gameObjectsList.add(new BrickBlock(400, 300));
-        gameObjectsList.add(new BrickBlock(600,300));
-        gameObjectsList.add(new BrickBlock(900,300));
-         */
-
+        //Call the load level
+        loadLevel("level1");
     }
 
     @Override
@@ -176,8 +168,7 @@ public class ReefGuardian implements ApplicationListener {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             honu.moveRight(Gdx.graphics.getDeltaTime());    //move right = D
         }
-        //Call the load level
-        loadLevel("level1");
+
     }
     public void nextLevel() {
 
