@@ -7,13 +7,13 @@
     import com.badlogic.gdx.math.Rectangle;
 
 
-    public class BrickBlock extends GameObjects{
+    public class RockBlock extends GameObjects{
         public Rectangle hitBox;
         Sprite sprite;
         Texture texture;
 
         //Constructor
-        public BrickBlock (int x, int y) {
+        public RockBlock (int x, int y) {
             hitBox = new Rectangle(x, y, 64, 64); //Change according to the game assets
             texture = new Texture(Gdx.files.internal("map\\Rock_Block.png"));
             sprite = new Sprite(texture, 0, 0, 64, 64);

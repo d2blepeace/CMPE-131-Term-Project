@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import io.github.ReefGuardianProject.objects.BrickBlock;
 import io.github.ReefGuardianProject.objects.GameObjects;
+import io.github.ReefGuardianProject.objects.RockBlock;
 import io.github.ReefGuardianProject.objects.player.Honu;
 import com.badlogic.gdx.math.Rectangle;
 import java.awt.*;
@@ -40,12 +40,14 @@ public class ReefGuardian implements ApplicationListener {
         honu.setPosition(0, 200);
 
         //Add brick blocks
+        /*
         gameObjectsList.add(new BrickBlock(0,0));
         gameObjectsList.add(new BrickBlock(64,0));
         gameObjectsList.add(new BrickBlock(128,0));
         gameObjectsList.add(new BrickBlock(400, 300));
         gameObjectsList.add(new BrickBlock(600,300));
         gameObjectsList.add(new BrickBlock(900,300));
+         */
 
     }
 
@@ -83,8 +85,6 @@ public class ReefGuardian implements ApplicationListener {
     }
 
     public void updateCamera() {
-
-
         camera.position.x = honu.getHitBox().x;
         camera.update();;
     }
@@ -93,14 +93,14 @@ public class ReefGuardian implements ApplicationListener {
         //Clear the list before loading the level
         gameObjectsList.clear();
         //Loading level .txt files
-        FileHandle file = Gdx.files.internal("map"); //"map\\level1.txt"
+        FileHandle file = Gdx.files.internal("map\\level1.txt"); //"map\\level1.txt"
         StringTokenizer tokens = new StringTokenizer(file.readString());
         while (tokens.hasMoreTokens()) {
             String type = tokens.nextToken();
 
             //Render the map from txt files:
-            if (type.equals("BrickBlock")) {
-                gameObjectsList.add(new BrickBlock(
+            if (type.equals("RockBlock")) {
+                gameObjectsList.add(new RockBlock(
                     Integer.parseInt(tokens.nextToken()), //x value
                     Integer.parseInt(tokens.nextToken()))); //y value
             } else if (type.equals("Enemy1")) {
@@ -132,7 +132,7 @@ public class ReefGuardian implements ApplicationListener {
 
         //Updates
 
-        //Two Honus
+        //Honu
         honu.update(Gdx.graphics.getDeltaTime());
 
         //Check for collision
@@ -177,7 +177,7 @@ public class ReefGuardian implements ApplicationListener {
             honu.moveRight(Gdx.graphics.getDeltaTime());    //move right = D
         }
         //Call the load level
-        //loadLevel("level1");
+        loadLevel("level1");
     }
     public void nextLevel() {
 
