@@ -11,14 +11,12 @@
         public Rectangle hitBox;
         Sprite sprite;
         Texture texture;
-        //Change the size of the brick block's size according to the asset here
-        float width = 72.0f;
-        float height = 57.0f;
+
         //Constructor
         public BrickBlock (int x, int y) {
-            hitBox = new Rectangle(x, y, width, height); //Change according to the game assets
-            texture = new Texture(Gdx.files.internal("map\\Rock1.png"));
-            sprite = new Sprite(texture, 0, 0, 72, 57);
+            hitBox = new Rectangle(x, y, 64, 64); //Change according to the game assets
+            texture = new Texture(Gdx.files.internal("map\\Rock_Block.png"));
+            sprite = new Sprite(texture, 0, 0, 64, 64);
             setPosition(x, y);
         }
 

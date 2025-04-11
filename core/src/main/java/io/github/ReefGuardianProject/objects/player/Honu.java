@@ -21,11 +21,11 @@ public class Honu extends GameObjects {
     public Honu() {
         //Hitbox
         //TODO: Check hitbox after updating the asset files, especially bottom
-        full = new Rectangle(0,0, 64, 64);
-        bottom = new Rectangle(0,0, 64, 64);
-        left = new Rectangle(0,16,32, 96);
-        right = new Rectangle(32, 16,32, 96);
-        top = new Rectangle(0, 64, 64, 16);
+        full = new Rectangle(0, 0, 64, 64);
+        bottom = new Rectangle(0, 0, 64, 8);
+        left = new Rectangle(0, 8, 32, 48);
+        right = new Rectangle(32, 8, 32, 48);
+        top = new Rectangle(0, 56, 64, 8);
 
         texture = new Texture(Gdx.files.internal("sprite\\Honu.png"));
         sprite = new Sprite(texture, 0, 0, 64, 64);
@@ -47,25 +47,20 @@ public class Honu extends GameObjects {
         if (top.overlaps(r)) {
             return 4;
         }
-
-
         return -1;
     }
 
     //Handling actions of Honu
-    public void action(int actionType,float x, float y) {
+    public void action(int actionType, float x, float y) {
         //Collision logic
-
         if (actionType == 1 ||actionType == 4) {
             velocityY = 0;
-            setPosition(bottom.x, y);
+            setPosition(full.x, y);
         }
         if (actionType == 2 || actionType == 3) {
             velocityX = 0;
-            setPosition(x, bottom.y);
+            setPosition(x, full.y);
         }
-
-
     }
     public void update(float delta) {
         float gravity = -0.8f;  // Reduced gravity underwater
@@ -73,13 +68,8 @@ public class Honu extends GameObjects {
         float waterResistance = 0.98f; // Slows down movement over time
         float buoyancy = 0.7f; // Slight natural push upwards
 
-        //Set up velocity Y to replicate gravity underwater
-        velocityY += gravity * delta;
-
-        //Apply buoyancy
-        velocityY += buoyancy * delta;
-
-        // Apply water resistance (reduces velocity over time)
+        // Apply gravity and buoyancy
+        velocityY += (gravity + buoyancy) * delta;
         velocityY *= waterResistance;
 
         // Clamp velocityY to terminal velocity
@@ -87,46 +77,37 @@ public class Honu extends GameObjects {
             velocityY = terminalVelocity;
         }
 
-        // Apply movement
-        bottom.y += velocityY;
-        top.y +=  velocityY;
-        setPosition(bottom.x, bottom.y);
+        //Apply movement
+        full.y += velocityY;
+        full.x += velocityX;
+
+        setPosition(full.x, full.y);
     }
     public void setPosition(float x, float y) {
         //TODO: check set position of Honu after updating assets
-        full.x = x;
-        full.y = y;
-
-        left.x = x;
-        left.y = y + 16;
-
-        right.x = x + 32;
-        right.y = y + 16;
-
-        top.x = x;
-        top.y = y + 64;
-
-        bottom.x = x;
-        bottom.y = y;
-
+        full.setPosition(x, y);
+        bottom.setPosition(x, y);
+        left.setPosition(x, y + 8);
+        right.setPosition(x + 32, y + 8);
+        top.setPosition(x, y + 56);
         sprite.setPosition(x, y);
     }
     public void moveLeft(float delta) {
-        bottom.x -= (200 * delta);
-        sprite.setPosition(bottom.x, bottom.y);
+        full.x -= (200 * delta);
+        sprite.setPosition(full.x, full.y);
     }
     public void moveRight(float delta) {
-        bottom.x += (200 * delta);
-        sprite.setPosition(bottom.x, bottom.y);
+        full.x += (200 * delta);
+        sprite.setPosition(full.x, full.y);
     }
     public void moveUp(float delta) {
-        bottom.y += (200 * delta);
-        sprite.setPosition(bottom.x, bottom.y);
+        full.y += (200 * delta);
+        sprite.setPosition(full.x, full.y);
     }
 
     public void moveDown(float delta) {
-        bottom.y -= (200 * delta);
-        sprite.setPosition(bottom.x, bottom.y);
+        full.y -= (200 * delta);
+        sprite.setPosition(full.x, full.y);
     }
     public void draw(SpriteBatch batch) {
         sprite.draw(batch);
@@ -135,6 +116,6 @@ public class Honu extends GameObjects {
     @Override
     public Rectangle getHitBox() {
         //TODO:
-        return bottom;
+        return full;
     }
 }

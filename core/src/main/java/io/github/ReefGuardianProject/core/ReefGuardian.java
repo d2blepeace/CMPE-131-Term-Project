@@ -153,7 +153,7 @@ public class ReefGuardian implements ApplicationListener {
                     break;
                 case 4:
                     //Collide Bottom
-                    honu.action(4, 0, o.getHitBox().y - honu.getHitBox().height);
+                    honu.action(4, honu.getHitBox().x, o.getHitBox().y - honu.getHitBox().height);
                     break;
                 case 5:
                     //Hit the checkpoint, proceed to next level
