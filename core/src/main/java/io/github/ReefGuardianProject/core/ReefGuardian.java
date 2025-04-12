@@ -11,12 +11,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import io.github.ReefGuardianProject.objects.Checkpoint;
 import io.github.ReefGuardianProject.objects.GameObjects;
+import io.github.ReefGuardianProject.objects.LiveCollectible;
 import io.github.ReefGuardianProject.objects.RockBlock;
 import io.github.ReefGuardianProject.objects.player.Honu;
-import com.badlogic.gdx.math.Rectangle;
-import java.awt.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 public class ReefGuardian implements ApplicationListener {
@@ -39,7 +40,8 @@ public class ReefGuardian implements ApplicationListener {
 
         viewport = new FitViewport(1280, 1024, camera);
         viewport.apply();
-        camera.position.set(640, 412, 0);
+
+        //camera.position.set(640, 412, 0);
         camera.setToOrtho(false, 1280, 1024);
 
         batch = new SpriteBatch();
@@ -49,7 +51,14 @@ public class ReefGuardian implements ApplicationListener {
         honu.setPosition(0, 200);
 
         //Call the load level
-        loadLevel("level1");
+        if (level == 1) {
+            loadLevel("map\\level1.txt");
+        }
+        if (level == 2) {
+            loadLevel("map\\level2.txt");
+        }
+
+
     }
 
     @Override
@@ -96,7 +105,7 @@ public class ReefGuardian implements ApplicationListener {
         gameObjectsList.clear();
         //Loading level .txt files
 
-        FileHandle file = Gdx.files.internal("map\\level1.txt"); //"map\\level1.txt"
+        FileHandle file = Gdx.files.internal(level); //"map\\level1.txt"
         StringTokenizer tokens = new StringTokenizer(file.readString());
         while (tokens.hasMoreTokens()) {
             String type = tokens.nextToken();
@@ -105,7 +114,7 @@ public class ReefGuardian implements ApplicationListener {
             if (type.equals("Background_Level1")) {
                 // Get background file path
                 String bgPath1 = tokens.nextToken();
-                if (backgroundLevel1 != null) backgroundLevel1.dispose(); // clean old texture\
+                if (backgroundLevel1 != null) backgroundLevel1.dispose(); // clean old texture
 
                 backgroundLevel1 = new Texture(Gdx.files.internal(bgPath1));
             }
@@ -113,9 +122,18 @@ public class ReefGuardian implements ApplicationListener {
                 gameObjectsList.add(new RockBlock(
                     Integer.parseInt(tokens.nextToken()), //x value
                     Integer.parseInt(tokens.nextToken()))); //y value
-            } else if (type.equals("Enemy1")) {
-                return;
-            } else if (type.equals("Coral1")) {
+            }
+            if (type.equals("Checkpoint")) {
+                gameObjectsList.add(new Checkpoint(
+                    Integer.parseInt(tokens.nextToken()), //x value
+                    Integer.parseInt(tokens.nextToken()))); //y value
+            }
+            if (type.equals("Live")) {
+                gameObjectsList.add(new LiveCollectible(
+                    Integer.parseInt(tokens.nextToken()), //x value
+                    Integer.parseInt(tokens.nextToken()))); //y value
+            }
+            if (type.equals("Coral1")) {
                 return;
             }
         }
@@ -134,13 +152,11 @@ public class ReefGuardian implements ApplicationListener {
         batch.begin();
         //Update render here
 
-
-
             if (backgroundLevel1 != null) {
                 //Scroll the background based on the camera position
                 float bgX = camera.position.x - camera.viewportWidth / 2f;
                 // match the image size
-                batch.draw(backgroundLevel1, bgX, 0, 3000, 1024);
+                batch.draw(backgroundLevel1, bgX, 0, 1280, 1024);
             }
             //Draw Honu
             honu.draw(batch);
@@ -158,27 +174,44 @@ public class ReefGuardian implements ApplicationListener {
 
         //Check for collision
         boolean changeLevel = false; //Changing level check
+
         for (GameObjects o : gameObjectsList) {
-            switch (honu.hit(o.getHitBox())) {
+            int honuCollision = honu.hit(o.getHitBox());
+            //if (honuCollision != -1 ) {continue;} // No collision
+
+            int collisionType = o.hitAction(); // 1 = normal block, 2 = die, 3 = collectible, 4 = checkpoint
+
+            // Handle object type behavior
+            switch (collisionType) {
                 case 1:
-                    //Collide top
-                    honu.action(1, 0, o.getHitBox().y + o.getHitBox().height);
+                    switch (honuCollision) {
+                        case 1:
+                            //Collide top
+                            honu.action(1, 0, o.getHitBox().y + o.getHitBox().height);
+                            break;
+                        case 2:
+                            //Collide right
+                            honu.action(2, o.getHitBox().x + o.getHitBox().width + 1, 0);
+                            break;
+                        case 3:
+                            //Collide left
+                            honu.action(3, o.getHitBox().x - honu.getHitBox().width - 1, 0);
+                            break;
+                        case 4:
+                            //Collide Bottom
+                            honu.action(4, honu.getHitBox().x, o.getHitBox().y - honu.getHitBox().height);
+                            break;
+                    }
+                case 2: // Character dies
+                    System.out.println("Honu died!");
                     break;
-                case 2:
-                    //Collide right
-                    honu.action(2, o.getHitBox().x + o.getHitBox().width + 1, 0);
+
+                case 3: // Collect item
                     break;
-                case 3:
-                    //Collide left
-                    honu.action(3, o.getHitBox().x - honu.getHitBox().width - 1, 0);
-                    break;
-                case 4:
-                    //Collide Bottom
-                    honu.action(4, honu.getHitBox().x, o.getHitBox().y - honu.getHitBox().height);
-                    break;
-                case 5:
-                    //Hit the checkpoint, proceed to next level
+
+                case 4: // Checkpoint
                     level++;
+                    changeLevel = true;
                     break;
             }
         }

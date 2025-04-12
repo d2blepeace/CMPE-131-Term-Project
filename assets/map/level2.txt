@@ -1,7 +1,6 @@
 Background_Level1 PNG/Background_Level1.png
 RockBlock 0 0
 RockBlock 64 0
-Live 128 64
 RockBlock 128 0
 RockBlock 192 0
 RockBlock 256 0
@@ -9,7 +8,6 @@ RockBlock 320 0
 RockBlock 384 0
 RockBlock 448 0
 RockBlock 512 0
-Live 512 64
 RockBlock 576 0
 RockBlock 640 0
 RockBlock 704 0
@@ -66,9 +64,23 @@ RockBlock 3904 0
 RockBlock 3968 0
 RockBlock 4032 0
 
-RockBlock 64 128
-RockBlock 128 192
-RockBlock 512 128
-RockBlock 704 192
+RockBlock 128 128
+RockBlock 192 192
+RockBlock 640 128
+RockBlock 768 192
+RockBlock 960 128
+RockBlock 1024 192
+RockBlock 1472 128
+RockBlock 1536 192
+RockBlock 1920 128
+RockBlock 1984 192
+RockBlock 2368 128
+RockBlock 2432 192
+RockBlock 2816 128
+RockBlock 2880 192
+RockBlock 3392 128
+RockBlock 3456 192
+RockBlock 3712 128
+RockBlock 3776 192
 
-Checkpoint 2112 64
+Checkpoint 1920 192

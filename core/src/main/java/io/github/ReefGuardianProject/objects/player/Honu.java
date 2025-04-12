@@ -116,4 +116,9 @@ public class Honu extends GameObjects {
         //TODO:
         return full;
     }
+
+    @Override
+    public int hitAction() {
+        return 0; //No action
+    }
 }

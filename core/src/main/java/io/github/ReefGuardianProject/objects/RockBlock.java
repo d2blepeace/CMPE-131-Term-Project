@@ -71,4 +71,10 @@
         public Rectangle getHitBox() {
             return hitBox;
         }
+
+        @Override
+        public int hitAction() {
+            //1- Collision to normal object, 2- Character die, 3- Collect the item; 4-reach checkpoint
+            return 1;
+        }
     }
