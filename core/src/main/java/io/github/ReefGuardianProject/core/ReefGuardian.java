@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.ReefGuardianProject.objects.*;
+import io.github.ReefGuardianProject.objects.enemy.WaterBottle;
 import io.github.ReefGuardianProject.objects.player.Honu;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ public class ReefGuardian implements ApplicationListener {
     private SpriteBatch batch;
     private Texture texture;
     private Honu honu;
+    private Texture livesTexture;
     private ArrayList<GameObjects> gameObjectsList = new ArrayList<GameObjects>();
     private int level = 1;
     private Texture backgroundLevel1;
@@ -43,7 +45,7 @@ public class ReefGuardian implements ApplicationListener {
 
         batch = new SpriteBatch();
 
-        //Create Honu
+        livesTexture = new Texture(Gdx.files.internal("PNG\\Heart.png"));
 
         //Call the load level
         if (level == 1) {
@@ -152,19 +154,23 @@ public class ReefGuardian implements ApplicationListener {
         //Begin the rendering
         batch.begin();
         //Update render here
-
+            // 1. Background FIRST (fills the screen)
             if (backgroundLevel1 != null) {
                 //Scroll the background based on the camera position
                 float bgX = camera.position.x - camera.viewportWidth / 2f;
                 // match the image size
                 batch.draw(backgroundLevel1, bgX, 0, 1280, 1024);
             }
-            //Draw Honu
-            honu.draw(batch);
 
-            //object
+            // 2. Game objects (Honu + obstacles)
+             honu.draw(batch);
             for (GameObjects o : gameObjectsList) {
                 o.draw(batch);
+            }
+
+            // 3. UI elements (hearts) LAST so they render on top
+            for (int i = 0; i < honu.getLives(); i++) {
+                batch.draw(livesTexture, camera.position.x - camera.viewportWidth / 2f + 20 + i * 40, 980, 32, 32);
             }
         batch.end();
 
@@ -181,7 +187,7 @@ public class ReefGuardian implements ApplicationListener {
         while (iterator.hasNext()) {
             GameObjects o = iterator.next();;
             int honuCollision = honu.hit(o.getHitBox());
-            int collisionType = o.hitAction(); // 1 = normal block, 2 = die, 3 = collectible, 4 = checkpoint
+            int collisionType = o.hitAction(); // 1 = normal block, 2 = receive dmg, 3 = collectible, 4 = checkpoint
 
             // Handle object type behavior
             switch (collisionType) {
@@ -205,7 +211,18 @@ public class ReefGuardian implements ApplicationListener {
                             break;
                     }
                     break;
-                case 2: // Character dies
+                case 2: // Character receives damage
+                    if (honuCollision != -1) {
+                        honu.loseLife();
+                        // Optional: knockback, sound, animation
+                        // Knock Honu back depending on collision side
+                        switch (honuCollision) {
+                            case 1: honu.knockBack(0, 20); break;  // Hit top → push down
+                            case 2: honu.knockBack(20, 0); break;  // Hit right → push left
+                            case 3: honu.knockBack(-20, 0); break; // Hit left → push right
+                            case 4: honu.knockBack(0, -20); break; // Hit bottom → push up
+                        }
+                    }
                     break;
 
                 case 3: // Collect item
@@ -256,6 +273,6 @@ public class ReefGuardian implements ApplicationListener {
     }
     @Override
     public void dispose() {
-
+        if (livesTexture != null) livesTexture.dispose();
     }
 }

@@ -1,12 +1,13 @@
-package io.github.ReefGuardianProject.objects;
+package io.github.ReefGuardianProject.objects.enemy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import io.github.ReefGuardianProject.objects.GameObjects;
 
-public class WaterBottle extends GameObjects{
+public class WaterBottle extends GameObjects {
     public Rectangle hitBox;
     Sprite sprite;
     Texture texture;
