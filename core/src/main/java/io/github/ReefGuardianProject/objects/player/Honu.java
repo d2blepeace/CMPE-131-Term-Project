@@ -11,7 +11,8 @@ public class Honu extends GameObjects {
     Rectangle bottom, top, right, left, full;
     Sprite sprite;
     Texture texture;
-    int lives = 1; //Max lives of Honu
+    int lives = 3; //Max lives of Honu
+    final int MAX_LIVES = 3;
     float velocityX;
     float velocityY;
     float speed;
@@ -32,14 +33,23 @@ public class Honu extends GameObjects {
         //Setup gravity
         velocityY = 0;
     }
+    //handle Live of Honu
     public int getLives() {
         return lives;
     }
+    // Trigger this when Honu receives damage
     public void loseLife() {
         if (lives >= 0) {
             lives--;
         }
     }
+    //Trigger this when Honu collect a live
+    public void gainLife() {
+        if (lives < MAX_LIVES) {
+            lives++;
+        }
+    }
+
     public int hit(Rectangle r) {
         if (left.overlaps(r)) {
             return 2;
@@ -90,7 +100,7 @@ public class Honu extends GameObjects {
         setPosition(full.x, full.y);
     }
     public void setPosition(float x, float y) {
-        //TODO: check set position of Honu after updating assets
+        // check set position of Honu after updating assets
         full.setPosition(x, y);
         bottom.setPosition(x, y);
         left.setPosition(x, y + 8);
@@ -121,13 +131,14 @@ public class Honu extends GameObjects {
         full.y += yAmount;
         setPosition(full.x, full.y);
     }
+
+
     public void draw(SpriteBatch batch) {
         sprite.draw(batch);
     }
 
     @Override
     public Rectangle getHitBox() {
-        //TODO:
         return full;
     }
 
