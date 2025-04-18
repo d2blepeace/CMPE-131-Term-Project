@@ -11,10 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import io.github.ReefGuardianProject.objects.Checkpoint;
-import io.github.ReefGuardianProject.objects.GameObjects;
-import io.github.ReefGuardianProject.objects.LiveCollectible;
-import io.github.ReefGuardianProject.objects.RockBlock;
+import io.github.ReefGuardianProject.objects.*;
 import io.github.ReefGuardianProject.objects.player.Honu;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -47,14 +44,16 @@ public class ReefGuardian implements ApplicationListener {
         batch = new SpriteBatch();
 
         //Create Honu
-        honu = new Honu();
-        honu.setPosition(0, 200);
 
         //Call the load level
         if (level == 1) {
+            honu = new Honu();
+            honu.setPosition(0, 128);
             loadLevel("map\\level1.txt");
         }
         if (level == 2) {
+            honu = new Honu();
+            honu.setPosition(0, 128);
             loadLevel("map\\level2.txt");
         }
 
@@ -133,8 +132,10 @@ public class ReefGuardian implements ApplicationListener {
                     Integer.parseInt(tokens.nextToken()), //x value
                     Integer.parseInt(tokens.nextToken()))); //y value
             }
-            if (type.equals("Coral1")) {
-                return;
+            if (type.equals("WaterBottle")) {
+                gameObjectsList.add(new WaterBottle(
+                    Integer.parseInt(tokens.nextToken()), //x value
+                    Integer.parseInt(tokens.nextToken()))); //y value
             }
         }
     }
@@ -175,10 +176,11 @@ public class ReefGuardian implements ApplicationListener {
         //Check for collision
         boolean changeLevel = false; //Changing level check
 
-        for (GameObjects o : gameObjectsList) {
+        //Create iterator for gameObjectList
+        Iterator<GameObjects> iterator = gameObjectsList.iterator();
+        while (iterator.hasNext()) {
+            GameObjects o = iterator.next();;
             int honuCollision = honu.hit(o.getHitBox());
-            //if (honuCollision != -1 ) {continue;} // No collision
-
             int collisionType = o.hitAction(); // 1 = normal block, 2 = die, 3 = collectible, 4 = checkpoint
 
             // Handle object type behavior
@@ -202,17 +204,31 @@ public class ReefGuardian implements ApplicationListener {
                             honu.action(4, honu.getHitBox().x, o.getHitBox().y - honu.getHitBox().height);
                             break;
                     }
+                    break;
                 case 2: // Character dies
-                    System.out.println("Honu died!");
                     break;
 
                 case 3: // Collect item
+                    if (honuCollision != -1) {
+                        // Remove the collectible if touched
+                        iterator.remove();
+                        // Optional:
+                    }
                     break;
-
                 case 4: // Checkpoint
-                    level++;
-                    changeLevel = true;
+                    if (honuCollision != -1) {
+                        changeLevel = true;
+                    }
                     break;
+            }
+        }
+
+        //Change level test
+        if (changeLevel) {
+            level++;
+            if (level == 2) {
+                honu.setPosition(0, 128);
+                loadLevel("map\\level2.txt");
             }
         }
         updateCamera();
