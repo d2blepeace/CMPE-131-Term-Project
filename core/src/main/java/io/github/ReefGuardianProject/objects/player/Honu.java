@@ -27,8 +27,8 @@ public class Honu extends GameObjects {
 
         texture = new Texture(Gdx.files.internal("sprite\\Honu.png"));
         sprite = new Sprite(texture, 0, 0, 64, 64);
-
         this.setPosition(0,0);
+
         //Setup gravity
         velocityY = 0;
     }

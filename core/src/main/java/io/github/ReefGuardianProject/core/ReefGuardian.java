@@ -26,7 +26,7 @@ public class ReefGuardian implements ApplicationListener {
     private Texture texture;
     private Honu honu;
     private Texture livesTexture;
-    private ArrayList<GameObjects> gameObjectsList = new ArrayList<GameObjects>();
+    private ArrayList<GameObjects> gameObjectsList = new ArrayList<>();
     private int level = 1;
     private Texture backgroundLevel1;
     /**
