@@ -26,13 +26,6 @@ public class ReefGuardian implements ApplicationListener {
     private Texture texture;
     private Honu honu;
     private Texture livesTexture;
-    // Body Texture for animation sprites
-    Texture bodyTexture;
-    Texture[] armFrames;
-    int currentArmFrame = 0;
-    float frameTimer = 0f;
-    float frameDuration = 0.1f; // 100 ms per frame
-
     private ArrayList<GameObjects> gameObjectsList = new ArrayList<GameObjects>();
     private int level = 1;
     private Texture backgroundLevel1;
@@ -53,17 +46,6 @@ public class ReefGuardian implements ApplicationListener {
         batch = new SpriteBatch();
 
         //Create animation sprite
-        /*
-        bodyTexture = new Texture(Gdx.files.internal("sprite\\honuBody.png"));
-
-        armFrames = new Texture[] {
-            new Texture(Gdx.files.internal("sprite\\HonuArms0.png")),
-            new Texture(Gdx.files.internal("sprite\\HonuArms1.png")),
-            new Texture(Gdx.files.internal("sprite\\HonuArms2.png")),
-            new Texture(Gdx.files.internal("sprite\\HonuArms3.png")) // for smooth loop
-        };
-
-         */
 
         livesTexture = new Texture(Gdx.files.internal("PNG\\Heart.png"));
 
