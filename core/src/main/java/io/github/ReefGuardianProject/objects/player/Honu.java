@@ -23,6 +23,7 @@ public class Honu extends GameObjects {
 
     float gameTime = 0f;
     boolean shoot = false;
+
     Animation<TextureRegion> armAnimation, headAnimation;
     TextureRegion headIdle = new TextureRegion(new Texture("sprite\\head\\head1.png"));
     float velocityX;
