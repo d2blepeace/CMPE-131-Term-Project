@@ -215,12 +215,16 @@ public class ReefGuardian implements ApplicationListener {
                     if (honuCollision != -1) {
                         honu.loseLife();
                         // Optional: knockback, sound, animation
+
+                        // Strong knockback based on direction
+                        float knockBackDist = 40f;
+
                         // Knock Honu back depending on collision side
                         switch (honuCollision) {
-                            case 1: honu.knockBack(0, 20); break;  // Hit top → push down
-                            case 2: honu.knockBack(20, 0); break;  // Hit right → push left
-                            case 3: honu.knockBack(-20, 0); break; // Hit left → push right
-                            case 4: honu.knockBack(0, -20); break; // Hit bottom → push up
+                            case 1: honu.knockBack(0, knockBackDist); break;  // Hit top → push down
+                            case 2: honu.knockBack(knockBackDist, 0); break;  // Hit right → push left
+                            case 3: honu.knockBack(-knockBackDist, 0); break; // Hit left → push right
+                            case 4: honu.knockBack(0, -knockBackDist); break; // Hit bottom → push up
                         }
                     }
                     break;
@@ -228,8 +232,8 @@ public class ReefGuardian implements ApplicationListener {
                 case 3: // Collect item
                     if (honuCollision != -1) {
                         // Remove the collectible if touched
-                        iterator.remove();
-                        // Optional:
+                        iterator.remove();   // Delete collectible after collecting
+                        honu.gainLife();     // restore one life
                     }
                     break;
                 case 4: // Checkpoint
