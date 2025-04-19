@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.ReefGuardianProject.objects.GameObjects;
+import io.github.ReefGuardianProject.objects.projectile.WaterBall;
 
 public class Honu extends GameObjects {
     Rectangle bottom, top, right, left, full;
@@ -107,6 +108,12 @@ public class Honu extends GameObjects {
         if (lives < MAX_LIVES) {
             lives++;
         }
+    }
+    //Honu shoot waterball
+    public WaterBall shoot() {
+        float startX = full.x + full.width; // In front of Honu
+        float startY = full.y + (full.height / 2f) - 32; // Vertically centered if WaterBall is 32x32
+        return new WaterBall(startX, startY, 300); // 300 = projectile speed
     }
     //Handle hitBox collision logic
     public int hit(Rectangle r) {

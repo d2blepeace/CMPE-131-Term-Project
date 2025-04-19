@@ -14,6 +14,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.ReefGuardianProject.objects.*;
 import io.github.ReefGuardianProject.objects.enemy.WaterBottle;
 import io.github.ReefGuardianProject.objects.player.Honu;
+import io.github.ReefGuardianProject.objects.projectile.Projectile;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -27,6 +29,7 @@ public class ReefGuardian implements ApplicationListener {
     private Honu honu;
     private Texture livesTexture;
     private ArrayList<GameObjects> gameObjectsList = new ArrayList<>();
+    private ArrayList<Projectile> projectiles = new ArrayList<>();
     private int level = 1;
     private Texture backgroundLevel1;
     /**
@@ -167,7 +170,14 @@ public class ReefGuardian implements ApplicationListener {
 
             // 3. UI elements (hearts) LAST so they render on top
             for (int i = 0; i < honu.getLives(); i++) {
-                batch.draw(livesTexture, camera.position.x - camera.viewportWidth / 2f + 20 + i * 40, 980, 32, 32);
+                batch.draw(livesTexture,
+                    camera.position.x - camera.viewportWidth / 2f + 20 + i * 40,
+                    980, 32, 32);
+            }
+
+            // 4. Honu shoot waterball
+            for (Projectile p : projectiles) {
+                p.draw(batch);
             }
         batch.end();
 
@@ -175,6 +185,11 @@ public class ReefGuardian implements ApplicationListener {
 
         //Honu
         honu.update(Gdx.graphics.getDeltaTime());
+
+        // Waterball of Honu
+        for (Projectile p : projectiles) {
+            p.update(Gdx.graphics.getDeltaTime());
+        }
 
         //Check for collision
         boolean changeLevel = false; //Changing level check
@@ -263,6 +278,9 @@ public class ReefGuardian implements ApplicationListener {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             honu.moveRight(Gdx.graphics.getDeltaTime());    //move right = D
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            projectiles.add(honu.shoot());                  //shoot = SPACE
         }
 
     }
