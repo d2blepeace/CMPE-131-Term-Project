@@ -75,4 +75,9 @@ public class Checkpoint extends GameObjects {
         return 4;
     }
 
+    @Override
+    public boolean isEnemy() {
+        return false;
+    }
+
 }

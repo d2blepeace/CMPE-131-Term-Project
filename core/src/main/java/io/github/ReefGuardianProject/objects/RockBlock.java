@@ -77,4 +77,9 @@
             //1- Collision to normal object, 2- Character die, 3- Collect the item; 4-reach checkpoint
             return 1;
         }
+
+        @Override
+        public boolean isEnemy() {
+            return false;
+        }
     }

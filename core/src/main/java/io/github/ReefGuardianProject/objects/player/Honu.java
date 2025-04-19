@@ -226,4 +226,9 @@ public class Honu extends GameObjects {
         return 0; //No action
     }
 
+    @Override
+    public boolean isEnemy() {
+        return false;
+    }
+
 }

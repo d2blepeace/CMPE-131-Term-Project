@@ -17,4 +17,5 @@ public abstract class GameObjects {
     public abstract void draw(SpriteBatch batch);
     public abstract Rectangle getHitBox();
     public abstract int hitAction();
+    public abstract boolean isEnemy();
 }

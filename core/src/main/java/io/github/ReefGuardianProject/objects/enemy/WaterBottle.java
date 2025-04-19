@@ -74,4 +74,9 @@ public class WaterBottle extends GameObjects {
     public int hitAction() {
         return 2;
     }
+
+    @Override
+    public boolean isEnemy() {
+        return true; //All Enemy will return True
+    }
 }

@@ -191,6 +191,23 @@ public class ReefGuardian implements ApplicationListener {
             p.update(Gdx.graphics.getDeltaTime());
         }
 
+        // Detect WaterBall hitting enemy objects
+        Iterator<Projectile> projectileIter = projectiles.iterator();
+        while (projectileIter.hasNext()) {
+            Projectile p = projectileIter.next();
+            Iterator<GameObjects> objIter = gameObjectsList.iterator();
+
+            while (objIter.hasNext()) {
+                GameObjects obj = objIter.next();
+                if (obj instanceof WaterBottle && p.getHitBox().overlaps(obj.getHitBox())) {
+                    // Remove projectile and enemy on collision
+                    projectileIter.remove();
+                    objIter.remove();
+                    break; // Only one object can be hit at a time by one projectile
+                }
+            }
+        }
+
         //Check for collision
         boolean changeLevel = false; //Changing level check
 
