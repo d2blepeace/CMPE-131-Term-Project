@@ -16,13 +16,17 @@ public class Honu extends GameObjects {
     int lives = 1; //Max lives of Honu
     private final int MAX_LIVES = 3;
     int body, cosmetic;
+
+    // Stores the animation sprite
+    private Texture[] armTextures;
+    private Texture[] headTextures;
+
     float gameTime = 0f;
     boolean shoot = false;
     Animation<TextureRegion> armAnimation, headAnimation;
     TextureRegion headIdle = new TextureRegion(new Texture("sprite\\head\\head1.png"));
     float velocityX;
     float velocityY;
-    float speed;
     //Entry points of Honu
     public Honu() {
         //Hitbox
@@ -33,14 +37,17 @@ public class Honu extends GameObjects {
         right = new Rectangle(32, 8, 32, 48);
         top = new Rectangle(0, 56, 64, 8);
 
+        //TODO: check later
         Texture bodyTexture = new Texture(bodyType(0));
+
+        //Call animation set up
         setArmAnimation(0.1f);
         setHeadAnimation(0.1f);
-        texture = new Texture(Gdx.files.internal(bodyType(0)));
-        //texture = new Texture(Gdx.files.internal("sprite\\Honu.png"));
-        sprite = new Sprite(texture, 0, 0, 64, 64);
 
+        texture = new Texture(Gdx.files.internal(bodyType(0)));
+        sprite = new Sprite(texture, 0, 0, 64, 64);
         this.setPosition(0,0);
+
         //Setup gravity
         velocityY = 0;
     }
@@ -58,20 +65,35 @@ public class Honu extends GameObjects {
         return s;
     }
     public void setArmAnimation(float time){
-        TextureRegion[] armFrames = new TextureRegion[4];
-        armFrames[0] = new TextureRegion(new Texture("sprite\\arm\\arm0.png"));
-        armFrames[1] = new TextureRegion(new Texture("sprite\\arm\\arm1.png"));
-        armFrames[2] = new TextureRegion(new Texture("sprite\\arm\\arm2.png"));
-        armFrames[3] = new TextureRegion(new Texture("sprite\\arm\\arm3.png"));
-        armAnimation = new Animation<TextureRegion>(time, armFrames);
+        if (armTextures == null) {
+            armTextures = new Texture[] {
+                new Texture("sprite\\arm\\arm0.png"),
+                new Texture("sprite\\arm\\arm1.png"),
+                new Texture("sprite\\arm\\arm2.png"),
+                new Texture("sprite\\arm\\arm3.png")
+            };
+        }
+        TextureRegion[] armFrames = new TextureRegion[armTextures.length];
+        for (int i = 0; i < armTextures.length; i++) {
+            armFrames[i] = new TextureRegion(armTextures[i]);
+        }
+        armAnimation = new Animation<>(time, armFrames);
     }
     public void setHeadAnimation(float time){
-        TextureRegion[] headFrames = new TextureRegion[4];
-        headFrames[0] = new TextureRegion(new Texture("sprite\\head\\head1.png"));
-        headFrames[1] = new TextureRegion(new Texture("sprite\\head\\head2.png"));
-        headFrames[2] = new TextureRegion(new Texture("sprite\\head\\head3.png"));
+        if (headTextures == null) {
+            headTextures = new Texture[] {
+                new Texture("sprite\\head\\head1.png"),
+                new Texture("sprite\\head\\head2.png"),
+                new Texture("sprite\\head\\head3.png"),
+            };
+        }
+        TextureRegion[] headFrames = new TextureRegion[headTextures.length];
+        for (int i = 0; i < headTextures.length; i++) {
+            headFrames[i] = new TextureRegion(headTextures[i]);
+        }
         headAnimation = new Animation<>(time, headFrames);
     }
+    // Handle lives of Honu
     public int getLives() {
         return lives;
     }
@@ -85,6 +107,7 @@ public class Honu extends GameObjects {
             lives++;
         }
     }
+    //Handle hitBox collision logic
     public int hit(Rectangle r) {
         if (left.overlaps(r)) {
             return 2;
@@ -100,7 +123,6 @@ public class Honu extends GameObjects {
         }
         return -1;
     }
-
     //Handling actions of Honu
     public void action(int actionType, float x, float y) {
         //Collision logic
