@@ -58,8 +58,6 @@ public class ReefGuardian implements ApplicationListener {
             honu.setPosition(0, 128);
             loadLevel("map\\level2.txt");
         }
-
-
     }
 
     @Override
@@ -161,7 +159,6 @@ public class ReefGuardian implements ApplicationListener {
                 // match the image size
                 batch.draw(backgroundLevel1, bgX, 0, 1280, 1024);
             }
-
             // 2. Game objects (Honu + obstacles)
              honu.draw(batch);
             for (GameObjects o : gameObjectsList) {

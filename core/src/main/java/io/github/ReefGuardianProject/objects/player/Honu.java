@@ -2,7 +2,9 @@ package io.github.ReefGuardianProject.objects.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.ReefGuardianProject.objects.GameObjects;
@@ -12,9 +14,20 @@ public class Honu extends GameObjects {
     Sprite sprite;
     Texture texture;
     int lives = 1; //Max lives of Honu
+    private final int MAX_LIVES = 3;
+    int body, cosmetic;
+
+    // Stores the animation sprite
+    private Texture[] armTextures;
+    private Texture[] headTextures;
+
+    float gameTime = 0f;
+    boolean shoot = false;
+
+    Animation<TextureRegion> armAnimation, headAnimation;
+    TextureRegion headIdle = new TextureRegion(new Texture("sprite\\head\\head1.png"));
     float velocityX;
     float velocityY;
-    float speed;
     //Entry points of Honu
     public Honu() {
         //Hitbox
@@ -25,13 +38,63 @@ public class Honu extends GameObjects {
         right = new Rectangle(32, 8, 32, 48);
         top = new Rectangle(0, 56, 64, 8);
 
-        texture = new Texture(Gdx.files.internal("sprite\\Honu.png"));
+        //TODO: check later
+        Texture bodyTexture = new Texture(bodyType(0));
+
+        //Call animation set up
+        setArmAnimation(0.1f);
+        setHeadAnimation(0.1f);
+
+        texture = new Texture(Gdx.files.internal(bodyType(0)));
         sprite = new Sprite(texture, 0, 0, 64, 64);
         this.setPosition(0,0);
 
         //Setup gravity
         velocityY = 0;
     }
+    public String bodyType(int choice){
+        String s = "sprite\\body\\";
+        switch(choice){
+            case(1): //body 1
+                s += "honuHawaiiBody.png";
+            case(2):
+                s+= "";//for future bodies
+            default:
+                s += "honuBody.png";
+                break;
+        }
+        return s;
+    }
+    public void setArmAnimation(float time){
+        if (armTextures == null) {
+            armTextures = new Texture[] {
+                new Texture("sprite\\arm\\arm0.png"),
+                new Texture("sprite\\arm\\arm1.png"),
+                new Texture("sprite\\arm\\arm2.png"),
+                new Texture("sprite\\arm\\arm3.png")
+            };
+        }
+        TextureRegion[] armFrames = new TextureRegion[armTextures.length];
+        for (int i = 0; i < armTextures.length; i++) {
+            armFrames[i] = new TextureRegion(armTextures[i]);
+        }
+        armAnimation = new Animation<>(time, armFrames);
+    }
+    public void setHeadAnimation(float time){
+        if (headTextures == null) {
+            headTextures = new Texture[] {
+                new Texture("sprite\\head\\head1.png"),
+                new Texture("sprite\\head\\head2.png"),
+                new Texture("sprite\\head\\head3.png"),
+            };
+        }
+        TextureRegion[] headFrames = new TextureRegion[headTextures.length];
+        for (int i = 0; i < headTextures.length; i++) {
+            headFrames[i] = new TextureRegion(headTextures[i]);
+        }
+        headAnimation = new Animation<>(time, headFrames);
+    }
+    // Handle lives of Honu
     public int getLives() {
         return lives;
     }
@@ -40,6 +103,12 @@ public class Honu extends GameObjects {
             lives--;
         }
     }
+    public void gainLife() {
+        if (lives < MAX_LIVES) {
+            lives++;
+        }
+    }
+    //Handle hitBox collision logic
     public int hit(Rectangle r) {
         if (left.overlaps(r)) {
             return 2;
@@ -55,7 +124,6 @@ public class Honu extends GameObjects {
         }
         return -1;
     }
-
     //Handling actions of Honu
     public void action(int actionType, float x, float y) {
         //Collision logic
@@ -122,7 +190,22 @@ public class Honu extends GameObjects {
         setPosition(full.x, full.y);
     }
     public void draw(SpriteBatch batch) {
+        gameTime += Gdx.graphics.getDeltaTime(); //for animations
         sprite.draw(batch);
+
+        if(armAnimation != null){
+            TextureRegion armFrame = armAnimation.getKeyFrame(gameTime, true);
+            batch.draw(armFrame, full.x, full.y);
+        }
+        if (shoot && headAnimation != null) {
+            TextureRegion headFrame = headAnimation.getKeyFrame(gameTime, false);
+            batch.draw(headFrame, full.x, full.y);
+        } else if(headAnimation != null){
+            batch.draw(headIdle, full.x, full.y);
+        }
+        if (shoot && headAnimation.isAnimationFinished(gameTime)) {
+            shoot = false;
+        }
     }
 
     @Override
@@ -135,4 +218,5 @@ public class Honu extends GameObjects {
     public int hitAction() {
         return 0; //No action
     }
+
 }
