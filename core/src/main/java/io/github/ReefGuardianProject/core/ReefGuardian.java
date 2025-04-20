@@ -16,6 +16,7 @@ import io.github.ReefGuardianProject.objects.enemy.WaterBottle;
 import io.github.ReefGuardianProject.objects.player.Honu;
 import io.github.ReefGuardianProject.objects.projectile.Projectile;
 import com.badlogic.gdx.audio.Sound;
+import io.github.ReefGuardianProject.objects.ui.HonuHealthBar;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,7 +29,7 @@ public class ReefGuardian implements ApplicationListener {
     private SpriteBatch batch;
     private Texture texture;
     private Honu honu;
-    private Texture livesTexture;
+    private HonuHealthBar honuHealthBar;
     private Sound collectLifeSound, honuDmgSound;
     private ArrayList<GameObjects> gameObjectsList = new ArrayList<>();
     private ArrayList<Projectile> projectiles = new ArrayList<>();
@@ -50,8 +51,10 @@ public class ReefGuardian implements ApplicationListener {
 
         batch = new SpriteBatch();
 
-        //Load live texture and sound
-        livesTexture = new Texture(Gdx.files.internal("PNG\\Heart.png"));
+        //Honu healthbar
+        honuHealthBar = new HonuHealthBar();
+
+        //Load sfx of collecting live
         collectLifeSound = Gdx.audio.newSound(Gdx.files.internal("sfx\\CollectLive_SFX.mp3"));
 
         //Load Honu damge sound
@@ -192,12 +195,9 @@ public class ReefGuardian implements ApplicationListener {
                 o.draw(batch);
             }
 
-            // 3. UI elements (hearts) LAST so they render on top
-            for (int i = 0; i < honu.getLives(); i++) {
-                batch.draw(livesTexture,
-                    camera.position.x - camera.viewportWidth / 2f + 20 + i * 40,
-                    980, 32, 32);
-            }
+            // 3. Honu Healthbar UI
+            honuHealthBar.update(honu.getLives());
+            honuHealthBar.draw(batch, camera);
 
             // 4. Honu shoot waterball
             for (Projectile p : projectiles) {
@@ -336,8 +336,6 @@ public class ReefGuardian implements ApplicationListener {
     }
     @Override
     public void dispose() {
-        //Dispose life texture when it is collect
-        if (livesTexture != null) livesTexture.dispose();
         //Dispose life collecting sond
         if (collectLifeSound != null) collectLifeSound.dispose();
     }
