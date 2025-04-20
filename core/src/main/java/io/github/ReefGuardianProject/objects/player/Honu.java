@@ -117,7 +117,7 @@ public class Honu extends GameObjects {
         shoot = true;       //Trigger animation
         gameTime = 0f;      //Reset animation timer
 
-        return new WaterBall(startX, startY, 600); // 600 = projectile speed
+        return new WaterBall(startX, startY, 500); // 500 = projectile speed
     }
     //Handle hitBox collision logic
     public int hit(Rectangle r) {

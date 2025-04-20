@@ -15,6 +15,7 @@ import io.github.ReefGuardianProject.objects.*;
 import io.github.ReefGuardianProject.objects.enemy.WaterBottle;
 import io.github.ReefGuardianProject.objects.player.Honu;
 import io.github.ReefGuardianProject.objects.projectile.Projectile;
+import io.github.ReefGuardianProject.objects.projectile.WaterBall;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -98,8 +99,25 @@ public class ReefGuardian implements ApplicationListener {
     }
 
     public void updateCamera() {
-        camera.position.x = honu.getHitBox().x;
-        camera.update();;
+        float camHalfWidth = camera.viewportWidth / 2f;
+        float honuX = honu.getHitBox().x;
+
+        float deadZoneLeft = camera.position.x - 150;
+        float deadZoneRight = camera.position.x + 150;
+
+        // Move camera right if Honu goes past right dead zone
+        if (honuX > deadZoneRight) {
+            camera.position.x = honuX - 150;
+        }
+        // Move camera left if Honu goes past left dead zone
+        else if (honuX < deadZoneLeft) {
+            camera.position.x = honuX + 150;
+        }
+        // prevent camera from going before 0
+        if (camera.position.x < camHalfWidth) {
+            camera.position.x = camHalfWidth;
+        }
+        camera.update();
     }
     //Load the level
     public void loadLevel(String level) {
@@ -190,7 +208,6 @@ public class ReefGuardian implements ApplicationListener {
         for (Projectile p : projectiles) {
             p.update(Gdx.graphics.getDeltaTime());
         }
-
         // Detect WaterBall hitting enemy objects
         Iterator<Projectile> projectileIter = projectiles.iterator();
         while (projectileIter.hasNext()) {
@@ -207,6 +224,8 @@ public class ReefGuardian implements ApplicationListener {
                 }
             }
         }
+        //If waterball doesn't hit anything, delete it
+        projectiles.removeIf(p -> !p.isActive());
 
         //Check for collision
         boolean changeLevel = false; //Changing level check

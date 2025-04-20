@@ -12,7 +12,9 @@ public abstract class Projectile {
     protected Rectangle hitBox;
     protected Animation<TextureRegion> animation;
     protected float stateTime = 0f;
-    protected boolean alive = true;
+
+    protected boolean active = true;
+
     //Constructor
     public Projectile (float x, float y, float speed) {
         this.x = x;
@@ -23,11 +25,11 @@ public abstract class Projectile {
     public abstract void update(float delta);
     public abstract void draw(SpriteBatch batch);
     public abstract Rectangle getHitBox();
-    public boolean isAlive() {
-        return alive;
-    }
-    public void destroy() {
-        alive = false;
+    public boolean isActive() {
+        return active;
     }
 
+    public void delete() {
+        active = false;
+    }
 }
