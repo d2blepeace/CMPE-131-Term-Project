@@ -111,9 +111,13 @@ public class Honu extends GameObjects {
     }
     //Honu shoot waterball
     public WaterBall shoot() {
-        float startX = full.x + full.width; // In front of Honu
-        float startY = full.y + (full.height / 2f) - 32; // Vertically centered if WaterBall is 32x32
-        return new WaterBall(startX, startY, 300); // 300 = projectile speed
+        float startX = full.x + full.width - 30; // In front of Honu
+        float startY = full.y + (full.height / 2f) - 32; // Vertically centered if WaterBall is 64x64
+
+        shoot = true;       //Trigger animation
+        gameTime = 0f;      //Reset animation timer
+
+        return new WaterBall(startX, startY, 600); // 600 = projectile speed
     }
     //Handle hitBox collision logic
     public int hit(Rectangle r) {
