@@ -15,7 +15,7 @@ import io.github.ReefGuardianProject.objects.*;
 import io.github.ReefGuardianProject.objects.enemy.WaterBottle;
 import io.github.ReefGuardianProject.objects.player.Honu;
 import io.github.ReefGuardianProject.objects.projectile.Projectile;
-import io.github.ReefGuardianProject.objects.projectile.WaterBall;
+import com.badlogic.gdx.audio.Sound;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,6 +29,7 @@ public class ReefGuardian implements ApplicationListener {
     private Texture texture;
     private Honu honu;
     private Texture livesTexture;
+    private Sound collectLifeSound, honuDmgSound;
     private ArrayList<GameObjects> gameObjectsList = new ArrayList<>();
     private ArrayList<Projectile> projectiles = new ArrayList<>();
     private int level = 1;
@@ -49,7 +50,12 @@ public class ReefGuardian implements ApplicationListener {
 
         batch = new SpriteBatch();
 
+        //Load live texture and sound
         livesTexture = new Texture(Gdx.files.internal("PNG\\Heart.png"));
+        collectLifeSound = Gdx.audio.newSound(Gdx.files.internal("sfx\\CollectLive_SFX.mp3"));
+
+        //Load Honu damge sound
+        honuDmgSound = Gdx.audio.newSound(Gdx.files.internal("sfx\\Pixel_Honu_Dmg_SFX.mp3"));
 
         //Call the load level
         if (level == 1) {
@@ -262,10 +268,11 @@ public class ReefGuardian implements ApplicationListener {
                 case 2: // Character receives damage
                     if (honuCollision != -1) {
                         honu.loseLife();
-                        // Optional: knockback, sound, animation
-
-                        // Strong knockback based on direction
-                        float knockBackDist = 40f;
+                        //Configurations
+                            //Play sound effect
+                            if (honuDmgSound != null) honuDmgSound.play();
+                            // Strong knockback based on direction
+                            float knockBackDist = 40f;
 
                         // Knock Honu back depending on collision side
                         switch (honuCollision) {
@@ -276,12 +283,13 @@ public class ReefGuardian implements ApplicationListener {
                         }
                     }
                     break;
-
                 case 3: // Collect item
                     if (honuCollision != -1) {
                         // Remove the collectible if touched
                         iterator.remove();   // Delete collectible after collecting
                         honu.gainLife();     // restore one life
+                        // Play sfx
+                        if (collectLifeSound != null) collectLifeSound.play();
                     }
                     break;
                 case 4: // Checkpoint
@@ -328,6 +336,9 @@ public class ReefGuardian implements ApplicationListener {
     }
     @Override
     public void dispose() {
+        //Dispose life texture when it is collect
         if (livesTexture != null) livesTexture.dispose();
+        //Dispose life collecting sond
+        if (collectLifeSound != null) collectLifeSound.dispose();
     }
 }

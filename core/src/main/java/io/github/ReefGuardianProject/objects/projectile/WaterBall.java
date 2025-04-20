@@ -30,7 +30,7 @@ public class WaterBall extends Projectile {
                 new TextureRegion(new Texture("sprite\\waterball\\waterBall2.png")),
                 new TextureRegion(new Texture("sprite\\waterball\\waterBall3.png")));
             //2. Spinning stage
-            spinAnimation = new Animation<>(0.1f,
+            spinAnimation = new Animation<>(0.25f,
                 new TextureRegion(new Texture("sprite\\waterball\\waterBallFull1.png")),
                 new TextureRegion(new Texture("sprite\\waterball\\waterBallFull2.png")),
                 new TextureRegion(new Texture("sprite\\waterball\\waterBallFull3.png")),

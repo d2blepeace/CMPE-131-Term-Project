@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.ReefGuardianProject.objects.GameObjects;
 import io.github.ReefGuardianProject.objects.projectile.WaterBall;
+import com.badlogic.gdx.audio.Sound;
 
 public class Honu extends GameObjects {
     Rectangle bottom, top, right, left, full;
@@ -24,6 +25,7 @@ public class Honu extends GameObjects {
 
     float gameTime = 0f;
     boolean shoot = false;
+    private Sound shootSound;
 
     Animation<TextureRegion> armAnimation, headAnimation;
     TextureRegion headIdle = new TextureRegion(new Texture("sprite\\head\\head1.png"));
@@ -52,6 +54,9 @@ public class Honu extends GameObjects {
 
         //Setup gravity
         velocityY = 0;
+
+        //Load shooting sound
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("sfx\\pixelShoot.wav"));
     }
     public String bodyType(int choice){
         String s = "sprite\\body\\";
@@ -117,7 +122,12 @@ public class Honu extends GameObjects {
         shoot = true;       //Trigger animation
         gameTime = 0f;      //Reset animation timer
 
-        return new WaterBall(startX, startY, 500); // 500 = projectile speed
+        //Play shooting sfx
+        if (shootSound != null) {
+            shootSound.play(1.0f); // Volume = 1.0f
+        }
+
+        return new WaterBall(startX, startY, 300); // 300 = projectile speed
     }
     //Handle hitBox collision logic
     public int hit(Rectangle r) {
