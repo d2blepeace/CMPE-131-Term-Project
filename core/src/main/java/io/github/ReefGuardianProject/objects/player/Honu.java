@@ -16,6 +16,7 @@ public class Honu extends GameObjects {
     Sprite sprite;
     Texture texture;
     int lives = 1; //Max lives of Honu
+    int waterBallSpeed = 450; //Speed of waterBall
     private final int MAX_LIVES = 3;
     int body, cosmetic;
 
@@ -127,7 +128,7 @@ public class Honu extends GameObjects {
             shootSound.play(1.0f); // Volume = 1.0f
         }
 
-        return new WaterBall(startX, startY, 300); // 300 = projectile speed
+        return new WaterBall(startX, startY, waterBallSpeed);
     }
     //Handle hitBox collision logic
     public int hit(Rectangle r) {

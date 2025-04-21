@@ -1,4 +1,4 @@
-Background_Level1 PNG/Background_Level1.png
+Level1_Background map/Level1_Background.png
 RockBlock 0 0
 RockBlock 64 0
 Live 128 64

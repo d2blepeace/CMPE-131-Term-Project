@@ -140,13 +140,20 @@ public class ReefGuardian implements ApplicationListener {
             String type = tokens.nextToken();
 
             //Render the map from txt files:
-            if (type.equals("Background_Level1")) {
+                //Render background level
+            if (type.equals("Level1_Background")) {
                 // Get background file path
                 String bgPath1 = tokens.nextToken();
                 if (backgroundLevel1 != null) backgroundLevel1.dispose(); // clean old texture
-
                 backgroundLevel1 = new Texture(Gdx.files.internal(bgPath1));
             }
+            if (type.equals("Level2_Background")) {
+                // Get background file path
+                String bgPath2 = tokens.nextToken();
+                if (backgroundLevel1 != null) backgroundLevel1.dispose(); // clean old texture
+                backgroundLevel1 = new Texture(Gdx.files.internal(bgPath2));
+            }
+
             if (type.equals("RockBlock")) {
                 gameObjectsList.add(new RockBlock(
                     Integer.parseInt(tokens.nextToken()), //x value
