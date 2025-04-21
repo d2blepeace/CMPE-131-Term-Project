@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.ReefGuardianProject.objects.*;
@@ -24,7 +25,12 @@ import java.util.StringTokenizer;
 
 public class ReefGuardian implements ApplicationListener {
     private OrthographicCamera camera;
-    private Sprite sprite;
+    //Menu sprite
+    private Sprite menuGameOver;
+    private Sprite buttonRetry;
+    private Sprite buttonQuit;
+    private Sprite menuCongrats;
+    private Sprite buttonNextLevel;
     private Viewport viewport;
     private SpriteBatch batch;
     private Texture texture;
@@ -339,8 +345,52 @@ public class ReefGuardian implements ApplicationListener {
 
     }
     public void gameOver() {
+        Gdx.gl.glClearColor(1, 1, 1, 0.7f); //White with some opacity
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        //Center of the screen
+        float centerX = camera.position.x;
+        float centerY = camera.position.y / 2;
+        menuGameOver.setPosition(centerX - menuGameOver.getWidth() / 2, centerY + 100);
+        menuGameOver.draw(batch);
+
+        //GAME OVER TITLE
+        //RETRY? button
+        //QUIT button
+
+
+        batch.end();
+        //Input handling
+        if (Gdx.input.justTouched()) {
+            // Convert screen coordinates to world coordinates
+            Vector3 touch = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            // Converts to world coordinates
+            camera.unproject(touch);
+
+            // Retry clicked
+            if (buttonRetry.getBoundingRectangle().contains(touch.x, touch.y)) {
+                resetGame(); // Reset game logic
+            }
+            // Quit clicked
+            else if (buttonQuit.getBoundingRectangle().contains(touch.x, touch.y)) {
+                gameState = 1; // Back to main menu (to be implemented)
+            }
+        }
+
 
     }
+
+    private void resetGame() {
+        //TODO: check for game progress
+        level = 1;
+        honu = new Honu();
+        honu.setPosition(0, 128);
+        loadLevel("map/level1.txt");
+        gameState = 2;
+    }
+
     @Override
     public void dispose() {
         //Dispose life collecting sond
