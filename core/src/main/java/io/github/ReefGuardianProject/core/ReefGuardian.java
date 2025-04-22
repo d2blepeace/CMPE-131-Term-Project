@@ -40,7 +40,7 @@ public class ReefGuardian implements ApplicationListener {
     private ArrayList<GameObjects> gameObjectsList = new ArrayList<>();
     private ArrayList<Projectile> projectiles = new ArrayList<>();
     private int level = 1;
-    private Texture backgroundLevel1;
+    private Texture backgroundLevel;
     /**
      * State of the game: 1. Main menu; 2. Main Game; 3. Next Level; 4. Game Over
      */
@@ -139,46 +139,53 @@ public class ReefGuardian implements ApplicationListener {
         //Clear the list before loading the level
         gameObjectsList.clear();
         //Loading level .txt files
+        FileHandle file = Gdx.files.internal(level);
+        String[] lines = file.readString().split("\\r?\\n"); // Split by new lines
 
-        FileHandle file = Gdx.files.internal(level); //"map\\level1.txt"
-        StringTokenizer tokens = new StringTokenizer(file.readString());
-        while (tokens.hasMoreTokens()) {
+        for (String line : lines) {
+            line = line.trim();
+
+            // Skip empty or comment lines
+            if (line.isEmpty() || line.startsWith("#")) continue;
+
+            StringTokenizer tokens = new StringTokenizer(line);
             String type = tokens.nextToken();
 
-            //Render the map from txt files:
-                //Render background level
-            if (type.equals("Level1_Background")) {
-                // Get background file path
-                String bgPath1 = tokens.nextToken();
-                if (backgroundLevel1 != null) backgroundLevel1.dispose(); // clean old texture
-                backgroundLevel1 = new Texture(Gdx.files.internal(bgPath1));
-            }
-            if (type.equals("Level2_Background")) {
-                // Get background file path
-                String bgPath2 = tokens.nextToken();
-                if (backgroundLevel1 != null) backgroundLevel1.dispose(); // clean old texture
-                backgroundLevel1 = new Texture(Gdx.files.internal(bgPath2));
-            }
-
-            if (type.equals("RockBlock")) {
-                gameObjectsList.add(new RockBlock(
-                    Integer.parseInt(tokens.nextToken()), //x value
-                    Integer.parseInt(tokens.nextToken()))); //y value
-            }
-            if (type.equals("Checkpoint")) {
-                gameObjectsList.add(new Checkpoint(
-                    Integer.parseInt(tokens.nextToken()), //x value
-                    Integer.parseInt(tokens.nextToken()))); //y value
-            }
-            if (type.equals("Live")) {
-                gameObjectsList.add(new LiveCollectible(
-                    Integer.parseInt(tokens.nextToken()), //x value
-                    Integer.parseInt(tokens.nextToken()))); //y value
-            }
-            if (type.equals("WaterBottle")) {
-                gameObjectsList.add(new WaterBottle(
-                    Integer.parseInt(tokens.nextToken()), //x value
-                    Integer.parseInt(tokens.nextToken()))); //y value
+            switch (type) {
+                //Background
+                case "Level1_Background":
+                    String bgPath1 = tokens.nextToken();
+                    if (backgroundLevel != null) backgroundLevel.dispose();
+                    backgroundLevel = new Texture(Gdx.files.internal(bgPath1));
+                    break;
+                case "Level2_Background":
+                    String bgPath2;
+                    bgPath2 = tokens.nextToken();
+                    if (backgroundLevel != null) backgroundLevel.dispose();
+                    backgroundLevel = new Texture(Gdx.files.internal(bgPath2));
+                    break;
+                case "RockBlock":
+                    gameObjectsList.add(new RockBlock(
+                        Integer.parseInt(tokens.nextToken()),
+                        Integer.parseInt(tokens.nextToken())));
+                    break;
+                    //Collectible
+                case "Checkpoint":
+                    gameObjectsList.add(new Checkpoint(
+                        Integer.parseInt(tokens.nextToken()),
+                        Integer.parseInt(tokens.nextToken())));
+                    break;
+                case "Live":
+                    gameObjectsList.add(new LiveCollectible(
+                        Integer.parseInt(tokens.nextToken()),
+                        Integer.parseInt(tokens.nextToken())));
+                    break;
+                    //Enemy
+                case "WaterBottle":
+                    gameObjectsList.add(new WaterBottle(
+                        Integer.parseInt(tokens.nextToken()),
+                        Integer.parseInt(tokens.nextToken())));
+                    break;
             }
         }
     }
@@ -196,11 +203,11 @@ public class ReefGuardian implements ApplicationListener {
         batch.begin();
         //Update render here
             // 1. Background FIRST (fills the screen)
-            if (backgroundLevel1 != null) {
+            if (backgroundLevel != null) {
                 //Scroll the background based on the camera position
                 float bgX = camera.position.x - camera.viewportWidth / 2f;
                 // match the image size
-                batch.draw(backgroundLevel1, bgX, 0, 1280, 1024);
+                batch.draw(backgroundLevel, bgX, 0, 1280, 1024);
             }
             // 2. Game objects (Honu + obstacles)
              honu.draw(batch);
