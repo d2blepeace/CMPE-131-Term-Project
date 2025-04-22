@@ -6,16 +6,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-public class Checkpoint extends GameObjects {
-    Rectangle hitBox;
-    Sprite sprite;
-    Texture texture;
-    //Constructor
-    public Checkpoint (int x, int y) {
-        hitBox = new Rectangle(0,0,64,64);
-        texture = new Texture(Gdx.files.internal("PNG\\Checkpoint.png"));
-        sprite = new Sprite(texture, 0,0,64,64);
-        setPosition(x, y);
+public class NextLevelDoor extends GameObjects {
+    private Rectangle hitBox;
+    private Sprite sprite;
+    public NextLevelDoor(int x, int y) {
+        hitBox = new Rectangle(x, y, 128, 128);
+        sprite = new Sprite(new Texture(Gdx.files.internal("PNG/128x128_Next_Level_Door.png")));
+        sprite.setPosition(x, y);
     }
     @Override
     public int hit(Rectangle rectangle) {
@@ -34,9 +31,7 @@ public class Checkpoint extends GameObjects {
 
     @Override
     public void setPosition(float x, float y) {
-        hitBox.x = x;
-        hitBox.y = y;
-        sprite.setPosition(x, y);
+
     }
 
     @Override
@@ -71,12 +66,11 @@ public class Checkpoint extends GameObjects {
 
     @Override
     public int hitAction() {
-        return 0; //Reach checkpoint
+        return 5; // Load next Level
     }
 
     @Override
     public boolean isEnemy() {
         return false;
     }
-
 }

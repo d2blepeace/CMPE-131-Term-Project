@@ -16,6 +16,9 @@ public abstract class GameObjects {
     public abstract void moveDown(float delta);
     public abstract void draw(SpriteBatch batch);
     public abstract Rectangle getHitBox();
+
+    //Return int: 1 = normal block, 2 = receive dmg, 3 = collectible, 4 = Save Progress; 5 = Next Level
     public abstract int hitAction();
+
     public abstract boolean isEnemy();
 }

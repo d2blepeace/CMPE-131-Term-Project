@@ -76,4 +76,6 @@ RockBlock 128 192
 RockBlock 512 128
 RockBlock 704 192
 
-Checkpoint 2112 64
+Checkpoint 704 64
+
+NextLevelDoor 1260 64

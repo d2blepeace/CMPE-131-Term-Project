@@ -89,7 +89,7 @@ public class SubmarineBoss extends GameObjects {
     }
     //Generate randomly pause interval
     private float getRandomPauseInterval() {
-        // Random between 1.5 and 4 seconds
+        // Random between 1 and 4 seconds
         return 1f + (float)Math.random() * 2.5f;
     }
 

@@ -38,9 +38,10 @@ public class ReefGuardian implements ApplicationListener {
     private Honu honu;
     private HonuHealthBar honuHealthBar;
     private Sound collectLifeSound, honuDmgSound;
+    private float lastCheckpointX = 0, lastCheckpointY = 128; //handle Checkpoint
     private ArrayList<GameObjects> gameObjectsList = new ArrayList<>();
     private ArrayList<Projectile> projectiles = new ArrayList<>();
-    private int level = 2;
+    private int level = 1;
     private Texture backgroundLevel;
     /**
      * State of the game: 1. Main menu; 2. Main Game; 3. Next Level; 4. Game Over
@@ -170,6 +171,11 @@ public class ReefGuardian implements ApplicationListener {
                         Integer.parseInt(tokens.nextToken()),
                         Integer.parseInt(tokens.nextToken())));
                     break;
+                case "NextLevelDoor":
+                    gameObjectsList.add(new NextLevelDoor(
+                        Integer.parseInt(tokens.nextToken()),
+                        Integer.parseInt(tokens.nextToken())));
+                    break;
                     //Collectible
                 case "Checkpoint":
                     gameObjectsList.add(new Checkpoint(
@@ -271,7 +277,7 @@ public class ReefGuardian implements ApplicationListener {
         while (iterator.hasNext()) {
             GameObjects o = iterator.next();;
             int honuCollision = honu.hit(o.getHitBox());
-            int collisionType = o.hitAction(); // 1 = normal block, 2 = receive dmg, 3 = collectible, 4 = checkpoint
+            int collisionType = o.hitAction(); // 0 = Save Progress, 1 = normal block, 2 = receive dmg, 3 = collectible, 4 = Next level
 
             // Handle object type behavior
             switch (collisionType) {
@@ -311,6 +317,10 @@ public class ReefGuardian implements ApplicationListener {
                             case 3: honu.knockBack(-knockBackDist, 0); break; // Hit left → push right
                             case 4: honu.knockBack(0, -knockBackDist); break; // Hit bottom → push up
                         }
+                        if (honu.getLives() <= 0) {
+                            gameState = 4; // Game Over
+                            return;
+                        }
                     }
                     break;
                 case 3: // Collect item
@@ -323,6 +333,13 @@ public class ReefGuardian implements ApplicationListener {
                     }
                     break;
                 case 4: // Checkpoint
+                    if (honuCollision != -1) {
+                        //Get last position
+                        lastCheckpointX = honu.getHitBox().x;
+                        lastCheckpointY = honu.getHitBox().y;
+                    }
+                    break;
+                case 5: //Next Level when reach nextLevelDoor
                     if (honuCollision != -1) {
                         changeLevel = true;
                     }
@@ -405,10 +422,9 @@ public class ReefGuardian implements ApplicationListener {
 
     private void resetGame() {
         //TODO: check for game progress
-        level = 1;
         honu = new Honu();
-        honu.setPosition(0, 128);
-        loadLevel("map/level1.txt");
+        honu.setPosition(lastCheckpointX, lastCheckpointY);
+        loadLevel("map\\level" + level + ".txt"); // reload current level
         gameState = 2;
     }
 

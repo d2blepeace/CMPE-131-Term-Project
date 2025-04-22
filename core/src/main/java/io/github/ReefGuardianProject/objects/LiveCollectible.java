@@ -71,7 +71,7 @@ public class LiveCollectible extends GameObjects{
     }
     @Override
     public int hitAction(){
-        //1- Collision to normal object, 2- Character die, 3- Collect the item; 4-reach checkpoint
+        //0-Check point, 1- Collision to normal object, 2- Character die, 3- Collect the item; 4-Next Level
         return 3;
     }
 
