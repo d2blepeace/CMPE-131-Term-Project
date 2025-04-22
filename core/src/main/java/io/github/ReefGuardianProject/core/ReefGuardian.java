@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.ReefGuardianProject.objects.*;
 import io.github.ReefGuardianProject.objects.enemy.WaterBottle;
+import io.github.ReefGuardianProject.objects.finalBoss.boss.FinalBoss;
 import io.github.ReefGuardianProject.objects.player.Honu;
 import io.github.ReefGuardianProject.objects.projectile.Projectile;
 import com.badlogic.gdx.audio.Sound;
@@ -39,7 +40,7 @@ public class ReefGuardian implements ApplicationListener {
     private Sound collectLifeSound, honuDmgSound;
     private ArrayList<GameObjects> gameObjectsList = new ArrayList<>();
     private ArrayList<Projectile> projectiles = new ArrayList<>();
-    private int level = 1;
+    private int level = 2;
     private Texture backgroundLevel;
     /**
      * State of the game: 1. Main menu; 2. Main Game; 3. Next Level; 4. Game Over
@@ -186,6 +187,11 @@ public class ReefGuardian implements ApplicationListener {
                         Integer.parseInt(tokens.nextToken()),
                         Integer.parseInt(tokens.nextToken())));
                     break;
+                case "FinalBoss":
+                    gameObjectsList.add(new FinalBoss(
+                        Integer.parseInt(tokens.nextToken()),
+                        Integer.parseInt(tokens.nextToken())));
+                    break;
             }
         }
     }
@@ -222,6 +228,10 @@ public class ReefGuardian implements ApplicationListener {
             // 4. Honu shoot waterball
             for (Projectile p : projectiles) {
                 p.draw(batch);
+            }
+            // 5. FinalBoss
+            for (GameObjects o : gameObjectsList) {
+                o.update(Gdx.graphics.getDeltaTime());
             }
         batch.end();
 
@@ -327,7 +337,12 @@ public class ReefGuardian implements ApplicationListener {
                 honu.setPosition(0, 128);
                 loadLevel("map\\level2.txt");
             }
+            if (level == 3) {
+                honu.setPosition(0, 128);
+                loadLevel("map\\levelBoss.txt");
+            }
         }
+
         updateCamera();
 
         //Handling Input Controls
@@ -385,7 +400,6 @@ public class ReefGuardian implements ApplicationListener {
                 gameState = 1; // Back to main menu (to be implemented)
             }
         }
-
 
     }
 

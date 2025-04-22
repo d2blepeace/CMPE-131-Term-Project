@@ -84,4 +84,4 @@ RockBlock 3456 192
 RockBlock 3712 128
 RockBlock 3776 192
 
-Checkpoint 1920 192
+Checkpoint 128 192
