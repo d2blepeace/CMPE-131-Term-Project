@@ -222,7 +222,11 @@ public class ReefGuardian implements ApplicationListener {
                 batch.draw(backgroundLevel, bgX, 0, 1280, 1024);
             }
             // 2. Game objects (Honu + obstacles)
-             honu.draw(batch);
+            if (!honu.isDefeated()) {
+                honu.draw(batch); // normal rendering if alive
+            } else {
+                honu.drawDefeatAnimation(batch); // special method to draw animation
+            }
             for (GameObjects o : gameObjectsList) {
                 o.draw(batch);
             }
@@ -239,6 +243,7 @@ public class ReefGuardian implements ApplicationListener {
             for (GameObjects o : gameObjectsList) {
                 o.update(Gdx.graphics.getDeltaTime());
             }
+
         batch.end();
 
         //Updates
@@ -317,9 +322,11 @@ public class ReefGuardian implements ApplicationListener {
                             case 3: honu.knockBack(-knockBackDist, 0); break; // Hit left → push right
                             case 4: honu.knockBack(0, -knockBackDist); break; // Hit bottom → push up
                         }
-                        if (honu.getLives() <= 0) {
-                            gameState = 4; // Game Over
-                            return;
+                        if (honu.getLives() == 0) {
+                            if (honu.isDefeatAnimationFinished()) {
+                                gameState = 4; //4. game over screen
+                                return;
+                            }
                         }
                     }
                     break;

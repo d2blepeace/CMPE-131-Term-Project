@@ -18,6 +18,12 @@ public class Honu extends GameObjects {
     int lives = 1; //Max lives of Honu
     int waterBallSpeed = 450; //Speed of waterBall
     private final int MAX_LIVES = 3;
+    // Defeat animation of Honu
+    private boolean isDefeated = false;
+    private Animation<TextureRegion> defeatAnimation;
+    private float defeatTimer = 0f;
+
+
     int body, cosmetic;
 
     // Stores the animation sprite
@@ -48,6 +54,7 @@ public class Honu extends GameObjects {
         //Call animation set up
         setArmAnimation(0.1f);
         setHeadAnimation(0.1f);
+        setDefeatAnimation(0.2f);
 
         texture = new Texture(Gdx.files.internal(bodyType(0)));
         sprite = new Sprite(texture, 0, 0, 64, 64);
@@ -58,6 +65,27 @@ public class Honu extends GameObjects {
 
         //Load shooting sound
         shootSound = Gdx.audio.newSound(Gdx.files.internal("sfx\\pixelShoot.wav"));
+    }
+    // The defeat animation frame of Honu
+    private void setDefeatAnimation(float time) {
+        TextureRegion[] defeatFrames = new TextureRegion[] {
+            new TextureRegion(new Texture("sprite\\honudefeat\\HonuDefeat_1.png")),
+            new TextureRegion(new Texture("sprite\\honudefeat\\HonuDefeat_2.png")),
+            new TextureRegion(new Texture("sprite\\honudefeat\\HonuDefeat_3.png")),
+        };
+        defeatAnimation =  new Animation<>(time, defeatFrames);
+    }
+    public void drawDefeatAnimation(SpriteBatch batch) {
+        TextureRegion currentFrame = defeatAnimation.getKeyFrame(defeatTimer, false);
+        batch.draw(currentFrame, full.x, full.y);
+    }
+    // Check if Honu is defeated
+    public boolean isDefeated() {
+        return isDefeated;
+    }
+    // Check if defeat animation is finised
+    public boolean isDefeatAnimationFinished() {
+        return defeatAnimation.isAnimationFinished(defeatTimer);
     }
     public String bodyType(int choice){
         String s = "sprite\\body\\";
@@ -106,10 +134,18 @@ public class Honu extends GameObjects {
         return lives;
     }
     public void loseLife() {
-        if (lives >= 0) {
+        if (lives > 0) {
             lives--;
         }
+        if (lives == 0) {
+            isDefeated = true;
+            defeatTimer = 0f;
+            velocityX = 0;
+            velocityY = 0;
+        }
+
     }
+
     public void gainLife() {
         if (lives < MAX_LIVES) {
             lives++;
@@ -117,6 +153,8 @@ public class Honu extends GameObjects {
     }
     //Honu shoot waterball
     public WaterBall shoot() {
+        if (isDefeated) return null;
+
         float startX = full.x + full.width - 30; // In front of Honu
         float startY = full.y + (full.height / 2f) - 32; // Vertically centered if WaterBall is 64x64
 
@@ -177,6 +215,12 @@ public class Honu extends GameObjects {
         full.y += velocityY;
         full.x += velocityX;
 
+        //If honu is defeated, play the animation
+        if (isDefeated) {
+            defeatTimer += delta;
+            return;
+        }
+
         setPosition(full.x, full.y);
     }
     public void setPosition(float x, float y) {
@@ -189,19 +233,23 @@ public class Honu extends GameObjects {
         sprite.setPosition(x, y);
     }
     public void moveLeft(float delta) {
+        if (isDefeated) return;
         full.x -= (200 * delta);
         sprite.setPosition(full.x, full.y);
     }
     public void moveRight(float delta) {
+        if (isDefeated) return;
         full.x += (200 * delta);
         sprite.setPosition(full.x, full.y);
     }
     public void moveUp(float delta) {
+        if (isDefeated) return;
         full.y += (200 * delta);
         sprite.setPosition(full.x, full.y);
     }
 
     public void moveDown(float delta) {
+        if (isDefeated) return;
         full.y -= (200 * delta);
         sprite.setPosition(full.x, full.y);
     }
@@ -215,10 +263,12 @@ public class Honu extends GameObjects {
         gameTime += Gdx.graphics.getDeltaTime(); //for animations
         sprite.draw(batch);
 
+        //Play arm animation
         if(armAnimation != null){
             TextureRegion armFrame = armAnimation.getKeyFrame(gameTime, true);
             batch.draw(armFrame, full.x, full.y);
         }
+        // If Honu shoots, play head animation
         if (shoot && headAnimation != null) {
             TextureRegion headFrame = headAnimation.getKeyFrame(gameTime, false);
             batch.draw(headFrame, full.x, full.y);
@@ -228,11 +278,15 @@ public class Honu extends GameObjects {
         if (shoot && headAnimation.isAnimationFinished(gameTime)) {
             shoot = false;
         }
+        //If Honu is defeated, update the defeating animation
+        if (isDefeated) {
+            TextureRegion defeatFrame = defeatAnimation.getKeyFrame(defeatTimer, false);
+            batch.draw(defeatFrame, full.x, full.y);
+        }
     }
 
     @Override
     public Rectangle getHitBox() {
-        //TODO:
         return full;
     }
 
