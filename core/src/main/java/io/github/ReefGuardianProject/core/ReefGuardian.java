@@ -26,12 +26,14 @@ import java.util.StringTokenizer;
 
 public class ReefGuardian implements ApplicationListener {
     private OrthographicCamera camera;
-    //Menu sprite
-    private Sprite menuGameOver;
-    private Sprite buttonRetry;
-    private Sprite buttonQuit;
+    //Game Over sprite
+    private Sprite gameOver, gameOverOverlay;
+    private Sprite buttonRetry, buttonQuit;
+    private Sprite buttonRetryHighlight, buttonQuitHighlight;
+
     private Sprite menuCongrats;
     private Sprite buttonNextLevel;
+
     private Viewport viewport;
     private SpriteBatch batch;
     private Texture texture;
@@ -67,6 +69,16 @@ public class ReefGuardian implements ApplicationListener {
 
         //Load Honu damge sound
         honuDmgSound = Gdx.audio.newSound(Gdx.files.internal("sfx\\Pixel_Honu_Dmg_SFX.mp3"));
+
+        //Game Over Screen
+        gameOver = new Sprite(new Texture("gameUI/GameOver.png"));
+        gameOverOverlay = new Sprite(new Texture("gameUI/1280x1024_grey_background.jpg"));
+        gameOverOverlay.setAlpha(0.045f);
+
+        buttonRetry = new Sprite(new Texture("gameUI/Retry.png"));
+        buttonQuit = new Sprite(new Texture("gameUI/Quit.png"));
+        buttonRetryHighlight = new Sprite(new Texture("gameUI/Retry_2.png"));
+        buttonQuitHighlight = new Sprite(new Texture("gameUI/Quit_2.png"));
 
         //Call the load level
         if (level == 1) {
@@ -369,6 +381,12 @@ public class ReefGuardian implements ApplicationListener {
 
         updateCamera();
 
+        // Check if Honu's defeat animation has finished to show Game Over screen
+        if (honu.isDefeated() && honu.isDefeatAnimationFinished()) {
+            gameState = 4;
+            return;
+        }
+
         //Handling Input Controls
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             honu.moveUp(Gdx.graphics.getDeltaTime());    //move Up = W
@@ -391,37 +409,55 @@ public class ReefGuardian implements ApplicationListener {
 
     }
     public void gameOver() {
-        Gdx.gl.glClearColor(1, 1, 1, 0.7f); //White with some opacity
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         batch.setProjectionMatrix(camera.combined);
+
         batch.begin();
-        //Center of the screen
-        float centerX = camera.position.x;
-        float centerY = camera.position.y / 2;
-        menuGameOver.setPosition(centerX - menuGameOver.getWidth() / 2, centerY + 100);
-        menuGameOver.draw(batch);
+            //Center of the screen
+            float centerX = camera.position.x;
+            float centerY = camera.position.y / 2 + 200;
+            float retryX = centerX - 500;
+            float quitX = centerX + 100;
+            float buttonY = centerY - 50;
 
-        //GAME OVER TITLE
-        //RETRY? button
-        //QUIT button
+            //Game over screen overlay
+            gameOverOverlay.setPosition(camera.position.x - camera.viewportWidth / 2f,
+                camera.position.y - camera.viewportHeight / 2f);
+            gameOverOverlay.draw(batch);
 
+            //GAME OVER TITLE
+            gameOver.setPosition(centerX - gameOver.getWidth() / 2, centerY + 100);
+            gameOver.draw(batch);
 
+            // Get mouse position
+            Vector3 mouse = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(mouse);
+
+            // Draw Retry button
+            if (buttonRetry.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+                buttonRetryHighlight.setPosition(retryX, buttonY);
+                buttonRetry.getBoundingRectangle().setPosition(retryX, buttonY);
+                buttonRetryHighlight.draw(batch);
+            } else {
+                buttonRetry.setPosition(retryX, buttonY);
+                buttonRetry.draw(batch);
+            }
+            // Draw Quit button
+            if (buttonQuit.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+                buttonQuitHighlight.setPosition(quitX, buttonY);
+                buttonQuit.getBoundingRectangle().setPosition(quitX, buttonY);
+                buttonQuitHighlight.draw(batch);
+            } else {
+                buttonQuit.setPosition(quitX, buttonY);
+                buttonQuit.draw(batch);
+            }
         batch.end();
+
         //Input handling
         if (Gdx.input.justTouched()) {
-            // Convert screen coordinates to world coordinates
-            Vector3 touch = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            // Converts to world coordinates
-            camera.unproject(touch);
-
-            // Retry clicked
-            if (buttonRetry.getBoundingRectangle().contains(touch.x, touch.y)) {
-                resetGame(); // Reset game logic
-            }
-            // Quit clicked
-            else if (buttonQuit.getBoundingRectangle().contains(touch.x, touch.y)) {
-                gameState = 1; // Back to main menu (to be implemented)
+            if (buttonRetry.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+                resetGame();
+            } else if (buttonQuit.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+                Gdx.app.exit();
             }
         }
 
@@ -431,7 +467,8 @@ public class ReefGuardian implements ApplicationListener {
         //TODO: check for game progress
         honu = new Honu();
         honu.setPosition(lastCheckpointX, lastCheckpointY);
-        loadLevel("map\\level" + level + ".txt"); // reload current level
+        honu.setLives(2); // Set to 2 lives
+        loadLevel("map\\level" + level + ".txt");
         gameState = 2;
     }
 

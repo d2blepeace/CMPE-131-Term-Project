@@ -137,19 +137,23 @@ public class Honu extends GameObjects {
         if (lives > 0) {
             lives--;
         }
+        // If lives == 0, set defeating state to true, start timer and immobilize Honu
         if (lives == 0) {
             isDefeated = true;
             defeatTimer = 0f;
             velocityX = 0;
             velocityY = 0;
         }
-
     }
 
     public void gainLife() {
         if (lives < MAX_LIVES) {
             lives++;
         }
+    }
+    //Use to set live when Honu is revived
+    public void setLives(int lives) {
+        this.lives = Math.min(lives, MAX_LIVES); // Clamp to MAX_LIVES
     }
     //Honu shoot waterball
     public WaterBall shoot() {
