@@ -1,10 +1,24 @@
 package io.github.ReefGuardianProject.objects.enemy;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.ReefGuardianProject.objects.GameObjects;
 
 public class TrashBag extends GameObjects {
+    public Rectangle hitBox;
+    Sprite sprite;
+    Texture texture;
+
+    //Constructor
+    public TrashBag (int x, int y) {
+        hitBox = new Rectangle(x, y, 64, 64); //Change according to the game assets
+        texture = new Texture(Gdx.files.internal("sprite\\enemyPNG\\trashBag.png"));
+        sprite = new Sprite(texture, 0, 0, 64, 64);
+        setPosition(x, y);
+    }
     @Override
     public int hit(Rectangle rectangle) {
         return 0;
@@ -22,7 +36,8 @@ public class TrashBag extends GameObjects {
 
     @Override
     public void setPosition(float x, float y) {
-
+        hitBox.setPosition(x, y);
+        sprite.setPosition(x, y);
     }
 
     @Override
@@ -47,21 +62,21 @@ public class TrashBag extends GameObjects {
 
     @Override
     public void draw(SpriteBatch batch) {
-
+        sprite.draw(batch);
     }
 
     @Override
     public Rectangle getHitBox() {
-        return null;
+        return hitBox;
     }
 
     @Override
     public int hitAction() {
-        return 0;
+        return 2;
     }
 
     @Override
     public boolean isEnemy() {
-        return false;
+        return true;
     }
 }

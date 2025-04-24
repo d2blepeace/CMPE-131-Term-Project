@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.ReefGuardianProject.objects.*;
-import io.github.ReefGuardianProject.objects.enemy.WaterBottle;
+import io.github.ReefGuardianProject.objects.enemy.*;
 import io.github.ReefGuardianProject.objects.finalBoss.boss.FinalBoss;
 import io.github.ReefGuardianProject.objects.player.Honu;
 import io.github.ReefGuardianProject.objects.projectile.Projectile;
@@ -202,6 +202,26 @@ public class ReefGuardian implements ApplicationListener {
                     //Enemy
                 case "WaterBottle":
                     gameObjectsList.add(new WaterBottle(
+                        Integer.parseInt(tokens.nextToken()),
+                        Integer.parseInt(tokens.nextToken())));
+                    break;
+                case "BeerBottle":
+                    gameObjectsList.add(new BeerBottle(
+                        Integer.parseInt(tokens.nextToken()),
+                        Integer.parseInt(tokens.nextToken())));
+                    break;
+                case "OilBarrel":
+                    gameObjectsList.add(new OilBarrel(
+                        Integer.parseInt(tokens.nextToken()),
+                        Integer.parseInt(tokens.nextToken())));
+                    break;
+                case "NuclearWaste":
+                    gameObjectsList.add(new NuclearWaste(
+                        Integer.parseInt(tokens.nextToken()),
+                        Integer.parseInt(tokens.nextToken())));
+                    break;
+                case "TrashBag":
+                    gameObjectsList.add(new TrashBag(
                         Integer.parseInt(tokens.nextToken()),
                         Integer.parseInt(tokens.nextToken())));
                     break;

@@ -15,7 +15,7 @@ public class WaterBottle extends GameObjects {
     //Constructor
     public WaterBottle (int x, int y) {
         hitBox = new Rectangle(x, y, 64, 64); //Change according to the game assets
-        texture = new Texture(Gdx.files.internal("PNG\\Water_Bottle.png"));
+        texture = new Texture(Gdx.files.internal("sprite\\enemyPNG\\waterBottle.png"));
         sprite = new Sprite(texture, 0, 0, 64, 64);
         setPosition(x, y);
     }

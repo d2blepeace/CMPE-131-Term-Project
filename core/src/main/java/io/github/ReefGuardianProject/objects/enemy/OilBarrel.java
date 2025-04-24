@@ -7,19 +7,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.ReefGuardianProject.objects.GameObjects;
 
-public class NuclearWaste extends GameObjects {
+public class OilBarrel extends GameObjects {
     public Rectangle hitBox;
     Sprite sprite;
     Texture texture;
 
     //Constructor
-    public NuclearWaste (int x, int y) {
+    public OilBarrel (int x, int y) {
         hitBox = new Rectangle(x, y, 64, 64); //Change according to the game assets
-        texture = new Texture(Gdx.files.internal("sprite\\enemyPNG\\nuclearWaste.png"));
+        texture = new Texture(Gdx.files.internal("sprite\\enemyPNG\\oilBarrel.png"));
         sprite = new Sprite(texture, 0, 0, 64, 64);
         setPosition(x, y);
     }
-
     @Override
     public int hit(Rectangle rectangle) {
         return 0;
