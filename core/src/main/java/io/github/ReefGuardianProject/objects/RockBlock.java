@@ -82,4 +82,9 @@
         public boolean isEnemy() {
             return false;
         }
+
+        @Override
+        public void dispose() {
+
+        }
     }

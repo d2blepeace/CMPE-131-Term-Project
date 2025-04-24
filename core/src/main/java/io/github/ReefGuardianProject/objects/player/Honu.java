@@ -294,14 +294,18 @@ public class Honu extends GameObjects {
         return full;
     }
 
-    @Override
-    public int hitAction() {
-        return 0; //No action
-    }
 
     @Override
     public boolean isEnemy() {
         return false;
     }
+
+    @Override
+    public void dispose() {}
+    @Override
+    public int hitAction() {
+        return 0; //No action
+    }
+
 
 }

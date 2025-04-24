@@ -73,4 +73,9 @@ public class NextLevelDoor extends GameObjects {
     public boolean isEnemy() {
         return false;
     }
+
+    @Override
+    public void dispose() {
+
+    }
 }

@@ -76,6 +76,11 @@ public class DiverBoss extends GameObjects {
         return false;
     }
 
+    @Override
+    public void dispose() {
+
+    }
+
     public void receiveDamage() {
     }
 

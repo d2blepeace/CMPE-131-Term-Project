@@ -79,4 +79,9 @@ public class WaterBottle extends GameObjects {
     public boolean isEnemy() {
         return true; //All Enemy will return True
     }
+
+    @Override
+    public void dispose() {
+
+    }
 }

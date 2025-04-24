@@ -140,6 +140,11 @@ public class SubmarineBoss extends GameObjects {
         return true;
     }
 
+    @Override
+    public void dispose() {
+
+    }
+
     public int getHealth() {
         return health;
     }

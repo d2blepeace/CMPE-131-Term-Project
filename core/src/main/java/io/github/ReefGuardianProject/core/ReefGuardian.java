@@ -295,11 +295,10 @@ public class ReefGuardian implements ApplicationListener {
 
             while (objIter.hasNext()) {
                 GameObjects obj = objIter.next();
-                if (obj instanceof WaterBottle && p.getHitBox().overlaps(obj.getHitBox())) {
-                    // Remove projectile and enemy on collision
+                if (obj.isEnemy() && p.getHitBox().overlaps(obj.getHitBox())) {
                     projectileIter.remove();
                     objIter.remove();
-                    break; // Only one object can be hit at a time by one projectile
+                    break;
                 }
             }
         }
@@ -313,8 +312,9 @@ public class ReefGuardian implements ApplicationListener {
         Iterator<GameObjects> iterator = gameObjectsList.iterator();
         while (iterator.hasNext()) {
             GameObjects o = iterator.next();;
-            int honuCollision = honu.hit(o.getHitBox());
-            int collisionType = o.hitAction(); // 0 = Save Progress, 1 = normal block, 2 = receive dmg, 3 = collectible, 4 = Next level
+           int honuCollision = honu.hit(o.getHitBox());
+            //1 = normal block, 2 = receive dmg, 3 = collectible, 4 = Checkpoint, 5 = Next Level
+           int collisionType = o.hitAction();
 
             // Handle object type behavior
             switch (collisionType) {
@@ -371,11 +371,14 @@ public class ReefGuardian implements ApplicationListener {
                         if (collectLifeSound != null) collectLifeSound.play();
                     }
                     break;
-                case 4: // Checkpoint
-                    if (honuCollision != -1) {
-                        //Get last position
-                        lastCheckpointX = honu.getHitBox().x;
-                        lastCheckpointY = honu.getHitBox().y;
+                case 4: // Checkpoint logic
+                    Checkpoint checkpoint = (Checkpoint) o;
+                    if (honu.getHitBox().overlaps(checkpoint.getHitBox()) && !checkpoint.isActivated()) {
+                        if (!checkpoint.isActivated()) {
+                            checkpoint.activateCheckpoint();
+                            lastCheckpointX = checkpoint.getHitBox().x;
+                            lastCheckpointY = checkpoint.getHitBox().y;
+                        }
                     }
                     break;
                 case 5: //Next Level when reach nextLevelDoor
@@ -496,5 +499,9 @@ public class ReefGuardian implements ApplicationListener {
     public void dispose() {
         //Dispose life collecting sond
         if (collectLifeSound != null) collectLifeSound.dispose();
+        if (honuDmgSound != null) honuDmgSound.dispose();
+        for (GameObjects obj : gameObjectsList) {
+            obj.dispose();
+        }
     }
 }

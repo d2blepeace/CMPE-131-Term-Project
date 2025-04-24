@@ -79,4 +79,9 @@ public class LiveCollectible extends GameObjects{
     public boolean isEnemy() {
         return false;
     }
+
+    @Override
+    public void dispose() {
+
+    }
 }

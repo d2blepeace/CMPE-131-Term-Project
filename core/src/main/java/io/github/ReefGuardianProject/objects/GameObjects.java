@@ -21,4 +21,5 @@ public abstract class GameObjects {
     public abstract int hitAction();
 
     public abstract boolean isEnemy();
+    public abstract void dispose();
 }

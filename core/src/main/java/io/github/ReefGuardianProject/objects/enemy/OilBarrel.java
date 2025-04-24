@@ -79,4 +79,9 @@ public class OilBarrel extends GameObjects {
     public boolean isEnemy() {
         return true;
     }
+
+    @Override
+    public void dispose() {
+
+    }
 }
