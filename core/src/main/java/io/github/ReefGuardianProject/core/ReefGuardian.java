@@ -36,7 +36,7 @@ public class ReefGuardian implements ApplicationListener {
 
     private Viewport viewport;
     private SpriteBatch batch;
-    private Texture texture;
+    //private Texture texture;
     private Honu honu;
     private HonuHealthBar honuHealthBar;
     private Sound collectLifeSound, honuDmgSound;
@@ -263,7 +263,7 @@ public class ReefGuardian implements ApplicationListener {
                 o.draw(batch);
             }
 
-            // 3. Honu Healthbar UI
+            // 3. Honu's Healthbar UI
             honuHealthBar.update(honu.getLives());
             honuHealthBar.draw(batch, camera);
 
@@ -287,7 +287,7 @@ public class ReefGuardian implements ApplicationListener {
         for (Projectile p : projectiles) {
             p.update(Gdx.graphics.getDeltaTime());
         }
-        // Detect WaterBall hitting enemy objects
+        // Detect WaterBall hitting enemy objects and wall (RockBlock)
         Iterator<Projectile> projectileIter = projectiles.iterator();
         while (projectileIter.hasNext()) {
             Projectile p = projectileIter.next();
@@ -295,10 +295,16 @@ public class ReefGuardian implements ApplicationListener {
 
             while (objIter.hasNext()) {
                 GameObjects obj = objIter.next();
-                if (obj.isEnemy() && p.getHitBox().overlaps(obj.getHitBox())) {
-                    projectileIter.remove();
-                    objIter.remove();
-                    break;
+                if (p.getHitBox().overlaps(obj.getHitBox())) {
+                    if (obj.isEnemy()) {
+                        projectileIter.remove();;
+                        objIter.remove();
+                    }
+                    //WaterBall stop when hit RockBlock
+                    if (obj instanceof RockBlock) {
+                        projectileIter.remove();  // Only remove the projectile
+                        break;
+                    }
                 }
             }
         }

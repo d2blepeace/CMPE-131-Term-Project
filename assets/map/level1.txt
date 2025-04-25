@@ -1,7 +1,6 @@
 Level1_Background map/Level1_Background.png
 
-#2048 x 1024
-#Bottom Wall
+#TOP WALL
 RockBlock 0 0
 RockBlock 64 0
 RockBlock 128 0
@@ -35,45 +34,102 @@ RockBlock 1856 0
 RockBlock 1920 0
 RockBlock 1984 0
 RockBlock 2048 0
+RockBlock 2112 0
+RockBlock 2176 0
+RockBlock 2240 0
+RockBlock 2304 0
+RockBlock 2368 0
+RockBlock 2432 0
+RockBlock 2496 0
+RockBlock 2560 0
+RockBlock 2624 0
+RockBlock 2688 0
+RockBlock 2752 0
+RockBlock 2816 0
+RockBlock 2880 0
+RockBlock 2944 0
+RockBlock 3008 0
+RockBlock 3072 0
+RockBlock 3136 0
+RockBlock 3200 0
+RockBlock 3264 0
+RockBlock 3328 0
+RockBlock 3392 0
+RockBlock 3456 0
+RockBlock 3520 0
+RockBlock 3584 0
+RockBlock 3648 0
+RockBlock 3712 0
+RockBlock 3776 0
+RockBlock 3840 0
+RockBlock 3904 0
 
+# BOTTOM WALL
+RockBlock 0 960
+RockBlock 64 960
+RockBlock 128 960
+RockBlock 192 960
+RockBlock 256 960
+RockBlock 320 960
+RockBlock 384 960
+RockBlock 448 960
+RockBlock 512 960
+RockBlock 576 960
+RockBlock 640 960
+RockBlock 704 960
+RockBlock 768 960
+RockBlock 832 960
+RockBlock 896 960
+RockBlock 960 960
+RockBlock 1024 960
+RockBlock 1088 960
+RockBlock 1152 960
+RockBlock 1216 960
+RockBlock 1280 960
+RockBlock 1344 960
+RockBlock 1408 960
+RockBlock 1472 960
+RockBlock 1536 960
+RockBlock 1600 960
+RockBlock 1664 960
+RockBlock 1728 960
+RockBlock 1792 960
+RockBlock 1856 960
+RockBlock 1920 960
+RockBlock 1984 960
+RockBlock 2048 960
+RockBlock 2112 960
+RockBlock 2176 960
+RockBlock 2240 960
+RockBlock 2304 960
+RockBlock 2368 960
+RockBlock 2432 960
+RockBlock 2496 960
+RockBlock 2560 960
+RockBlock 2624 960
+RockBlock 2688 960
+RockBlock 2752 960
+RockBlock 2816 960
+RockBlock 2880 960
+RockBlock 2944 960
+RockBlock 3008 960
+RockBlock 3072 960
+RockBlock 3136 960
+RockBlock 3200 960
+RockBlock 3264 960
+RockBlock 3328 960
+RockBlock 3392 960
+RockBlock 3456 960
+RockBlock 3520 960
+RockBlock 3584 960
+RockBlock 3648 960
+RockBlock 3712 960
+RockBlock 3776 960
+RockBlock 3840 960
+RockBlock 3904 960
 
-#Top Wall
-RockBlock 0 1020
-RockBlock 64 1020
-RockBlock 128 1020
-RockBlock 192 1020
-RockBlock 256 1020
-RockBlock 320 1020
-RockBlock 384 1020
-RockBlock 448 1020
-RockBlock 512 1020
-RockBlock 576 1020
-RockBlock 640 1020
-RockBlock 704 1020
-RockBlock 768 1020
-RockBlock 832 1020
-RockBlock 896 1020
-RockBlock 960 1020
-RockBlock 1024 1020
-RockBlock 1088 1020
-RockBlock 1152 1020
-RockBlock 1216 1020
-RockBlock 1280 1020
-RockBlock 1344 1020
-RockBlock 1408 1020
-RockBlock 1472 1020
-RockBlock 1536 1020
-RockBlock 1600 1020
-RockBlock 1664 1020
-RockBlock 1728 1020
-RockBlock 1792 1020
-RockBlock 1856 1020
-RockBlock 1920 1020
-RockBlock 1984 1020
-RockBlock 2048 1020
-
-
-#Left Wall
+# LEFT WALL
+RockBlock 0 0
 RockBlock 0 64
 RockBlock 0 128
 RockBlock 0 192
@@ -89,112 +145,55 @@ RockBlock 0 768
 RockBlock 0 832
 RockBlock 0 896
 RockBlock 0 960
-RockBlock 0 1024
 
-#Right Wall
-RockBlock 2048 64
-RockBlock 2048 128
-RockBlock 2048 192
-RockBlock 2048 256
-RockBlock 2048 320
-RockBlock 2048 384
-RockBlock 2048 448
-RockBlock 2048 512
-RockBlock 2048 576
-RockBlock 2048 640
-RockBlock 2048 704
-RockBlock 2048 768
-RockBlock 2048 832
-RockBlock 2048 896
-RockBlock 2048 960
-RockBlock 2048 1024
+# RIGHT WALL
+RockBlock 3968 0
+RockBlock 3968 64
+RockBlock 3968 128
+RockBlock 3968 192
+RockBlock 3968 256
+RockBlock 3968 320
+RockBlock 3968 384
+RockBlock 3968 448
+RockBlock 3968 512
+RockBlock 3968 576
+RockBlock 3968 640
+RockBlock 3968 704
+RockBlock 3968 768
+RockBlock 3968 832
+RockBlock 3968 896
+RockBlock 3968 960
 
-#Random Blocks (64-1984 and 64-960)
-WaterBottle 64 384
-RockBlock 64 704
+# Checkpoint (Safe Zone)
+Checkpoint 500 128
 
-RockBlock 128 192
-RockBlock 128 256
-NuclearWaste 128 384
-RockBlock 128 960
-RockBlock 192 576
-RockBlock 192 960
-RockBlock 192 192
-BeerBottle 192 832
-RockBlock 256 576
-RockBlock 256 320
-NuclearWaste 320 256
-RockBlock 320 384
-WaterBottle 320 640
-RockBlock 320 448
-Live 320 960
-RockBlock 384 192
-RockBlock 384 384
-BeerBottle 384 896
-TrashBag 448 256
-RockBlock 448 320
-WaterBottle 448 960
-RockBlock 512 64
-RockBlock 512 320
-NuclearWaste 512 704
-WaterBottle 512 896
-RockBlock 576 256
-RockBlock 576 640
-WaterBottle 576 832
+# Collectible Item
+Live 564 192
 
-RockBlock 640 256
-NuclearWaste 640 576
-RockBlock 640 956
+# Enemy
+TrashBag 964 640
+RockBlock 836 704
 
-WaterBottle 704 128
-RockBlock 704 576
-BeerBottle 704 704
-WaterBottle 768 64
-RockBlock 768 128
-TrashBag 768 640
-RockBlock 832 256
-RockBlock 832 704
-NuclearWaste 832 896
-RockBlock 896 256
-NuclearWater 896 512
-RockBlock 896 832
-TrashBag 896 960
-Live 960 128
-RockBlock 960 512
-WaterBottle 960 768
-RockBlock 1024 192
-RockBlock 1088 128
-NuclearWaste 1088 448
-RockBlock 1088 896
-BeerBottle 1152 320
-RockBlock 1152 640
-RockBlock 1216 960
-RockBlock 1280 192
-TrashBag 1344 640
-RockBlock 1344 64
-RockBlock 1408 832
-RockBlock 1408 448
-NuclearWaste 1472 128
-RockBlock 1472 832
-NuclearWaste 1472 192
-RockBlock 1536 192
-BeerBottle 1536 448
-WaterBottle 1536 640
-RockBlock 1600 448
-BeerBottle 1664 704
-RockBlock 1664 832
-RockBlock 1728 512
-TrashBag 1728 256
-RockBlock 1792 576
-RockBlock 1856 960
-BeerBottle 1856 320
-RockBlock 1920 128
-BeerBottle 1920 512
-RockBlock 1920 704
-RockBlock 1984 192
-TrashBag 1984 512
-RockBlock 1984 704
-RockBlock 1984 960
+BeerBottle 1400 704
+TrashBag 1464 768
+RockBlock 1336 832
 
-Checkpoint 704 64
-NextLevelDoor 1260 64
+BeerBottle 1900 512
+TrashBag 1964 576
+RockBlock 1836 640
+
+NuclearWaste 2464 448
+TrashBag 2464 512
+RockBlock 2336 576
+
+BeerBottle 2900 192
+TrashBag 2964 256
+
+
+OilBarrel 3400 640
+WaterBottle 3464 704
+RockBlock 3336 768
+
+# Exit
+NextLevelDoor 3840 128
+

@@ -243,7 +243,8 @@ public class Honu extends GameObjects {
     }
     public void moveRight(float delta) {
         if (isDefeated) return;
-        full.x += (200 * delta);
+        //TODO: increase Honu speed for test
+        full.x += (900 * delta);
         sprite.setPosition(full.x, full.y);
     }
     public void moveUp(float delta) {
