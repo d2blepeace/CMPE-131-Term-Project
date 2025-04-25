@@ -75,6 +75,11 @@ public class NextLevelDoor extends GameObjects {
     }
 
     @Override
+    public boolean isWall() {
+        return false;
+    }
+
+    @Override
     public void dispose() {
 
     }

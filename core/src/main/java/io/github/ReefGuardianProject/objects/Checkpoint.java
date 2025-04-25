@@ -102,6 +102,11 @@ public class Checkpoint extends GameObjects {
     }
 
     @Override
+    public boolean isWall() {
+        return false;
+    }
+
+    @Override
     public void dispose() {
         //Dispose texture and sound
         inactiveTexture.dispose();

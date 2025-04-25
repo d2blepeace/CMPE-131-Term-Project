@@ -84,7 +84,13 @@
         }
 
         @Override
+        public boolean isWall() {
+            return true;
+        }
+
+        @Override
         public void dispose() {
 
         }
+
     }

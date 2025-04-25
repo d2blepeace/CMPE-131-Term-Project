@@ -22,6 +22,7 @@ import io.github.ReefGuardianProject.objects.ui.HonuHealthBar;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class ReefGuardian implements ApplicationListener {
@@ -287,27 +288,29 @@ public class ReefGuardian implements ApplicationListener {
         for (Projectile p : projectiles) {
             p.update(Gdx.graphics.getDeltaTime());
         }
+
         // Detect WaterBall hitting enemy objects and wall (RockBlock)
+        List<GameObjects> objectsToRemove = new ArrayList<>();
         Iterator<Projectile> projectileIter = projectiles.iterator();
+
         while (projectileIter.hasNext()) {
             Projectile p = projectileIter.next();
-            Iterator<GameObjects> objIter = gameObjectsList.iterator();
 
-            while (objIter.hasNext()) {
-                GameObjects obj = objIter.next();
+            for (GameObjects obj : gameObjectsList) {
                 if (p.getHitBox().overlaps(obj.getHitBox())) {
-                    if (obj.isEnemy()) {
-                        projectileIter.remove();;
-                        objIter.remove();
-                    }
-                    //WaterBall stop when hit RockBlock
-                    if (obj instanceof RockBlock) {
-                        projectileIter.remove();  // Only remove the projectile
+                    if (obj.isEnemy() || obj.hitAction() == 1) { // enemy or wall
+                        projectileIter.remove(); // safely remove projectile
+                        if (obj.isEnemy()) {
+                            objectsToRemove.add(obj);
+                        }
                         break;
                     }
                 }
             }
         }
+        // After iteration, remove all marked objects
+        gameObjectsList.removeAll(objectsToRemove);
+
         //If waterball doesn't hit anything, delete it
         projectiles.removeIf(p -> !p.isActive());
 

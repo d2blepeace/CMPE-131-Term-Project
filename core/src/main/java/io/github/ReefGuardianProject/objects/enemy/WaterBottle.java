@@ -81,6 +81,11 @@ public class WaterBottle extends GameObjects {
     }
 
     @Override
+    public boolean isWall() {
+        return false;
+    }
+
+    @Override
     public void dispose() {
 
     }
