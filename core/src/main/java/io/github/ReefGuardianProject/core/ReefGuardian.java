@@ -19,7 +19,6 @@ import io.github.ReefGuardianProject.objects.player.Honu;
 import io.github.ReefGuardianProject.objects.projectile.EnemyProjectile;
 import io.github.ReefGuardianProject.objects.projectile.Projectile;
 import com.badlogic.gdx.audio.Sound;
-import io.github.ReefGuardianProject.objects.projectile.SubmarineProjectile;
 import io.github.ReefGuardianProject.objects.ui.HonuHealthBar;
 
 import java.util.ArrayList;
