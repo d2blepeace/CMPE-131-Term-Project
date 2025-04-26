@@ -5,18 +5,22 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import io.github.ReefGuardianProject.core.ReefGuardian;
 import io.github.ReefGuardianProject.objects.GameObjects;
 import io.github.ReefGuardianProject.objects.finalBoss.phase.SubmarinePhase;
+import io.github.ReefGuardianProject.objects.projectile.SubmarineProjectile;
+import java.util.ArrayList;
 
 public class SubmarineBoss extends GameObjects {
+
     private float x, y;
-    private int health = 7;
+    private int health = 10;
     private Sprite sprite;
     private Texture texture;
     private float moveTimer = 0f;
     private float moveInterval = 2f; // seconds
     // Movement of Submarine
-    private float velocityY = 200; // Speed in pixels per second
+    private float velocityY = 250; // Speed in pixels per second
     private float upperBound = 800f;
     private float lowerBound = 100f;
     // Pause movement
@@ -25,6 +29,9 @@ public class SubmarineBoss extends GameObjects {
     private float timeUntilNextPause = 2f; // how long until boss pauses again
     private float pauseCooldownTimer = 0f;
     private final float pauseDuration = 1.0f; // 1 second pause
+    //Submarine Projectile rendering
+    private ArrayList<SubmarineProjectile> projectiles = new ArrayList<>();
+    private boolean hasFired = false;
 
 
     private SubmarinePhase state = SubmarinePhase.MOVING;
@@ -52,15 +59,20 @@ public class SubmarineBoss extends GameObjects {
     //Boss AI update according to game time
     @Override
     public void update(float delta) {
-        //1. MOVING STATE
         if (state != SubmarinePhase.MOVING) return;
 
         if (isPaused) {
             pauseTimer += delta;
+
+            // Fire projectile ONCE when entering pause
+            if (!hasFired) {
+                fireProjectile();
+                hasFired = true;
+            }
             if (pauseTimer >= pauseDuration) {
                 isPaused = false;
                 pauseTimer = 0f;
-                // Set new cooldown for next pause
+                hasFired = false; // Reset for next pause
                 timeUntilNextPause = getRandomPauseInterval();
                 pauseCooldownTimer = 0f;
             }
@@ -85,8 +97,21 @@ public class SubmarineBoss extends GameObjects {
                 velocityY = -velocityY;
             }
         }
-        //2. ATTACKING STATE
+
+        // Update projectiles
+        for (SubmarineProjectile p : projectiles) {
+            p.update(delta);
+        }
+        // Remove projectiles that are no longer active
+        projectiles.removeIf(p -> !p.isActive());
     }
+
+    private void fireProjectile() {
+        SubmarineProjectile projectile = new SubmarineProjectile(this.x, this.y + 50, 500f);
+        projectiles.add(projectile);
+        ReefGuardian.getInstance().scheduleGameObjectAdd(projectile);
+    }
+
     //Generate randomly pause interval
     private float getRandomPauseInterval() {
         // Random between 1 and 4 seconds
@@ -123,6 +148,9 @@ public class SubmarineBoss extends GameObjects {
     @Override
     public void draw(SpriteBatch batch) {
         sprite.draw(batch);
+        for (SubmarineProjectile p : projectiles) {
+            p.draw(batch);
+        }
     }
 
     @Override
@@ -168,5 +196,4 @@ public class SubmarineBoss extends GameObjects {
             // Handle death or transition
         }
     }
-    //Logic
 }

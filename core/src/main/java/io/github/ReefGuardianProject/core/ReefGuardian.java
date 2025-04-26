@@ -16,8 +16,10 @@ import io.github.ReefGuardianProject.objects.*;
 import io.github.ReefGuardianProject.objects.enemy.*;
 import io.github.ReefGuardianProject.objects.finalBoss.boss.FinalBoss;
 import io.github.ReefGuardianProject.objects.player.Honu;
+import io.github.ReefGuardianProject.objects.projectile.EnemyProjectile;
 import io.github.ReefGuardianProject.objects.projectile.Projectile;
 import com.badlogic.gdx.audio.Sound;
+import io.github.ReefGuardianProject.objects.projectile.SubmarineProjectile;
 import io.github.ReefGuardianProject.objects.ui.HonuHealthBar;
 
 import java.util.ArrayList;
@@ -26,6 +28,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 public class ReefGuardian implements ApplicationListener {
+    private static ReefGuardian instance;
+    List<GameObjects> objectsToAdd = new ArrayList<>();
     private OrthographicCamera camera;
     //Game Over sprite
     private Sprite gameOver, gameOverOverlay;
@@ -44,7 +48,7 @@ public class ReefGuardian implements ApplicationListener {
     private float lastCheckpointX = 0, lastCheckpointY = 128; //handle Checkpoint
     private ArrayList<GameObjects> gameObjectsList = new ArrayList<>();
     private ArrayList<Projectile> projectiles = new ArrayList<>();
-    private int level = 1;
+    private int level = 2;
     private Texture backgroundLevel;
     /**
      * State of the game: 1. Main menu; 2. Main Game; 3. Next Level; 4. Game Over
@@ -52,6 +56,7 @@ public class ReefGuardian implements ApplicationListener {
     private int gameState = 2;
     @Override
     public void create() {
+        instance = this;
         camera = new OrthographicCamera();
 
         viewport = new FitViewport(1280, 1024, camera);
@@ -284,32 +289,18 @@ public class ReefGuardian implements ApplicationListener {
         //Honu
         honu.update(Gdx.graphics.getDeltaTime());
 
-        // Waterball of Honu
+        // Waterball of Honu and Boss Projectiles
         for (Projectile p : projectiles) {
             p.update(Gdx.graphics.getDeltaTime());
         }
 
         // Detect WaterBall hitting enemy objects and wall (RockBlock)
         List<GameObjects> objectsToRemove = new ArrayList<>();
-        Iterator<Projectile> projectileIter = projectiles.iterator();
 
-        while (projectileIter.hasNext()) {
-            Projectile p = projectileIter.next();
-
-            for (GameObjects obj : gameObjectsList) {
-                if (p.getHitBox().overlaps(obj.getHitBox())) {
-                    if (obj.isEnemy() || obj.hitAction() == 1) { // enemy or wall
-                        projectileIter.remove(); // safely remove projectile
-                        if (obj.isEnemy()) {
-                            objectsToRemove.add(obj);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
         // After iteration, remove all marked objects
         gameObjectsList.removeAll(objectsToRemove);
+        gameObjectsList.addAll(objectsToAdd);
+        objectsToAdd.clear();
 
         //If waterball doesn't hit anything, delete it
         projectiles.removeIf(p -> !p.isActive());
@@ -321,9 +312,9 @@ public class ReefGuardian implements ApplicationListener {
         Iterator<GameObjects> iterator = gameObjectsList.iterator();
         while (iterator.hasNext()) {
             GameObjects o = iterator.next();;
-           int honuCollision = honu.hit(o.getHitBox());
-            //1 = normal block, 2 = receive dmg, 3 = collectible, 4 = Checkpoint, 5 = Next Level
-           int collisionType = o.hitAction();
+            int honuCollision = honu.hit(o.getHitBox());
+            //1 = normal block, 2 = receive dmg, 3 = collectible, 4 = Checkpoint, 5 = Next Level, 6 = Collide to EnemyProjectile
+            int collisionType = o.hitAction();
 
             // Handle object type behavior
             switch (collisionType) {
@@ -395,8 +386,24 @@ public class ReefGuardian implements ApplicationListener {
                         changeLevel = true;
                     }
                     break;
+                case 6:
+                    if (honuCollision != -1) {
+                        honu.loseLife();
+                        honu.knockBack(-40f, 0f);
+                        if (honuDmgSound != null) honuDmgSound.play();
+                        if (o instanceof EnemyProjectile) {
+                            ((EnemyProjectile) o).delete();
+                        }
+                        if (honu.getLives() == 0 && honu.isDefeatAnimationFinished()) {
+                            gameState = 4;
+                            return;
+                        }
+                    }
+                    break;
             }
         }
+        // Remove dead enemy projectiles after hitting Honu
+        gameObjectsList.removeIf(obj -> (obj instanceof EnemyProjectile) && !((EnemyProjectile)obj).isActive());
 
         //Change level test
         if (changeLevel) {
@@ -406,8 +413,9 @@ public class ReefGuardian implements ApplicationListener {
                 loadLevel("map\\level2.txt");
             }
             if (level == 3) {
+                //BOSS level
                 honu.setPosition(0, 128);
-                loadLevel("map\\levelBoss.txt");
+                loadLevel("map\\level3.txt");
             }
         }
 
@@ -417,6 +425,29 @@ public class ReefGuardian implements ApplicationListener {
         if (honu.isDefeated() && honu.isDefeatAnimationFinished()) {
             gameState = 4;
             return;
+        }
+
+        // Handle collisions between Enemy Projectiles (SubmarineProjectile) and Honu
+        for (GameObjects obj : gameObjectsList) {
+            if (obj instanceof EnemyProjectile) {
+                EnemyProjectile ep = (EnemyProjectile) obj;
+
+                if (ep.getHitBox().overlaps(honu.getHitBox()) && ep.isActive()) {
+                    honu.loseLife();
+                    honu.knockBack(-40f, 0f); // knock Honu back to left (enemy is coming from right)
+
+                    if (honuDmgSound != null) honuDmgSound.play();
+
+                    ep.delete(); // Mark the projectile for deletion
+
+                    if (honu.getLives() == 0) {
+                        if (honu.isDefeatAnimationFinished()) {
+                            gameState = 4; // Game Over
+                            return;
+                        }
+                    }
+                }
+            }
         }
 
         //Handling Input Controls
@@ -512,5 +543,11 @@ public class ReefGuardian implements ApplicationListener {
         for (GameObjects obj : gameObjectsList) {
             obj.dispose();
         }
+    }
+    public static ReefGuardian getInstance() {
+        return instance;
+    }
+    public void scheduleGameObjectAdd(GameObjects obj) {
+        objectsToAdd.add(obj);
     }
 }

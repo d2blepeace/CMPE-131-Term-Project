@@ -1,3 +1,5 @@
+Level2_Background map/Level2_Background.png
+
 #TOP WALL
 RockBlock 0 0
 RockBlock 64 0
@@ -161,3 +163,10 @@ RockBlock 3968 768
 RockBlock 3968 832
 RockBlock 3968 896
 RockBlock 3968 960
+
+# Exit
+NextLevelDoor 320 64
+
+Live 320 320
+Live 320 640
+Checkpoint 64 64

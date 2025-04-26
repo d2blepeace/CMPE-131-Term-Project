@@ -87,3 +87,4 @@ RockBlock 0 896
 # Right wall
 
 FinalBoss 960 512
+Checkpoint 64 64
