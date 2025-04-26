@@ -14,6 +14,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.ReefGuardianProject.objects.*;
 import io.github.ReefGuardianProject.objects.enemy.*;
+import io.github.ReefGuardianProject.objects.environment.KelpBlock;
+import io.github.ReefGuardianProject.objects.environment.RockBlock;
 import io.github.ReefGuardianProject.objects.finalBoss.boss.FinalBoss;
 import io.github.ReefGuardianProject.objects.player.Honu;
 import io.github.ReefGuardianProject.objects.projectile.EnemyProjectile;
@@ -170,7 +172,7 @@ public class ReefGuardian implements ApplicationListener {
             String type = tokens.nextToken();
 
             switch (type) {
-                //Background
+
                 case "Level1_Background":
                     String bgPath1 = tokens.nextToken();
                     if (backgroundLevel != null) backgroundLevel.dispose();
@@ -181,6 +183,12 @@ public class ReefGuardian implements ApplicationListener {
                     bgPath2 = tokens.nextToken();
                     if (backgroundLevel != null) backgroundLevel.dispose();
                     backgroundLevel = new Texture(Gdx.files.internal(bgPath2));
+                    break;
+                // Environment Block
+                case "KelpBlock" :
+                    gameObjectsList.add(new KelpBlock(
+                        Integer.parseInt(tokens.nextToken()),
+                        Integer.parseInt(tokens.nextToken())));
                     break;
                 case "RockBlock":
                     gameObjectsList.add(new RockBlock(

@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Rectangle;
 public class SubmarineProjectile extends EnemyProjectile {
     private float stateTime;
     private float startX; // Track starting position
-    private static final float MAX_TRAVEL_DISTANCE = 800f; // Max distance (e.g., 800 px)
+    private static final float MAX_TRAVEL_DISTANCE = 1000f; // Max distance of the projectile
 
     private Animation<TextureRegion> shootAnimation;
 

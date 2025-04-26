@@ -1,8 +1,9 @@
 Level2_Background map/Level2_Background.png
 
 #TOP WALL
+
 RockBlock 0 0
-RockBlock 64 0
+KelpBlock 64 0
 RockBlock 128 0
 RockBlock 192 0
 RockBlock 256 0

@@ -1,13 +1,14 @@
-    package io.github.ReefGuardianProject.objects;
+    package io.github.ReefGuardianProject.objects.environment;
 
     import com.badlogic.gdx.Gdx;
     import com.badlogic.gdx.graphics.Texture;
     import com.badlogic.gdx.graphics.g2d.Sprite;
     import com.badlogic.gdx.graphics.g2d.SpriteBatch;
     import com.badlogic.gdx.math.Rectangle;
+    import io.github.ReefGuardianProject.objects.GameObjects;
 
 
-    public class RockBlock extends GameObjects{
+    public class RockBlock extends GameObjects {
         public Rectangle hitBox;
         Sprite sprite;
         Texture texture;
@@ -15,7 +16,7 @@
         //Constructor
         public RockBlock (int x, int y) {
             hitBox = new Rectangle(x, y, 64, 64); //Change according to the game assets
-            texture = new Texture(Gdx.files.internal("map\\Rock_Block.png"));
+            texture = new Texture(Gdx.files.internal("PNG\\environment_block\\Rock_Block.png"));
             sprite = new Sprite(texture, 0, 0, 64, 64);
             setPosition(x, y);
         }
