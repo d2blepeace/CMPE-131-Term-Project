@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class SubmarineBoss extends GameObjects {
 
     private float x, y;
-    private int health = 10;
+    private int health;
     private Sprite sprite;
     private Texture texture;
     private float moveTimer = 0f;
@@ -28,19 +28,17 @@ public class SubmarineBoss extends GameObjects {
     private float pauseTimer = 0f;
     private float timeUntilNextPause = 2f; // how long until boss pauses again
     private float pauseCooldownTimer = 0f;
-    private final float pauseDuration = 1.0f; // 1 second pause
+    private final float pauseDuration = 1.8f; // 2.0f second pause
     //Submarine Projectile rendering
     private ArrayList<SubmarineProjectile> projectiles = new ArrayList<>();
     private boolean hasFired = false;
-
-
     private SubmarinePhase state = SubmarinePhase.MOVING;
 
     //Constructor
-    public SubmarineBoss(float x, float y) {
+    public SubmarineBoss(float x, float y, int startingHealth) {
         this.x = x;
         this.y = y;
-
+        this.health = startingHealth;
         //Load Sprite
         this.texture = new Texture(Gdx.files.internal("sprite\\finalboss\\256x128_SubmarineBoss.png"));
         this.sprite = new Sprite(texture, 0, 0, 256, 128);
@@ -107,15 +105,22 @@ public class SubmarineBoss extends GameObjects {
     }
 
     private void fireProjectile() {
-        SubmarineProjectile projectile = new SubmarineProjectile(this.x, this.y + 50, 500f);
+        // Adjust the location of the projectile's animation
+        // NOTE: DO NOT ADJUST xFixingPixel and yFixingPixel
+        float xFixingPixel = 30;
+        float yFixingPixel = ((float) 128 / 2) - 38;
+        float projectileStartX = this.x + xFixingPixel ;
+        float projectileStartY =  this.y + yFixingPixel;
+
+        SubmarineProjectile projectile = new SubmarineProjectile(projectileStartX, projectileStartY, 500f);
         projectiles.add(projectile);
         ReefGuardian.getInstance().scheduleGameObjectAdd(projectile);
     }
 
     //Generate randomly pause interval
     private float getRandomPauseInterval() {
-        // Random between 1 and 4 seconds
-        return 1f + (float)Math.random() * 2.5f;
+        // Random between 1 and 3 s
+        return 1f + (float)Math.random() * 2f;
     }
 
     @Override

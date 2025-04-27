@@ -7,8 +7,6 @@ import io.github.ReefGuardianProject.objects.finalBoss.phase.BossPhase;
 
 public class FinalBoss extends GameObjects {
     private BossPhase phase;
-    private int health;
-
     /**
      * Phase 1: Submarine
      * Phase 2: Diver
@@ -17,15 +15,18 @@ public class FinalBoss extends GameObjects {
     private DiverBoss phase2;
 
     //Constructor
-    public FinalBoss(float x, float y) {
+    public FinalBoss(float x, float y, int startingHealth) {
         this.phase = BossPhase.SUBMARINE;
-        this.health = 7;
-        this.phase1 = new SubmarineBoss(x, y);
+        this.phase1 = new SubmarineBoss(x, y, 2);
+
         this.phase2 = new DiverBoss(x, y);
     }
     @Override
     public int hit(Rectangle rectangle) {
-        return 0;
+        if (this.getHitBox().overlaps(rectangle)) {
+            return 2;
+        }
+        return -1; // No collision otherwise
     }
 
     @Override
@@ -46,7 +47,14 @@ public class FinalBoss extends GameObjects {
             phase2.update(delta);
         }
     }
-
+    public boolean isDefeated() {
+        if (phase == BossPhase.SUBMARINE) {
+            return phase1.getHealth() <= 0;
+        } //else if (phase == BossPhase.DIVER) {
+           // return phase2.getHealth() <= 0;
+       // }
+        return false;
+    }
     @Override
     public void setPosition(float x, float y) {
 

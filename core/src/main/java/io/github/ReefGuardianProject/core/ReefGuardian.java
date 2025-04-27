@@ -16,6 +16,7 @@ import io.github.ReefGuardianProject.objects.*;
 import io.github.ReefGuardianProject.objects.enemy.*;
 import io.github.ReefGuardianProject.objects.environment.KelpBlock;
 import io.github.ReefGuardianProject.objects.environment.RockBlock;
+import io.github.ReefGuardianProject.objects.finalBoss.boss.BossBarrier;
 import io.github.ReefGuardianProject.objects.finalBoss.boss.FinalBoss;
 import io.github.ReefGuardianProject.objects.player.Honu;
 import io.github.ReefGuardianProject.objects.projectile.EnemyProjectile;
@@ -48,7 +49,7 @@ public class ReefGuardian implements ApplicationListener {
     private float lastCheckpointX = 0, lastCheckpointY = 128; //handle Checkpoint
     private ArrayList<GameObjects> gameObjectsList = new ArrayList<>();
     private ArrayList<Projectile> projectiles = new ArrayList<>();
-    private int level = 2;
+    private int level = 1;
     private Texture backgroundLevel;
     /**
      * State of the game: 1. Main menu; 2. Main Game; 3. Next Level; 4. Game Over
@@ -200,6 +201,11 @@ public class ReefGuardian implements ApplicationListener {
                         Integer.parseInt(tokens.nextToken()),
                         Integer.parseInt(tokens.nextToken())));
                     break;
+                case "BossBarrier": //Level 3 (boss) only
+                    gameObjectsList.add(new BossBarrier(
+                        Integer.parseInt(tokens.nextToken()),
+                        Integer.parseInt(tokens.nextToken())));
+                    break;
                     //Collectible
                 case "Checkpoint":
                     gameObjectsList.add(new Checkpoint(
@@ -239,8 +245,10 @@ public class ReefGuardian implements ApplicationListener {
                     break;
                 case "FinalBoss":
                     gameObjectsList.add(new FinalBoss(
-                        Integer.parseInt(tokens.nextToken()),
-                        Integer.parseInt(tokens.nextToken())));
+                        Integer.parseInt(tokens.nextToken()), // x
+                        Integer.parseInt(tokens.nextToken()), // y
+                        Integer.parseInt(tokens.nextToken())  // startingHealth
+                    ));
                     break;
             }
         }
@@ -302,6 +310,30 @@ public class ReefGuardian implements ApplicationListener {
 
         // Detect WaterBall hitting enemy objects and wall (RockBlock)
         List<GameObjects> objectsToRemove = new ArrayList<>();
+        Iterator<Projectile> projectileIter = projectiles.iterator();
+        while (projectileIter.hasNext()) {
+            Projectile p = projectileIter.next();
+            for (GameObjects obj : gameObjectsList) {
+
+                if (p.getHitBox().overlaps(obj.getHitBox())) {
+                    if (obj instanceof BossBarrier) {
+                        // Skip barrier when checking projectiles (allow waterball to pass)
+                        continue;
+                    }
+                    if (obj.isEnemy() || obj.hitAction() == 1) {
+                        projectileIter.remove(); // remove projectile
+
+                        if (obj instanceof FinalBoss) {
+                            ((FinalBoss) obj).receiveDamage(); // Boss takes damage
+                        } else if (obj.isEnemy()) {
+                            objectsToRemove.add(obj); // Normal enemy gets marked for deletion
+                        }
+
+                        break;
+                    }
+                }
+            }
+        }
 
         // After iteration, remove all marked objects
         gameObjectsList.removeAll(objectsToRemove);
@@ -318,98 +350,141 @@ public class ReefGuardian implements ApplicationListener {
         Iterator<GameObjects> iterator = gameObjectsList.iterator();
         while (iterator.hasNext()) {
             GameObjects o = iterator.next();;
-            int honuCollision = honu.hit(o.getHitBox());
-            //1 = normal block, 2 = receive dmg, 3 = collectible, 4 = Checkpoint, 5 = Next Level, 6 = Collide to EnemyProjectile
-            int collisionType = o.hitAction();
+            if (o.getHitBox() != null) {
+                int honuCollision = honu.hit(o.getHitBox());
 
-            // Handle object type behavior
-            switch (collisionType) {
-                case 1:
-                    switch (honuCollision) {
-                        case 1:
-                            //Collide top
-                            honu.action(1, 0, o.getHitBox().y + o.getHitBox().height);
-                            break;
-                        case 2:
-                            //Collide right
-                            honu.action(2, o.getHitBox().x + o.getHitBox().width + 1, 0);
-                            break;
-                        case 3:
-                            //Collide left
-                            honu.action(3, o.getHitBox().x - honu.getHitBox().width - 1, 0);
-                            break;
-                        case 4:
-                            //Collide Bottom
-                            honu.action(4, honu.getHitBox().x, o.getHitBox().y - honu.getHitBox().height);
-                            break;
-                    }
-                    break;
-                case 2: // Character receives damage
-                    if (honuCollision != -1) {
-                        honu.loseLife();
-                        //Configurations
+                //1 = normal block, 2 = receive dmg, 3 = collectible, 4 = Checkpoint, 5 = Next Level, 6 = Collide to EnemyProjectile
+                int collisionType = o.hitAction();
+
+                // Handle object type behavior
+                switch (collisionType) {
+                    case 1:
+                        switch (honuCollision) {
+                            case 1:
+                                //Collide top
+                                honu.action(1, 0, o.getHitBox().y + o.getHitBox().height);
+                                break;
+                            case 2:
+                                //Collide right
+                                honu.action(2, o.getHitBox().x + o.getHitBox().width + 1, 0);
+                                break;
+                            case 3:
+                                //Collide left
+                                honu.action(3, o.getHitBox().x - honu.getHitBox().width - 1, 0);
+                                break;
+                            case 4:
+                                //Collide Bottom
+                                honu.action(4, honu.getHitBox().x, o.getHitBox().y - honu.getHitBox().height);
+                                break;
+                        }
+                        break;
+                    case 2: // Character receives damage
+                        if (honuCollision != -1) {
+                            honu.loseLife();
+                            //Configurations
                             //Play sound effect
                             if (honuDmgSound != null) honuDmgSound.play();
                             // Strong knockback based on direction
                             float knockBackDist = 40f;
 
-                        // Knock Honu back depending on collision side
-                        switch (honuCollision) {
-                            case 1: honu.knockBack(0, knockBackDist); break;  // Hit top → push down
-                            case 2: honu.knockBack(knockBackDist, 0); break;  // Hit right → push left
-                            case 3: honu.knockBack(-knockBackDist, 0); break; // Hit left → push right
-                            case 4: honu.knockBack(0, -knockBackDist); break; // Hit bottom → push up
+                            // Knock Honu back depending on collision side
+                            switch (honuCollision) {
+                                case 1: honu.knockBack(0, knockBackDist); break;  // Hit top → push down
+                                case 2: honu.knockBack(knockBackDist, 0); break;  // Hit right → push left
+                                case 3: honu.knockBack(-knockBackDist, 0); break; // Hit left → push right
+                                case 4: honu.knockBack(0, -knockBackDist); break; // Hit bottom → push up
+                            }
+
+                            if (honu.getLives() == 0) {
+                                if (honu.isDefeatAnimationFinished()) {
+                                    gameState = 4; //4. game over screen
+                                    return;
+                                }
+                            }
+
                         }
-                        if (honu.getLives() == 0) {
-                            if (honu.isDefeatAnimationFinished()) {
-                                gameState = 4; //4. game over screen
+                        break;
+                    case 3: // Collect item
+                        if (honuCollision != -1) {
+                            // Remove the collectible if touched
+                            iterator.remove();   // Delete collectible after collecting
+                            honu.gainLife();     // restore one life
+                            // Play sfx
+                            if (collectLifeSound != null) collectLifeSound.play();
+                        }
+                        break;
+                    case 4: // Checkpoint logic
+                        Checkpoint checkpoint = (Checkpoint) o;
+                        if (honu.getHitBox().overlaps(checkpoint.getHitBox()) && !checkpoint.isActivated()) {
+                            if (!checkpoint.isActivated()) {
+                                checkpoint.activateCheckpoint();
+                                lastCheckpointX = checkpoint.getHitBox().x;
+                                lastCheckpointY = checkpoint.getHitBox().y;
+                            }
+                        }
+                        break;
+                    case 5: //Next Level when reach nextLevelDoor
+                        if (honuCollision != -1) {
+                            changeLevel = true;
+                        }
+                        break;
+                    case 6:
+                        if (honuCollision != -1) {
+                            honu.loseLife();
+                            honu.knockBack(-40f, 0f);
+                            if (honuDmgSound != null) honuDmgSound.play();
+                            if (o instanceof EnemyProjectile) {
+                                ((EnemyProjectile) o).delete();
+                            }
+                            if (honu.getLives() == 0 && honu.isDefeatAnimationFinished()) {
+                                gameState = 4;
                                 return;
                             }
                         }
-                    }
-                    break;
-                case 3: // Collect item
-                    if (honuCollision != -1) {
-                        // Remove the collectible if touched
-                        iterator.remove();   // Delete collectible after collecting
-                        honu.gainLife();     // restore one life
-                        // Play sfx
-                        if (collectLifeSound != null) collectLifeSound.play();
-                    }
-                    break;
-                case 4: // Checkpoint logic
-                    Checkpoint checkpoint = (Checkpoint) o;
-                    if (honu.getHitBox().overlaps(checkpoint.getHitBox()) && !checkpoint.isActivated()) {
-                        if (!checkpoint.isActivated()) {
-                            checkpoint.activateCheckpoint();
-                            lastCheckpointX = checkpoint.getHitBox().x;
-                            lastCheckpointY = checkpoint.getHitBox().y;
+                        break;
+                    case 10: // Invisible Barrier - block Honu but not waterBall
+                        if (honuCollision != -1) {
+                            switch (honuCollision) {
+                                case 1:
+                                    honu.action(1, 0, o.getHitBox().y + o.getHitBox().height);
+                                    break;
+                                case 2:
+                                    honu.action(2, o.getHitBox().x + o.getHitBox().width + 1, 0);
+                                    break;
+                                case 3:
+                                    honu.action(3, o.getHitBox().x - honu.getHitBox().width - 1, 0);
+                                    break;
+                                case 4:
+                                    honu.action(4, honu.getHitBox().x, o.getHitBox().y - honu.getHitBox().height);
+                                    break;
+                            }
                         }
-                    }
-                    break;
-                case 5: //Next Level when reach nextLevelDoor
-                    if (honuCollision != -1) {
-                        changeLevel = true;
-                    }
-                    break;
-                case 6:
-                    if (honuCollision != -1) {
-                        honu.loseLife();
-                        honu.knockBack(-40f, 0f);
-                        if (honuDmgSound != null) honuDmgSound.play();
-                        if (o instanceof EnemyProjectile) {
-                            ((EnemyProjectile) o).delete();
-                        }
-                        if (honu.getLives() == 0 && honu.isDefeatAnimationFinished()) {
-                            gameState = 4;
-                            return;
-                        }
-                    }
-                    break;
+                }
             }
         }
         // Remove dead enemy projectiles after hitting Honu
         gameObjectsList.removeIf(obj -> (obj instanceof EnemyProjectile) && !((EnemyProjectile)obj).isActive());
+
+        //Check if the Boss is defeated
+        boolean bossDefeated = false;
+        for (GameObjects obj : gameObjectsList) {
+            if (obj instanceof FinalBoss) {
+                FinalBoss boss = (FinalBoss) obj;
+                if (boss.isDefeated()) {
+                    bossDefeated = true;
+                    break;
+                }
+            }
+        }
+
+        // Disable the boss barrier
+        if (bossDefeated) {
+            for (GameObjects obj : gameObjectsList) {
+                if (obj instanceof BossBarrier) {
+                    ((BossBarrier) obj).deactivate();
+                }
+            }
+        }
 
         //Change level test
         if (changeLevel) {
@@ -433,6 +508,8 @@ public class ReefGuardian implements ApplicationListener {
             return;
         }
 
+
+
         // Handle collisions between Enemy Projectiles (SubmarineProjectile) and Honu
         for (GameObjects obj : gameObjectsList) {
             if (obj instanceof EnemyProjectile) {
@@ -455,7 +532,6 @@ public class ReefGuardian implements ApplicationListener {
                 }
             }
         }
-
         //Handling Input Controls
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             honu.moveUp(Gdx.graphics.getDeltaTime());    //move Up = W

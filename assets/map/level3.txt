@@ -85,6 +85,21 @@ RockBlock 0 832
 RockBlock 0 896
 
 # Right wall
+RockBlock 1984 64
+RockBlock 1984 128
+RockBlock 1984 192
+RockBlock 1984 256
+RockBlock 1984 320
+RockBlock 1984 384
+RockBlock 1984 448
+RockBlock 1984 512
+RockBlock 1984 576
+RockBlock 1984 640
+RockBlock 1984 704
+RockBlock 1984 768
+RockBlock 1984 832
+RockBlock 1984 896
 
-FinalBoss 960 512
+FinalBoss 960 512 2
 Checkpoint 64 64
+BossBarrier 928 0
