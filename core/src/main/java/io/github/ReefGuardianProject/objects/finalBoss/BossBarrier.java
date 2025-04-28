@@ -1,25 +1,26 @@
-package io.github.ReefGuardianProject.objects.finalBoss.boss;
+package io.github.ReefGuardianProject.objects.finalBoss;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.ReefGuardianProject.objects.GameObjects;
-import io.github.ReefGuardianProject.objects.finalBoss.phase.DiverPhase;
 
-public class DiverBoss extends GameObjects {
+//Invisible barrier that prevent player to swim pass the boss
+public class BossBarrier extends GameObjects {
     private float x, y;
-    private int health = 5;
-    private DiverPhase state = DiverPhase.MOVING;
-
+    private Rectangle hitBox;
+    private boolean active = true;
     //Constructor
-    public DiverBoss(float x, float y) {
+    public BossBarrier(float x, float y) {
         this.x = x;
         this.y = y;
+        this.hitBox = new Rectangle(x, y, 32, 1024); // Tall wall
     }
-
     @Override
     public int hit(Rectangle rectangle) {
-        return 0;
+        if (!active) return -1; // No collision anymore
+        return 10; // otherwise act like a barrier
     }
+
 
     @Override
     public void action(int type, float x, float y) {
@@ -33,7 +34,9 @@ public class DiverBoss extends GameObjects {
 
     @Override
     public void setPosition(float x, float y) {
-
+        this.x = x;
+        this.y = y;
+        hitBox.setPosition(x, y);
     }
 
     @Override
@@ -58,17 +61,16 @@ public class DiverBoss extends GameObjects {
 
     @Override
     public void draw(SpriteBatch batch) {
-
     }
 
     @Override
     public Rectangle getHitBox() {
-        return null;
+        return active ? hitBox : null;
     }
 
     @Override
     public int hitAction() {
-        return 0;
+        return active ? 10 : -1;
     }
 
     @Override
@@ -78,15 +80,17 @@ public class DiverBoss extends GameObjects {
 
     @Override
     public boolean isWall() {
-        return false;
+        return false; //Special wall
     }
 
     @Override
     public void dispose() {
-
+    }
+    public void deactivate() {
+        active = false;
     }
 
-    public void receiveDamage() {
+    public boolean isActive() {
+        return active;
     }
-
 }

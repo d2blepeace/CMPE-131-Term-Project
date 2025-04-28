@@ -1,9 +1,9 @@
 Level2_Background map/Level2_Background.png
 
-#TOP WALL
+#BOTTOM WALL
 
 RockBlock 0 0
-KelpBlock 64 0
+RockBlock 64 0
 RockBlock 128 0
 RockBlock 192 0
 RockBlock 256 0
@@ -65,32 +65,32 @@ RockBlock 3776 0
 RockBlock 3840 0
 RockBlock 3904 0
 
-# BOTTOM WALL
-RockBlock 0 960
-RockBlock 64 960
-RockBlock 128 960
-RockBlock 192 960
-RockBlock 256 960
-RockBlock 320 960
-RockBlock 384 960
-RockBlock 448 960
-RockBlock 512 960
-RockBlock 576 960
-RockBlock 640 960
-RockBlock 704 960
-RockBlock 768 960
-RockBlock 832 960
-RockBlock 896 960
-RockBlock 960 960
-RockBlock 1024 960
-RockBlock 1088 960
-RockBlock 1152 960
-RockBlock 1216 960
-RockBlock 1280 960
-RockBlock 1344 960
-RockBlock 1408 960
-RockBlock 1472 960
-RockBlock 1536 960
+# TOP WALL
+KelpBlock 0 960
+KelpBlock 64 960
+KelpBlock 128 960
+KelpBlock 192 960
+KelpBlock 256 960
+KelpBlock 320 960
+KelpBlock 384 960
+KelpBlock 448 960
+KelpBlock 512 960
+KelpBlock 576 960
+KelpBlock 640 960
+KelpBlock 704 960
+KelpBlock 768 960
+KelpBlock 832 960
+KelpBlock 896 960
+KelpBlock 960 960
+KelpBlock 1024 960
+KelpBlock 1088 960
+KelpBlock 1152 960
+KelpBlock 1216 960
+KelpBlock 1280 960
+KelpBlock 1344 960
+KelpBlock 1408 960
+KelpBlock 1472 960
+KelpBlock 1536 960
 RockBlock 1600 960
 RockBlock 1664 960
 RockBlock 1728 960

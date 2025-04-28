@@ -16,8 +16,8 @@ import io.github.ReefGuardianProject.objects.*;
 import io.github.ReefGuardianProject.objects.enemy.*;
 import io.github.ReefGuardianProject.objects.environment.KelpBlock;
 import io.github.ReefGuardianProject.objects.environment.RockBlock;
-import io.github.ReefGuardianProject.objects.finalBoss.boss.BossBarrier;
-import io.github.ReefGuardianProject.objects.finalBoss.boss.FinalBoss;
+import io.github.ReefGuardianProject.objects.finalBoss.BossBarrier;
+import io.github.ReefGuardianProject.objects.finalBoss.FinalBoss;
 import io.github.ReefGuardianProject.objects.player.Honu;
 import io.github.ReefGuardianProject.objects.projectile.EnemyProjectile;
 import io.github.ReefGuardianProject.objects.projectile.Projectile;
@@ -465,13 +465,16 @@ public class ReefGuardian implements ApplicationListener {
         // Remove dead enemy projectiles after hitting Honu
         gameObjectsList.removeIf(obj -> (obj instanceof EnemyProjectile) && !((EnemyProjectile)obj).isActive());
 
-        //Check if the Boss is defeated
+        // Check if the Boss is defeated
         boolean bossDefeated = false;
-        for (GameObjects obj : gameObjectsList) {
+        Iterator<GameObjects> bossIter = gameObjectsList.iterator();
+        while (bossIter.hasNext()) {
+            GameObjects obj = bossIter.next();
             if (obj instanceof FinalBoss) {
                 FinalBoss boss = (FinalBoss) obj;
                 if (boss.isDefeated()) {
                     bossDefeated = true;
+                    bossIter.remove();
                     break;
                 }
             }

@@ -100,6 +100,9 @@ RockBlock 1984 768
 RockBlock 1984 832
 RockBlock 1984 896
 
+
+# DONT DELETE THOSE
 FinalBoss 960 512 2
 Checkpoint 64 64
-BossBarrier 928 0
+BossBarrier 704 0
+NextLevelDoor 1856 64
