@@ -464,6 +464,8 @@ public class ReefGuardian implements ApplicationListener {
         }
         // Remove dead enemy projectiles after hitting Honu
         gameObjectsList.removeIf(obj -> (obj instanceof EnemyProjectile) && !((EnemyProjectile)obj).isActive());
+        gameObjectsList.removeIf(obj -> obj instanceof TrashBag && (obj).getHitBox() == null);
+
 
         // Check if the Boss is defeated
         boolean bossDefeated = false;
@@ -634,5 +636,9 @@ public class ReefGuardian implements ApplicationListener {
     }
     public void scheduleGameObjectAdd(GameObjects obj) {
         objectsToAdd.add(obj);
+    }
+
+    public Honu getHonu() {
+        return honu;
     }
 }
