@@ -1,4 +1,5 @@
 Level2_Background map/Level2_Background.png
+LevelMusic music/Level2_Music.mp3
 
 #BOTTOM WALL
 

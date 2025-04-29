@@ -3,6 +3,7 @@ package io.github.ReefGuardianProject.core;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -39,7 +40,8 @@ public class ReefGuardian implements ApplicationListener {
 
     private Sprite menuCongrats;
     private Sprite buttonNextLevel;
-
+    //Game background music
+    private Music bgMusic;
     private Viewport viewport;
     private SpriteBatch batch;
     //private Texture texture;
@@ -173,7 +175,7 @@ public class ReefGuardian implements ApplicationListener {
             String type = tokens.nextToken();
 
             switch (type) {
-
+                //Background
                 case "Level1_Background":
                     String bgPath1 = tokens.nextToken();
                     if (backgroundLevel != null) backgroundLevel.dispose();
@@ -184,6 +186,17 @@ public class ReefGuardian implements ApplicationListener {
                     bgPath2 = tokens.nextToken();
                     if (backgroundLevel != null) backgroundLevel.dispose();
                     backgroundLevel = new Texture(Gdx.files.internal(bgPath2));
+                    break;
+                //BGM
+                case "LevelMusic":
+                    String musicPath = tokens.nextToken();
+                    if (bgMusic != null) {
+                        bgMusic.stop();
+                        bgMusic.dispose();
+                    }
+                    bgMusic = Gdx.audio.newMusic(Gdx.files.internal(musicPath));
+                    bgMusic.setLooping(true); // Make it loop automatically
+                    bgMusic.play();
                     break;
                 // Environment Block
                 case "KelpBlock" :

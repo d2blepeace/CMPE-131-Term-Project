@@ -1,4 +1,5 @@
 Level1_Background map/Level1_Background.png
+LevelMusic music/Level1_Music.mp3
 
 #BOTTOM WALL
 KelpBlock 0 0
