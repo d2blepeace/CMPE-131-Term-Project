@@ -22,8 +22,6 @@ public class Honu extends GameObjects {
     private boolean isDefeated = false;
     private Animation<TextureRegion> defeatAnimation;
     private float defeatTimer = 0f;
-
-
     int body, cosmetic;
 
     // Stores the animation sprite
@@ -33,11 +31,14 @@ public class Honu extends GameObjects {
     float gameTime = 0f;
     boolean shoot = false;
     private Sound shootSound;
-
+    //Honu animation
     Animation<TextureRegion> armAnimation, headAnimation;
     TextureRegion headIdle = new TextureRegion(new Texture("sprite\\head\\head1.png"));
-    float velocityX;
-    float velocityY;
+    //Honu velocity
+    // NOTE: speed must not reach 500 otherwise the collision will be glitching
+    private float honuSpeed = 400; //Speed of Honu (default 200)
+    private float velocityX;
+    private float velocityY;
     //Entry points of Honu
     public Honu() {
         //Hitbox
@@ -238,24 +239,24 @@ public class Honu extends GameObjects {
     }
     public void moveLeft(float delta) {
         if (isDefeated) return;
-        full.x -= (200 * delta);
+        full.x -= (honuSpeed * delta);
         sprite.setPosition(full.x, full.y);
     }
     public void moveRight(float delta) {
         if (isDefeated) return;
         //TODO: increase Honu speed for test
-        full.x += (900 * delta);
+        full.x += (honuSpeed * delta);
         sprite.setPosition(full.x, full.y);
     }
     public void moveUp(float delta) {
         if (isDefeated) return;
-        full.y += (200 * delta);
+        full.y += (honuSpeed * delta);
         sprite.setPosition(full.x, full.y);
     }
 
     public void moveDown(float delta) {
         if (isDefeated) return;
-        full.y -= (200 * delta);
+        full.y -= (honuSpeed * delta);
         sprite.setPosition(full.x, full.y);
     }
     //This will trigger when Honu collide to an enemy Object
