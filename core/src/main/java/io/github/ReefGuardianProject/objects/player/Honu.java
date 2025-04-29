@@ -36,7 +36,7 @@ public class Honu extends GameObjects {
     TextureRegion headIdle = new TextureRegion(new Texture("sprite\\head\\head1.png"));
     //Honu velocity
     // NOTE: speed must not reach 500 otherwise the collision will be glitching
-    private float honuSpeed = 400; //Speed of Honu (default 200)
+    private float honuSpeed = 250; //Speed of Honu (default 200)
     private float velocityX;
     private float velocityY;
     //Entry points of Honu

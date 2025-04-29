@@ -33,13 +33,15 @@ public class ReefGuardian implements ApplicationListener {
     private static ReefGuardian instance;
     List<GameObjects> objectsToAdd = new ArrayList<>();
     private OrthographicCamera camera;
-    //Game Over sprite
+    //Game Over Assets
     private Sprite gameOver, gameOverOverlay;
     private Sprite buttonRetry, buttonQuit;
     private Sprite buttonRetryHighlight, buttonQuitHighlight;
-
-    private Sprite menuCongrats;
-    private Sprite buttonNextLevel;
+    //Main Menu Assets
+    private Sprite menuBackground, menuTitle;
+    private Sprite buttonStart, buttonOptions, buttonExit;
+    private Sprite buttonStartHover, buttonOptionsHover, buttonExitHover;
+    private Music menuMusic;
     //Game background music
     private Music bgMusic;
     private Viewport viewport;
@@ -61,34 +63,48 @@ public class ReefGuardian implements ApplicationListener {
     public void create() {
         instance = this;
         camera = new OrthographicCamera();
-
         viewport = new FitViewport(1280, 1024, camera);
         viewport.apply();
-
-        //camera.position.set(640, 412, 0);
         camera.setToOrtho(false, 1280, 1024);
-
         batch = new SpriteBatch();
 
         //Honu healthbar
         honuHealthBar = new HonuHealthBar();
+        //Load Sounds:
+            //Load sfx of collecting live
+            collectLifeSound = Gdx.audio.newSound(Gdx.files.internal("sfx\\CollectLive_SFX.mp3"));
 
-        //Load sfx of collecting live
-        collectLifeSound = Gdx.audio.newSound(Gdx.files.internal("sfx\\CollectLive_SFX.mp3"));
-
-        //Load Honu damge sound
-        honuDmgSound = Gdx.audio.newSound(Gdx.files.internal("sfx\\Pixel_Honu_Dmg_SFX.mp3"));
+            //Load Honu damge sound
+            honuDmgSound = Gdx.audio.newSound(Gdx.files.internal("sfx\\Pixel_Honu_Dmg_SFX.mp3"));
 
         //Game Over Screen
-        gameOver = new Sprite(new Texture("gameUI/GameOver.png"));
-        gameOverOverlay = new Sprite(new Texture("gameUI/1280x1024_grey_background.jpg"));
+        gameOver = new Sprite(new Texture("gameUI\\GameOver.png"));
+        gameOverOverlay = new Sprite(new Texture("gameUI\\1280x1024_grey_background.jpg"));
         gameOverOverlay.setAlpha(0.045f);
 
-        buttonRetry = new Sprite(new Texture("gameUI/Retry.png"));
-        buttonQuit = new Sprite(new Texture("gameUI/Quit.png"));
-        buttonRetryHighlight = new Sprite(new Texture("gameUI/Retry_2.png"));
-        buttonQuitHighlight = new Sprite(new Texture("gameUI/Quit_2.png"));
+        buttonRetry = new Sprite(new Texture("gameUI\\Retry.png"));
+        buttonQuit = new Sprite(new Texture("gameUI\\Quit.png"));
+        buttonRetryHighlight = new Sprite(new Texture("gameUI\\Retry_2.png"));
+        buttonQuitHighlight = new Sprite(new Texture("gameUI\\Quit_2.png"));
 
+        //Main Menu Screen
+        menuBackground = new Sprite(new Texture("gameUI\\mainMenu\\1280x1024_MainMenu.png"));
+        menuTitle = new Sprite(new Texture("gameUI\\mainMenu\\760x145_Reef_Guardian.png"));
+        buttonStart = new Sprite(new Texture("gameUI\\mainMenu\\420x180_Start.png"));
+        buttonStartHover = new Sprite(new Texture("gameUI\\mainMenu\\420x180_StartHighlighted.png"));
+        buttonOptions = new Sprite(new Texture("gameUI\\mainMenu\\540x145_Options.png"));
+        buttonOptionsHover = new Sprite(new Texture("gameUI\\mainMenu\\540x145_OptionsHighlighted.png"));
+        buttonExit = new Sprite(new Texture("gameUI\\mainMenu\\420x180_Exit.png"));
+        buttonExitHover = new Sprite(new Texture("gameUI\\mainMenu\\420x180_ExitHighlighted.png"));
+        //Main Menu Music
+        menuMusic = Gdx.audio.newMusic(Gdx.files.internal("music\\MainMenuTheme.mp3"));
+        menuMusic.setLooping(true);
+        menuMusic.play();
+
+        //Set game state to 1 = menu
+        gameState = 1;
+
+        /*
         //Call the load level
         if (level == 1) {
             honu = new Honu();
@@ -100,6 +116,8 @@ public class ReefGuardian implements ApplicationListener {
             honu.setPosition(0, 128);
             loadLevel("map\\level2.txt");
         }
+
+         */
     }
 
     @Override
@@ -266,7 +284,65 @@ public class ReefGuardian implements ApplicationListener {
             }
         }
     }
+    //Main menu Screen
     public void mainMenu() {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+
+        // Draw background and title
+        float titleCenterX = (1280 - menuTitle.getWidth()) / 2f;
+        float titleCenterY = (1024 - menuTitle.getHeight()) / 2f + 300;
+        menuBackground.setPosition(0, 0);
+        menuBackground.draw(batch);
+        menuTitle.setPosition(titleCenterX, titleCenterY);
+        menuTitle.draw(batch);
+
+        Vector3 mouse = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(mouse);
+
+        // Start button
+        float startX = (1280 - buttonStart.getWidth()) / 2f;
+        float startY =  (1280 - buttonStart.getHeight()) / 2f;
+        Sprite startToDraw = buttonStart.getBoundingRectangle().contains(mouse.x, mouse.y)
+            ? buttonStartHover : buttonStart;
+        startToDraw.setPosition(startX, startY);
+        startToDraw.draw(batch);
+
+        // Options button
+        float optionsX = (1280 - buttonStart.getWidth()) / 2f;
+        float optionsY =  (1280 - buttonStart.getHeight()) / 2f - 150;
+        Sprite optionsToDraw = buttonOptions.getBoundingRectangle().contains(mouse.x, mouse.y)
+            ? buttonOptionsHover : buttonOptions;
+        optionsToDraw.setPosition(optionsX, optionsY);
+        optionsToDraw.draw(batch);
+
+        // Quit button
+        float exitX = (1280 - buttonStart.getWidth()) / 2f;
+        float exitY =  (1280 - buttonStart.getHeight()) / 2f - 300;
+        Sprite quitToDraw = buttonExit.getBoundingRectangle().contains(mouse.x, mouse.y)
+            ? buttonExitHover : buttonExit;
+        quitToDraw.setPosition(exitX, exitY);
+        quitToDraw.draw(batch);
+
+        batch.end();
+
+        // Handle click
+        if (Gdx.input.justTouched()) {
+            if (buttonStart.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+                menuMusic.stop(); // Stop menu music
+                honu = new Honu();
+                honu.setPosition(0, 128);
+                loadLevel("map\\level1.txt");
+                gameState = 2; // Start game
+            } else if (buttonOptions.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+                // Implement later
+            } else if (buttonExit.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+                Gdx.app.exit();
+            }
+        }
 
     }
     public void mainGame() {
@@ -375,15 +451,15 @@ public class ReefGuardian implements ApplicationListener {
                         switch (honuCollision) {
                             case 1:
                                 //Collide top
-                                honu.action(1, 0, o.getHitBox().y + o.getHitBox().height);
+                                honu.action(1, honu.getHitBox().x, o.getHitBox().y + o.getHitBox().height);
                                 break;
                             case 2:
                                 //Collide right
-                                honu.action(2, o.getHitBox().x + o.getHitBox().width + 1, 0);
+                                honu.action(2, o.getHitBox().x + o.getHitBox().width + 1, honu.getHitBox().y);
                                 break;
                             case 3:
                                 //Collide left
-                                honu.action(3, o.getHitBox().x - honu.getHitBox().width - 1, 0);
+                                honu.action(3, o.getHitBox().x - honu.getHitBox().width - 1, honu.getHitBox().y);
                                 break;
                             case 4:
                                 //Collide Bottom
@@ -398,15 +474,17 @@ public class ReefGuardian implements ApplicationListener {
                             //Play sound effect
                             if (honuDmgSound != null) honuDmgSound.play();
                             // Strong knockback based on direction
-                            float knockBackDist = 40f;
+                            float knockBackDist = 30f;
 
                             // Knock Honu back depending on collision side
                             switch (honuCollision) {
-                                case 1: honu.knockBack(0, knockBackDist); break;  // Hit top → push down
+                                case 1: honu.knockBack(0, 10); break;  // Hit top → push down
                                 case 2: honu.knockBack(knockBackDist, 0); break;  // Hit right → push left
                                 case 3: honu.knockBack(-knockBackDist, 0); break; // Hit left → push right
-                                case 4: honu.knockBack(0, -knockBackDist); break; // Hit bottom → push up
+                                case 4: honu.knockBack(0, -10); break; // Hit bottom → push up
                             }
+                            //Delete the enemy object when it hit Honu
+                            iterator.remove();
 
                             if (honu.getLives() == 0) {
                                 if (honu.isDefeatAnimationFinished()) {
@@ -643,6 +721,7 @@ public class ReefGuardian implements ApplicationListener {
         for (GameObjects obj : gameObjectsList) {
             obj.dispose();
         }
+        if (menuMusic != null) menuMusic.dispose();
     }
     public static ReefGuardian getInstance() {
         return instance;
