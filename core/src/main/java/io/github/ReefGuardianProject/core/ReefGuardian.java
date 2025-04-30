@@ -4,16 +4,21 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import io.github.ReefGuardianProject.objects.*;
+import io.github.ReefGuardianProject.objects.Checkpoint;
+import io.github.ReefGuardianProject.objects.GameObjects;
+import io.github.ReefGuardianProject.objects.LiveCollectible;
+import io.github.ReefGuardianProject.objects.NextLevelDoor;
 import io.github.ReefGuardianProject.objects.enemy.*;
 import io.github.ReefGuardianProject.objects.environment.KelpBlock;
 import io.github.ReefGuardianProject.objects.environment.RockBlock;
@@ -22,7 +27,6 @@ import io.github.ReefGuardianProject.objects.finalBoss.FinalBoss;
 import io.github.ReefGuardianProject.objects.player.Honu;
 import io.github.ReefGuardianProject.objects.projectile.EnemyProjectile;
 import io.github.ReefGuardianProject.objects.projectile.Projectile;
-import com.badlogic.gdx.audio.Sound;
 import io.github.ReefGuardianProject.objects.projectile.WaterBall;
 import io.github.ReefGuardianProject.objects.ui.HonuHealthBar;
 import java.util.ArrayList;
@@ -43,6 +47,11 @@ public class ReefGuardian implements ApplicationListener {
     private Sprite buttonStart, buttonOptions, buttonExit;
     private Sprite buttonStartHover, buttonOptionsHover, buttonExitHover;
     private Music menuMusic;
+    //Pause Screen Asset
+    private Sprite pauseOverlay, pauseText;
+    private Sprite returnButton, returnButtonHover;
+    private Sprite mainMenuButton, mainMenuButtonHover;
+    private Sprite pauseStuckButton, pauseStuckButtonHover;
     //Game background music
     private Music bgMusic;
     private Viewport viewport;
@@ -57,9 +66,18 @@ public class ReefGuardian implements ApplicationListener {
     private int level = 1;
     private Texture backgroundLevel;
     /**
-     * State of the game: 1. Main menu; 2. Main Game; 3. Next Level; 4. Game Over
+     * StateS of the game: 1. Main menu; 2. Main Game; 3. Next Level; 4. Game Over
      */
-    private int gameState = 2;
+    private int gameState;
+    private static final int STATE_MENU = 1;
+    private static final int STATE_PLAYING = 2;
+    private static final int STATE_NEXT_LEVEL = 3;
+    private static final int STATE_GAME_OVER = 4;
+    private static final int STATE_PAUSED = 5;
+    // Font of the game
+    private BitmapFont fontWhite, fontBlack;
+
+
     @Override
     public void create() {
         instance = this;
@@ -68,6 +86,13 @@ public class ReefGuardian implements ApplicationListener {
         viewport.apply();
         camera.setToOrtho(false, 1280, 1024);
         batch = new SpriteBatch();
+        //Game font
+        fontBlack = new BitmapFont(Gdx.files.internal("font\\fontBlack.fnt"),
+            Gdx.files.internal("font\\fontBlack.png"), false);
+        fontBlack.getData().setScale(2);
+        fontWhite = new BitmapFont(Gdx.files.internal("font\\fontWhite.fnt"),
+            Gdx.files.internal("font\\fontWhite.png"), false);
+        fontWhite.getData().setScale(2);
 
         //Honu healthbar
         honuHealthBar = new HonuHealthBar();
@@ -101,24 +126,20 @@ public class ReefGuardian implements ApplicationListener {
         menuMusic = Gdx.audio.newMusic(Gdx.files.internal("music\\MainMenuTheme.mp3"));
         menuMusic.setLooping(true);
         menuMusic.play();
+        //Pause Screen
+        pauseOverlay = new Sprite(new Texture("gameUI\\1280x1024_grey_background.jpg"));
+        pauseOverlay.setAlpha(0.045f);
 
-        //Set game state to 1 = menu
-        gameState = 1;
+        pauseText = new Sprite(new Texture("gameUI\\pause\\600x280_PauseText.png"));
+        returnButton = new Sprite(new Texture("gameUI\\pause\\540x145_ReturnPause.png"));
+        returnButtonHover = new Sprite(new Texture("gameUI\\pause\\540x145_ReturnPauseHighlighted.png"));
+        mainMenuButton = new Sprite(new Texture("gameUI\\pause\\700x145_MainMenuPause.png"));
+        mainMenuButtonHover = new Sprite(new Texture("gameUI\\pause\\700x145_MainMenuPauseHighlighted.png"));
+        pauseStuckButton = new Sprite(new Texture("gameUI\\pause\\700x145_Stuck.png"));
+        pauseStuckButtonHover = new Sprite(new Texture("gameUI\\Pause\\700x145_StuckHighlighted.png"));
 
-        /*
-        //Call the load level
-        if (level == 1) {
-            honu = new Honu();
-            honu.setPosition(0, 128);
-            loadLevel("map\\level1.txt");
-        }
-        if (level == 2) {
-            honu = new Honu();
-            honu.setPosition(0, 128);
-            loadLevel("map\\level2.txt");
-        }
-
-         */
+        //Set game state to menu
+        gameState = STATE_MENU;
     }
 
     @Override
@@ -129,25 +150,37 @@ public class ReefGuardian implements ApplicationListener {
 
     @Override
     public void render() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            if (gameState == STATE_PLAYING) {
+                gameState = STATE_PAUSED;
+            } else if (gameState == STATE_PAUSED) {
+                gameState = STATE_PLAYING;
+            }
+        }
         switch (this.gameState) {
-            case 1:
+            case STATE_MENU: //1
                 this.mainMenu();
                 break;
-            case 2:
+            case STATE_PLAYING: //2
                 this.mainGame();
                 break;
-            case 3:
+            case STATE_NEXT_LEVEL: //3
                 this.nextLevel();
                 break;
-            case 4:
+            case STATE_GAME_OVER: //4
                 this.gameOver();
+                break;
+            case STATE_PAUSED:  //5
+                this.pauseScreen();
                 break;
         }
     }
-
+    //When user minimize window or set gameState = STATE_PAUSED, paused the game
     @Override
     public void pause() {
-
+        if (gameState == STATE_PLAYING) {
+            gameState = STATE_PAUSED;
+        }
     }
 
     @Override
@@ -558,7 +591,6 @@ public class ReefGuardian implements ApplicationListener {
         gameObjectsList.removeIf(obj -> (obj instanceof EnemyProjectile) && !((EnemyProjectile)obj).isActive());
         gameObjectsList.removeIf(obj -> obj instanceof TrashBag && (obj).getHitBox() == null);
 
-
         // Check if the Boss is defeated
         boolean bossDefeated = false;
         Iterator<GameObjects> bossIter = gameObjectsList.iterator();
@@ -738,4 +770,52 @@ public class ReefGuardian implements ApplicationListener {
     public Honu getHonu() {
         return honu;
     }
+    public void pauseScreen() {
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+
+        // Draw overlay
+        pauseOverlay.setPosition(camera.position.x - viewport.getWorldWidth() / 2f,
+            camera.position.y - viewport.getWorldHeight() / 2f);
+        pauseOverlay.draw(batch);
+
+        float centerX = camera.position.x;
+        float centerY = camera.position.y;
+
+        pauseText.setPosition(centerX - pauseText.getWidth() / 2, centerY + 200);
+        pauseText.draw(batch);
+
+        Vector3 mouse = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(mouse);
+
+        // Buttons
+        drawPauseButton(batch, returnButton, returnButtonHover, centerX - 270, centerY - 20, mouse);
+        drawPauseButton(batch, mainMenuButton, mainMenuButtonHover, centerX - 350, centerY - 180, mouse);
+        drawPauseButton(batch, pauseStuckButton, pauseStuckButtonHover, centerX - 350, centerY - 340, mouse);
+
+        batch.end();
+
+        if (Gdx.input.justTouched()) {
+            if (returnButton.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+                gameState = STATE_PLAYING;
+            } else if (mainMenuButton.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+                gameState = STATE_MENU;
+            } else if (pauseStuckButton.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+                honu.setPosition(lastCheckpointX, lastCheckpointY);
+                gameState = STATE_PLAYING;
+            }
+        }
+    }
+    //Helper method
+    private void drawPauseButton(SpriteBatch batch, Sprite normal, Sprite hover,
+                                 float x, float y, Vector3 mouse) {
+        if (normal.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+            hover.setPosition(x, y);
+            hover.draw(batch);
+        } else {
+            normal.setPosition(x, y);
+            normal.draw(batch);
+        }
+    }
+
 }
