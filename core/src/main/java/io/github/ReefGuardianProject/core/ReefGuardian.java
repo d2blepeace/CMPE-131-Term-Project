@@ -48,7 +48,7 @@ public class ReefGuardian implements ApplicationListener {
     private Sprite buttonStartHover, buttonOptionsHover, buttonExitHover;
     private Music menuMusic;
     //Pause Screen Asset
-    private Sprite pauseOverlay, pauseText;
+    private Sprite pauseText;
     private Sprite returnButton, returnButtonHover;
     private Sprite mainMenuButton, mainMenuButtonHover;
     private Sprite pauseStuckButton, pauseStuckButtonHover;
@@ -89,10 +89,10 @@ public class ReefGuardian implements ApplicationListener {
         //Game font
         fontBlack = new BitmapFont(Gdx.files.internal("font\\fontBlack.fnt"),
             Gdx.files.internal("font\\fontBlack.png"), false);
-        fontBlack.getData().setScale(2);
+        fontBlack.getData().setScale(1.5f);
         fontWhite = new BitmapFont(Gdx.files.internal("font\\fontWhite.fnt"),
             Gdx.files.internal("font\\fontWhite.png"), false);
-        fontWhite.getData().setScale(2);
+        fontWhite.getData().setScale(1.5f);
 
         //Honu healthbar
         honuHealthBar = new HonuHealthBar();
@@ -127,9 +127,6 @@ public class ReefGuardian implements ApplicationListener {
         menuMusic.setLooping(true);
         menuMusic.play();
         //Pause Screen
-        pauseOverlay = new Sprite(new Texture("gameUI\\1280x1024_grey_background.jpg"));
-        pauseOverlay.setAlpha(0.045f);
-
         pauseText = new Sprite(new Texture("gameUI\\pause\\600x280_PauseText.png"));
         returnButton = new Sprite(new Texture("gameUI\\pause\\540x145_ReturnPause.png"));
         returnButtonHover = new Sprite(new Texture("gameUI\\pause\\540x145_ReturnPauseHighlighted.png"));
@@ -771,34 +768,49 @@ public class ReefGuardian implements ApplicationListener {
         return honu;
     }
     public void pauseScreen() {
+        //Background
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
-        // Draw overlay
-        pauseOverlay.setPosition(camera.position.x - viewport.getWorldWidth() / 2f,
-            camera.position.y - viewport.getWorldHeight() / 2f);
-        pauseOverlay.draw(batch);
-
+        //Center
         float centerX = camera.position.x;
         float centerY = camera.position.y;
 
         pauseText.setPosition(centerX - pauseText.getWidth() / 2, centerY + 200);
         pauseText.draw(batch);
 
+        // Display healthBar
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+        honuHealthBar.draw(batch, camera);
+
         Vector3 mouse = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mouse);
 
         // Buttons
-        drawPauseButton(batch, returnButton, returnButtonHover, centerX - 270, centerY - 20, mouse);
-        drawPauseButton(batch, mainMenuButton, mainMenuButtonHover, centerX - 350, centerY - 180, mouse);
-        drawPauseButton(batch, pauseStuckButton, pauseStuckButtonHover, centerX - 350, centerY - 340, mouse);
+        drawPauseButton(batch, returnButton, returnButtonHover, centerX - 270, centerY - 50, mouse);
+        drawPauseButton(batch, mainMenuButton, mainMenuButtonHover, centerX - 350, centerY - 200, mouse);
+        drawPauseButton(batch, pauseStuckButton, pauseStuckButtonHover, centerX - 350, centerY - 360, mouse);
 
         batch.end();
 
+        //Handling input
         if (Gdx.input.justTouched()) {
             if (returnButton.getBoundingRectangle().contains(mouse.x, mouse.y)) {
                 gameState = STATE_PLAYING;
             } else if (mainMenuButton.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+                // Stop and dispose level background music
+                if (bgMusic != null) {
+                    bgMusic.stop();
+                    bgMusic.dispose();
+                    bgMusic = null;
+                }
+                // Play main menu music if not already playing
+                if (menuMusic != null && !menuMusic.isPlaying()) {
+                    menuMusic.play();
+                }
                 gameState = STATE_MENU;
             } else if (pauseStuckButton.getBoundingRectangle().contains(mouse.x, mouse.y)) {
                 honu.setPosition(lastCheckpointX, lastCheckpointY);
