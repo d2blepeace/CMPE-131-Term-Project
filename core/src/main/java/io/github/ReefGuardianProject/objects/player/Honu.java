@@ -20,6 +20,10 @@ public class Honu extends GameObjects {
     private final int MAX_LIVES = 3;
     // Defeat animation of Honu
     private boolean isDefeated = false;
+    //Flashing effect of Honu taking damage
+    private boolean isHurt = false;
+    private float hurtTimer = 0f;
+    private float hurtDuration = 1.5f; //Duration of flashing animation
     private Animation<TextureRegion> defeatAnimation;
     private float defeatTimer = 0f;
     int body, cosmetic;
@@ -27,7 +31,8 @@ public class Honu extends GameObjects {
     // Stores the animation sprite
     private Texture[] armTextures;
     private Texture[] headTextures;
-
+    private float shootCooldown = 0.75f;    //Delay for Honu shooting
+    private float shootTimer = 0f;
     float gameTime = 0f;
     boolean shoot = false;
     private Sound shootSound;
@@ -144,6 +149,9 @@ public class Honu extends GameObjects {
             defeatTimer = 0f;
             velocityX = 0;
             velocityY = 0;
+        } else {
+            isHurt = true;
+            hurtTimer = 0f;
         }
     }
 
@@ -158,18 +166,16 @@ public class Honu extends GameObjects {
     }
     //Honu shoot waterball
     public WaterBall shoot() {
-        if (isDefeated) return null;
+        if (isDefeated || shootTimer < shootCooldown) return null;
 
-        float startX = full.x + full.width - 30; // In front of Honu
-        float startY = full.y + (full.height / 2f) - 32; // Vertically centered if WaterBall is 64x64
+        float startX = full.x + full.width - 30;
+        float startY = full.y + (full.height / 2f) - 32;
 
-        shoot = true;       //Trigger animation
-        gameTime = 0f;      //Reset animation timer
+        shoot = true;
+        gameTime = 0f;
+        shootTimer = 0f; // Reset cooldown timer
 
-        //Play shooting sfx
-        if (shootSound != null) {
-            shootSound.play(1.0f); // Volume = 1.0f
-        }
+        if (shootSound != null) shootSound.play(1.0f);
 
         return new WaterBall(startX, startY, waterBallSpeed);
     }
@@ -225,7 +231,17 @@ public class Honu extends GameObjects {
             defeatTimer += delta;
             return;
         }
-
+        //If honu received damage, play flashing animation
+        if (isHurt) {
+            hurtTimer += delta;
+            if (hurtTimer > hurtDuration) {
+                isHurt = false;
+            }
+        }
+        //Track shoot countdown timer
+        if (shootTimer < shootCooldown) {
+            shootTimer += delta;
+        }
         setPosition(full.x, full.y);
     }
     public void setPosition(float x, float y) {
@@ -266,7 +282,12 @@ public class Honu extends GameObjects {
         setPosition(full.x, full.y);
     }
     public void draw(SpriteBatch batch) {
-        gameTime += Gdx.graphics.getDeltaTime(); //for animations
+        gameTime += Gdx.graphics.getDeltaTime();
+        // Flashing effect: skip drawing every other 0.1s interval during hurt state
+        if (isHurt) {
+            int flashFrame = (int)(hurtTimer * 10) % 2;
+            if (flashFrame == 1) return; // skip drawing this frame
+        }
         sprite.draw(batch);
 
         //Play arm animation
@@ -289,6 +310,8 @@ public class Honu extends GameObjects {
             TextureRegion defeatFrame = defeatAnimation.getKeyFrame(defeatTimer, false);
             batch.draw(defeatFrame, full.x, full.y);
         }
+
+
     }
 
     @Override
@@ -313,6 +336,11 @@ public class Honu extends GameObjects {
     public int hitAction() {
         return 0; //No action
     }
-
+    //To help immobilize Honu when he is hurt
+    public boolean canMove() {
+        if (isDefeated) return false;
+        if (isHurt && hurtTimer < 0.5f) return false;
+        return true;
+    }
 
 }

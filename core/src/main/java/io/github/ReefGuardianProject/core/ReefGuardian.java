@@ -23,6 +23,7 @@ import io.github.ReefGuardianProject.objects.player.Honu;
 import io.github.ReefGuardianProject.objects.projectile.EnemyProjectile;
 import io.github.ReefGuardianProject.objects.projectile.Projectile;
 import com.badlogic.gdx.audio.Sound;
+import io.github.ReefGuardianProject.objects.projectile.WaterBall;
 import io.github.ReefGuardianProject.objects.ui.HonuHealthBar;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -628,23 +629,27 @@ public class ReefGuardian implements ApplicationListener {
                 }
             }
         }
-        //Handling Input Controls
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            honu.moveUp(Gdx.graphics.getDeltaTime());    //move Up = W
+        if (honu.canMove()) {
+            //Handling Input Controls
+            if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+                honu.moveUp(Gdx.graphics.getDeltaTime());    //move Up = W
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                honu.moveLeft(Gdx.graphics.getDeltaTime());    //move left = A
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+                honu.moveDown(Gdx.graphics.getDeltaTime());    //move down = S
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                honu.moveRight(Gdx.graphics.getDeltaTime());    //move right = D
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) { //shoot = SPACE
+                WaterBall w = honu.shoot();
+                if (w != null) {
+                    projectiles.add(w);
+                }
+            }
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            honu.moveLeft(Gdx.graphics.getDeltaTime());    //move left = A
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            honu.moveDown(Gdx.graphics.getDeltaTime());    //move down = S
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            honu.moveRight(Gdx.graphics.getDeltaTime());    //move right = D
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            projectiles.add(honu.shoot());                  //shoot = SPACE
-        }
-
     }
     public void nextLevel() {
 
