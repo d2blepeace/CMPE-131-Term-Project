@@ -52,6 +52,13 @@ public class ReefGuardian implements ApplicationListener {
     private Sprite returnButton, returnButtonHover;
     private Sprite mainMenuButton, mainMenuButtonHover;
     private Sprite pauseStuckButton, pauseStuckButtonHover;
+    //How to play Asset
+    private Sprite howToWASD, howToSpace, howToESC;
+    private float howToTimer = 0f;
+    private final float FADE_IN_TIME    = 1.0f;
+    private final float DISPLAY_TIME    = 2.0f;
+    private final float FADE_OUT_TIME   = 1.0f;
+    private final float HOWTO_TOTAL     = FADE_IN_TIME + DISPLAY_TIME + FADE_OUT_TIME;
     //Game background music
     private Music bgMusic;
     private Viewport viewport;
@@ -74,6 +81,7 @@ public class ReefGuardian implements ApplicationListener {
     private static final int STATE_NEXT_LEVEL = 3;
     private static final int STATE_GAME_OVER = 4;
     private static final int STATE_PAUSED = 5;
+    private static final int STATE_HOWTO = 6;
     // Font of the game
     private BitmapFont fontWhite, fontBlack;
 
@@ -134,6 +142,10 @@ public class ReefGuardian implements ApplicationListener {
         mainMenuButtonHover = new Sprite(new Texture("gameUI\\pause\\700x145_MainMenuPauseHighlighted.png"));
         pauseStuckButton = new Sprite(new Texture("gameUI\\pause\\700x145_Stuck.png"));
         pauseStuckButtonHover = new Sprite(new Texture("gameUI\\Pause\\700x145_StuckHighlighted.png"));
+        //How to play Screen
+        howToWASD  = new Sprite(new Texture("gameUI\\howToPlay\\430x265_WASD.png"));
+        howToSpace = new Sprite(new Texture("gameUI\\howToPlay\\285x55_Spacebar.png"));
+        howToESC   = new Sprite(new Texture("gameUI\\howToPlay\\430x265_ESC.png"));
 
         //Set game state to menu
         gameState = STATE_MENU;
@@ -170,8 +182,13 @@ public class ReefGuardian implements ApplicationListener {
             case STATE_PAUSED:  //5
                 this.pauseScreen();
                 break;
+            case STATE_HOWTO:   //6
+                this.howToScreen();
+                break;
         }
     }
+
+
     //When user minimize window or set gameState = STATE_PAUSED, paused the game
     @Override
     public void pause() {
@@ -208,6 +225,11 @@ public class ReefGuardian implements ApplicationListener {
     }
     //Load the level
     public void loadLevel(String level) {
+        // Display How To Play screen before loading level 1
+        if (level.equals("map\\level1.txt")) {
+            gameState  = STATE_HOWTO;
+            howToTimer = 0f;
+        }
         //Clear the list before loading the level
         gameObjectsList.clear();
         //Loading level .txt files
@@ -367,7 +389,7 @@ public class ReefGuardian implements ApplicationListener {
                 honu = new Honu();
                 honu.setPosition(0, 128);
                 loadLevel("map\\level1.txt");
-                gameState = 2; // Start game
+                gameState = STATE_HOWTO ; // Start game with How to Play
             } else if (buttonOptions.getBoundingRectangle().contains(mouse.x, mouse.y)) {
                 // Implement later
             } else if (buttonExit.getBoundingRectangle().contains(mouse.x, mouse.y)) {
@@ -634,8 +656,6 @@ public class ReefGuardian implements ApplicationListener {
             return;
         }
 
-
-
         // Handle collisions between Enemy Projectiles (SubmarineProjectile) and Honu
         for (GameObjects obj : gameObjectsList) {
             if (obj instanceof EnemyProjectile) {
@@ -829,5 +849,61 @@ public class ReefGuardian implements ApplicationListener {
             normal.draw(batch);
         }
     }
+    //How to play screen, appear before playing level 1
+    private void howToScreen() {
+        float delta = Gdx.graphics.getDeltaTime();
+        howToTimer += delta;
+
+        //Compute alpha
+        float alpha;
+        if (howToTimer < FADE_IN_TIME) {
+            alpha = howToTimer / FADE_IN_TIME;
+        } else if (howToTimer < FADE_IN_TIME + DISPLAY_TIME) {
+            alpha = 1f;
+        } else if (howToTimer < HOWTO_TOTAL) {
+            alpha = 1f - (howToTimer - (FADE_IN_TIME + DISPLAY_TIME)) / FADE_OUT_TIME;
+        } else {
+            // done -> go play
+            gameState = STATE_PLAYING;
+            howToTimer = 0f;
+            return;
+        }
+
+        // Clear screen & begin
+        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+
+            // Set global tint
+            batch.setColor(1,1,1, alpha);
+
+            float cx = camera.viewportWidth/2f, cy = camera.viewportHeight/2f;
+
+            // draw title
+            fontWhite.getData().setScale(3);
+            fontWhite.draw(batch, "How to Play", cx - 250, cy + 400);
+
+            // draw the three controls underneath
+            howToWASD.setPosition(cx - howToWASD.getWidth()/2 - 150 , cy);
+            howToWASD.draw(batch);
+            fontWhite.getData().setScale(1.5f);
+            fontWhite.draw(batch, "- Move", cx + 100 , cy + 150);
+
+            howToSpace.setPosition(cx - 300, cy - 90);
+            howToSpace.draw(batch);
+            fontWhite.getData().setScale(1.5f);
+            fontWhite.draw(batch, "- Shoot", cx + 100 , cy - 45);
+
+            howToESC.setPosition(cx - 360, cy - 405);
+            howToESC.draw(batch);
+            fontWhite.getData().setScale(1.5f);
+            fontWhite.draw(batch, "- Pause Game", cx + 100 , cy - 190);
+
+            // reset tint
+            batch.setColor(1,1,1,1);
+        batch.end();
+    }
+
 
 }
