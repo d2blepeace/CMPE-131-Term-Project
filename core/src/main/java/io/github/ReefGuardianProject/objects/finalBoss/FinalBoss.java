@@ -1,6 +1,7 @@
 package io.github.ReefGuardianProject.objects.finalBoss;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -23,7 +24,7 @@ public class FinalBoss extends GameObjects {
     private Texture texture, damagedTexture;
     private boolean isDamaged = false;
     //Movement fields
-    private float velocityY = 250f;
+    private float velocityY = 400f;
     private float upperBound = 800f;
     private float lowerBound = 100f;
     private boolean isPaused = false;
@@ -35,6 +36,19 @@ public class FinalBoss extends GameObjects {
     private float hurtTimer = 0f;
     private static final float HURT_DURATION = 0.75f;  // how long to flash
     private Sound damageSfx;
+    private Sound explosionSfx1, explosionSfx2;
+    // Sinking after defeat
+    private boolean isDefeated = false;
+    private boolean hasExploded = false;
+    private boolean sinking = false;
+    private float sinkSpeed = 50f;      // pixels per second
+    // the Y‐coordinate of the top of the floor rock
+    private static final float GROUND_Y = 64f;
+    // Explosion sequence
+    private float explosionTimer = 0f;
+    // 0 = not started, 1 = waiting to play #1, 2 = waiting to play #2, 3 = done
+    private int explosionStage = 0;
+
 
     //Projectile field
     private ArrayList<SubmarineProjectile> projectiles = new ArrayList<>();
@@ -52,6 +66,9 @@ public class FinalBoss extends GameObjects {
         this.texture = new Texture(Gdx.files.internal("sprite\\finalboss\\SubmarineBoss\\256x128_SubmarineBoss.png"));
         this.damagedTexture = new Texture(Gdx.files.internal("sprite\\finalboss\\SubmarineBoss\\256x128_Damaged_SubmarineBoss.png"));
         damageSfx = Gdx.audio.newSound(Gdx.files.internal("sfx\\Pixel_Honu_Dmg_SFX.mp3"));
+        explosionSfx1 = Gdx.audio.newSound(Gdx.files.internal("sfx\\Explosion_Sfx1.mp3"));
+        explosionSfx2 = Gdx.audio.newSound(Gdx.files.internal("sfx\\Explosion_Sfx2.mp3"));
+
 
         this.sprite = new Sprite(texture, 0, 0, 256, 128);
         sprite.setPosition(x, y);
@@ -76,6 +93,38 @@ public class FinalBoss extends GameObjects {
     //Boss AI update according to game time
     @Override
     public void update(float delta) {
+        // --- death / sinking logic ---
+        if (sinking) {
+            // advance timer even while sinking, so we can drive the explosion sequence
+            explosionTimer += delta;
+
+            // 1) play explosion #1 after 1s
+            if (explosionStage == 1 && explosionTimer >= 1f) {
+                explosionSfx1.play();
+                explosionStage = 2;
+                explosionTimer = 0f;
+            }
+            // 2) play explosion #2 one second later
+            else if (explosionStage == 2 && explosionTimer >= 1f) {
+                explosionSfx2.play();
+                explosionStage = 3;
+            }
+
+            // sink down, but stop at the floor:
+            y -= sinkSpeed * delta;
+            if (y <= GROUND_Y) {
+                y = GROUND_Y;
+                sinking = false;
+                active  = false;
+            }
+            sprite.setPosition(x, y);
+            return;
+        }
+
+        // if he’s been defeated, do nothing else
+        if (isDefeated) return;
+
+        // otherwise only run your normal AI once active
         if (!active) return;
 
         if (isPaused) {
@@ -130,6 +179,7 @@ public class FinalBoss extends GameObjects {
     }
 
     private void fireProjectile() {
+        if (isDefeated) return;
         // Adjust the location of the projectile's animation
         float xFixingPixel = 30;
         float yFixingPixel = ((float) 128 / 2) - 38;
@@ -178,7 +228,7 @@ public class FinalBoss extends GameObjects {
     @Override
     public void draw(SpriteBatch batch) {
         // flicker during hurt: skip every other 0.1s
-        if (isHurt) {
+        if (isHurt && !sinking) {
             int frame = (int)(hurtTimer * 10) % 2;
             if (frame == 1) return;
         }
@@ -202,7 +252,7 @@ public class FinalBoss extends GameObjects {
 
     @Override
     public int hitAction() {
-        return 2; // Create damage to Honu
+        return isDefeated ? 0 : 2; // Create damage to Honu unless defeated
     }
     public void receiveDamage() {
         // Play sounds
@@ -214,6 +264,21 @@ public class FinalBoss extends GameObjects {
             sprite.setTexture(damagedTexture);
             isDamaged = true;
         }
+        // only trigger the “death” once
+        if (health <= 0 && !hasExploded) {
+            hasExploded   = true;
+            isDefeated    = true;
+            sinking       = true;     // start sink+explosion sequence next frame
+
+            // start the timer so that explosionStage==1 means “waiting 1s for SFX#1”
+            explosionStage   = 1;
+            explosionTimer   = 0f;
+        }
+        // Purge the pending shooting animation
+        for (SubmarineProjectile p : projectiles) {
+            p.delete();
+        }
+        projectiles.clear();
     }
     @Override
     public boolean isEnemy() {
@@ -227,6 +292,8 @@ public class FinalBoss extends GameObjects {
 
     @Override
     public void dispose() {
+        if (explosionSfx1 != null) explosionSfx1.dispose();
+        if (explosionSfx2 != null) explosionSfx2.dispose();
         if (damageSfx != null) damageSfx.dispose();
     }
     public boolean isActive() {

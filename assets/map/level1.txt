@@ -177,9 +177,7 @@ KelpBlock 1024 64
 
 KelpBlock 704 128
 KelpBlock 768 128
-KelpBlock 832 128
-KelpBlock 896 128
-KelpBlock 960 128
+
 
 KelpBlock 768 192
 KelpBlock 832 192
@@ -212,11 +210,10 @@ KelpBlock 1344 832
 KelpBlock 1152 768
 KelpBlock 1216 768
 KelpBlock 1280 768
-
 KelpBlock 1216 704
 
 #Section 1 (Pyramid Upside Down) - Collectibles (SEA SHELLS)
-BlueClam 1232 656
+TrashBag 1232 656
 
 
 #Section 1 - Enemies between pyramid and pillars
@@ -228,7 +225,6 @@ WaterBottle 1728 448
 
 #Enemies for Section 1
 WaterBottle 1216 512
-
 
 #Obstacle Section 2 - Pillars of Rock
 RockBlock 1856 64
@@ -313,6 +309,7 @@ TrashBag 2624 640
 KelpBlock 2752 896
 KelpBlock 2752 832
 KelpBlock 2752 768
+
 #Section 3 - Obstacles Cave
 RockBlock 2944 64
 RockBlock 3008 64
@@ -376,7 +373,7 @@ RockBlock 3392 320
 RockBlock 3456 320
 RockBlock 3520 320
 
-BlueClam 3536 400
+OilBarrel 3536 400
 
 #Section 3 - Kelp Vines
 KelpBlock 2752 896
@@ -422,7 +419,7 @@ KelpBlock 3840 448
 KelpBlock 3840 384
 KelpBlock 3840 320
 KelpBlock 3840 256
-KelpBlock 3840 192
+
 
 KelpBlock 3776 832
 KelpBlock 3776 768
@@ -475,8 +472,6 @@ WaterBottle 3136 768
 # Checkpoint (Safe Zone)
 Checkpoint 192 64
 Checkpoint 2464 64
-
-
 
 # Exit
 NextLevelDoor 3840 64

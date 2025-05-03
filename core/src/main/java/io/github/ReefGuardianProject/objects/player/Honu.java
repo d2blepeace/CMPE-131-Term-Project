@@ -176,8 +176,6 @@ public class Honu extends GameObjects {
             isHurt = true;
             hurtTimer = 0f;
         }
-
-
     }
 
     public void gainLife() {
@@ -351,16 +349,14 @@ public class Honu extends GameObjects {
         // Shield sprite on top:
         if (activatingShield) {
             TextureRegion frame = shieldActivateAnim.getKeyFrame(activateTimer, false);
-            batch.draw(frame,
-                full.x + (full.width - frame.getRegionWidth())/2f,
-                full.y + (full.height - frame.getRegionHeight())/2f
-            );
+            float xOff = full.x + (full.width  - frame.getRegionWidth())/2f + 3f;
+            float yOff = full.y + (full.height - frame.getRegionHeight())/2f;
+            batch.draw(frame, xOff, yOff);
         } else if (hasShield) {
             TextureRegion frame = shieldLoopAnim.getKeyFrame(shieldLoopTime, true);
-            batch.draw(frame,
-                full.x + (full.width - frame.getRegionWidth())/2f,
-                full.y + (full.height - frame.getRegionHeight())/2f
-            );
+            float xOff = full.x + (full.width  - frame.getRegionWidth())/2f + 3f;
+            float yOff = full.y + (full.height - frame.getRegionHeight())/2f;
+            batch.draw(frame, xOff, yOff);
         }
     }
 

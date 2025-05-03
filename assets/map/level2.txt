@@ -264,23 +264,19 @@ KelpBlock 960 832
 KelpBlock 896 832
 KelpBlock 832 832
 KelpBlock 768 832
-KelpBlock 704 832
-KelpBlock 640 768
-KelpBlock 576 704
-KelpBlock 512 704
+
+
 
 #collectibles (SEASHELLS)
-Live 544 608
-Live 608 608
+WaterBottle 544 608
 
-Live 672 672
-Live 736 672
+TrashBag 672 672
 
-Live 768 736
-Live 832 736
-Live 896 736
-Live 960 736
-Live 1024 736
+NuclearWaste 768 736
+NuclearWaste 832 736
+OilBarrel 896 736
+BlueClam 960 736
+OilBarrel 1024 736
 
 # rock block in middle
 RockBlock 1152 448
@@ -328,22 +324,6 @@ NuclearWaste 2752 896
 OilBarrel 2752 640
 OilBarrel 2752 576
 OilBarrel 2752 512
-
-#top middle row collectibles (SEA SHELLS)
-Live 3872 640
-Live 3872 576
-
-Live 3840 640
-Live 3840 576
-
-Live 3808 640
-Live 3808 576
-
-Live 3776 640
-Live 3776 576
-
-Live 3744 640
-Live 3744 576
 
 #middle row
 RockBlock 2752 448
@@ -419,6 +399,5 @@ NuclearWaste 3776 128
 # Exit
 NextLevelDoor 3840 768
 
-Live 320 320
-Live 320 640
+WaterBottle 320 320
 Checkpoint 64 64

@@ -1,5 +1,6 @@
 package io.github.ReefGuardianProject.core;
 
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -52,12 +53,17 @@ public class ReefGuardian implements ApplicationListener {
     private Sprite mainMenuButton, mainMenuButtonHover;
     private Sprite pauseStuckButton, pauseStuckButtonHover;
     //How to play Asset
-    private Sprite howToWASD, howToSpace, howToESC;
+    private Sprite howToWASD, howToSpace, howToESC, howToArrows;
     private float howToTimer = 0f;
     private final float FADE_IN_TIME    = 1.0f;
     private final float DISPLAY_TIME    = 2.0f;
     private final float FADE_OUT_TIME   = 1.0f;
     private final float HOWTO_TOTAL     = FADE_IN_TIME + DISPLAY_TIME + FADE_OUT_TIME;
+    // Ending screen asset
+    private Sprite endingScreen;
+    private Music endingMusic;
+    private boolean endingPlayed = false;
+    private float endingTimer = 0f;
     //Game background music
     private Music bgMusic;
     private Music bossDefeatMusic;
@@ -73,16 +79,25 @@ public class ReefGuardian implements ApplicationListener {
     private ArrayList<Projectile> projectiles = new ArrayList<>();
     private int level = 1;
     private Texture backgroundLevel;
+    //Next Level Screen
+    private int nextLevelToLoad;
+    private Music transitionMusic;
+    private boolean transitionPlayed = false;
+    private boolean transitionStarted = false;
+
     /**
      * StateS of the game: 1. Main menu; 2. Main Game; 3. Next Level; 4. Game Over
      */
     private int gameState;
+    private boolean isBossLevel = false;
     private static final int STATE_MENU = 1;
     private static final int STATE_PLAYING = 2;
     private static final int STATE_NEXT_LEVEL = 3;
     private static final int STATE_GAME_OVER = 4;
     private static final int STATE_PAUSED = 5;
     private static final int STATE_HOWTO = 6;
+    private static final int STATE_ENDING = 7;
+
     // Font of the game
     private BitmapFont fontWhite, fontBlack;
 
@@ -153,11 +168,22 @@ public class ReefGuardian implements ApplicationListener {
         howToWASD  = new Sprite(new Texture("gameUI\\howToPlay\\430x265_WASD.png"));
         howToSpace = new Sprite(new Texture("gameUI\\howToPlay\\285x55_Spacebar.png"));
         howToESC   = new Sprite(new Texture("gameUI\\howToPlay\\430x265_ESC.png"));
+        howToArrows = new Sprite(new Texture("gameUI\\howToPlay\\430x265_arrow_key.png"));
 
         //Boss Defeat cue audio
         bossDefeatMusic = Gdx.audio.newMusic(Gdx.files.internal("music\\BossDefeat_Cue.mp3"));
         bossDefeatMusic.setLooping(false);
 
+        //Ending screen
+        endingScreen = new Sprite(new Texture("gameUI\\ending\\EndingScreen.png"));
+        endingMusic = Gdx.audio.newMusic(Gdx.files.internal("music\\EndingTheme.mp3"));
+        endingMusic.setLooping(false);
+
+        //Next Level
+        transitionMusic = Gdx.audio.newMusic(
+            Gdx.files.internal("music\\LevelComplete_Cue.mp3")
+        );
+        transitionMusic.setLooping(false);
         //Set game state to menu
         gameState = STATE_MENU;
     }
@@ -195,6 +221,9 @@ public class ReefGuardian implements ApplicationListener {
                 break;
             case STATE_HOWTO:   //6
                 this.howToScreen();
+                break;
+            case STATE_ENDING:  //7
+                this.showEnding();
                 break;
         }
     }
@@ -235,12 +264,16 @@ public class ReefGuardian implements ApplicationListener {
     }
     //Load the level
     public void loadLevel(String level) {
-        // Display How To Play screen before loading level 1
+        // Determine if this is the boss level
+        isBossLevel = level.toLowerCase().endsWith("level3.txt");
+
+        // If it is level 1, show how to play
         if (level.equals("map\\level1.txt")) {
             gameState  = STATE_HOWTO;
             howToTimer = 0f;
         }
-        //Clear the list before loading the level
+
+        // Clear out the old objects
         gameObjectsList.clear();
         //Loading level .txt files
         FileHandle file = Gdx.files.internal(level);
@@ -353,67 +386,6 @@ public class ReefGuardian implements ApplicationListener {
             }
         }
     }
-    //Main menu Screen
-    public void mainMenu() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
-
-        // Draw background and title
-        float titleCenterX = (1280 - menuTitle.getWidth()) / 2f;
-        float titleCenterY = (1024 - menuTitle.getHeight()) / 2f + 300;
-        menuBackground.setPosition(0, 0);
-        menuBackground.draw(batch);
-        menuTitle.setPosition(titleCenterX, titleCenterY);
-        menuTitle.draw(batch);
-
-        Vector3 mouse = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-        camera.unproject(mouse);
-
-        // Start button
-        float startX = (1280 - buttonStart.getWidth()) / 2f;
-        float startY =  (1280 - buttonStart.getHeight()) / 2f;
-        Sprite startToDraw = buttonStart.getBoundingRectangle().contains(mouse.x, mouse.y)
-            ? buttonStartHover : buttonStart;
-        startToDraw.setPosition(startX, startY);
-        startToDraw.draw(batch);
-
-        // Options button
-        float optionsX = (1280 - buttonStart.getWidth()) / 2f;
-        float optionsY =  (1280 - buttonStart.getHeight()) / 2f - 150;
-        Sprite optionsToDraw = buttonOptions.getBoundingRectangle().contains(mouse.x, mouse.y)
-            ? buttonOptionsHover : buttonOptions;
-        optionsToDraw.setPosition(optionsX, optionsY);
-        optionsToDraw.draw(batch);
-
-        // Quit button
-        float exitX = (1280 - buttonStart.getWidth()) / 2f;
-        float exitY =  (1280 - buttonStart.getHeight()) / 2f - 300;
-        Sprite quitToDraw = buttonExit.getBoundingRectangle().contains(mouse.x, mouse.y)
-            ? buttonExitHover : buttonExit;
-        quitToDraw.setPosition(exitX, exitY);
-        quitToDraw.draw(batch);
-
-        batch.end();
-
-        // Handle click
-        if (Gdx.input.justTouched()) {
-            if (buttonStart.getBoundingRectangle().contains(mouse.x, mouse.y)) {
-                menuMusic.stop(); // Stop menu music
-                honu = new Honu();
-                honu.setPosition(0, 128);
-                loadLevel("map\\level1.txt");
-                gameState = STATE_HOWTO ; // Start game with How to Play
-            } else if (buttonOptions.getBoundingRectangle().contains(mouse.x, mouse.y)) {
-                // Implement later
-            } else if (buttonExit.getBoundingRectangle().contains(mouse.x, mouse.y)) {
-                Gdx.app.exit();
-            }
-        }
-
-    }
     public void mainGame() {
         //Clear screen before rendering
         Gdx.gl.glClearColor(1,1,1,1);
@@ -520,6 +492,7 @@ public class ReefGuardian implements ApplicationListener {
         // After iteration, remove all marked objects
         gameObjectsList.removeAll(objectsToRemove);
         gameObjectsList.addAll(objectsToAdd);
+        gameObjectsList.removeIf(o -> o.getHitBox() == null);
         objectsToAdd.clear();
 
         //If waterball doesn't hit anything, delete it
@@ -613,7 +586,14 @@ public class ReefGuardian implements ApplicationListener {
                         break;
                     case 5: //Next Level when reach nextLevelDoor
                         if (honuCollision != -1) {
-                            changeLevel = true;
+                            if (isBossLevel) {
+                                gameState = STATE_ENDING;
+                            } else {
+                                nextLevelToLoad   = level + 1;   // stash which level to load
+                                transitionStarted = false;       // reset your flag
+                                gameState         = STATE_NEXT_LEVEL;
+                            }
+                            return;  // bail out of mainGame() immediately
                         }
                         break;
                     case 6:
@@ -663,7 +643,6 @@ public class ReefGuardian implements ApplicationListener {
                 FinalBoss boss = (FinalBoss) obj;
                 if (boss.isDefeated()) {
                     bossDefeated = true;
-                    bossIter.remove();
                     break;
                 }
             }
@@ -685,32 +664,11 @@ public class ReefGuardian implements ApplicationListener {
                 bgMusic.stop();
             }
         }
-        //Change level test
-        if (changeLevel) {
-            level++;
-            if (level == 2) {
-                honu.setPosition(0, 128);
-                loadLevel("map\\level2.txt");
-            }
-            if (level == 3) {
-                //BOSS level
-                honu.setPosition(0, 128);
-                loadLevel("map\\level3.txt");
-            }
-        }
 
         updateCamera();
 
         // Check if Honu's defeat animation has finished to show Game Over screen
         if (honu.isDefeated() && honu.isDefeatAnimationFinished()) {
-            if (!gameOverPlayed) {
-                gameOverSfx.play();
-                gameOverPlayed = true;
-            }
-            // stop level music
-            if (bgMusic != null && bgMusic.isPlaying()) {
-                bgMusic.stop();
-            }
             gameState = STATE_GAME_OVER;
             return;
         }
@@ -739,83 +697,222 @@ public class ReefGuardian implements ApplicationListener {
         }
 
         if (honu.canMove()) {
-            //Handling Input Controls
-            if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-                honu.moveUp(Gdx.graphics.getDeltaTime());    //move Up = W
+            float dt = Gdx.graphics.getDeltaTime();
+
+            // Up: W or ↑
+            if (Gdx.input.isKeyPressed(Input.Keys.W) ||
+                Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                honu.moveUp(dt);
             }
-            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-                honu.moveLeft(Gdx.graphics.getDeltaTime());    //move left = A
+            // Down: S or ↓
+            if (Gdx.input.isKeyPressed(Input.Keys.S) ||
+                Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                honu.moveDown(dt);
             }
-            if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-                honu.moveDown(Gdx.graphics.getDeltaTime());    //move down = S
+            // Left: A or ←
+            if (Gdx.input.isKeyPressed(Input.Keys.A) ||
+                Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+                honu.moveLeft(dt);
             }
-            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-                honu.moveRight(Gdx.graphics.getDeltaTime());    //move right = D
+            // Right: D or →
+            if (Gdx.input.isKeyPressed(Input.Keys.D) ||
+                Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                honu.moveRight(dt);
             }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) { //shoot = SPACE
+            // Spacebar: Shooting
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                 WaterBall w = honu.shoot();
-                if (w != null) {
-                    projectiles.add(w);
-                }
+                if (w != null) projectiles.add(w);
+            }
+        }
+    }
+    //Main menu Screen
+    public void mainMenu() {
+        // reset the camera to show the menu in its entirety
+        camera.position.set(viewport.getWorldWidth()/2f,
+            viewport.getWorldHeight()/2f,
+            0);
+        camera.update();
+
+        // now clear & draw full-screen menu
+        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        menuBackground.setPosition(0, 0);
+        menuBackground.draw(batch);
+
+        // Draw background and title
+        float titleCenterX = (1280 - menuTitle.getWidth()) / 2f;
+        float titleCenterY = (1024 - menuTitle.getHeight()) / 2f + 300;
+        menuBackground.setPosition(0, 0);
+        menuBackground.draw(batch);
+        menuTitle.setPosition(titleCenterX, titleCenterY);
+        menuTitle.draw(batch);
+
+        Vector3 mouse = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(mouse);
+
+        // Start button
+        float startX = (1280 - buttonStart.getWidth()) / 2f;
+        float startY =  (1280 - buttonStart.getHeight()) / 2f - 50;
+        Sprite startToDraw = buttonStart.getBoundingRectangle().contains(mouse.x, mouse.y)
+            ? buttonStartHover : buttonStart;
+        startToDraw.setPosition(startX, startY);
+        startToDraw.draw(batch);
+/*
+        // Options button
+        float optionsX = (1280 - buttonStart.getWidth()) / 2f;
+        float optionsY =  (1280 - buttonStart.getHeight()) / 2f - 150;
+        Sprite optionsToDraw = buttonOptions.getBoundingRectangle().contains(mouse.x, mouse.y)
+            ? buttonOptionsHover : buttonOptions;
+        optionsToDraw.setPosition(optionsX, optionsY);
+        optionsToDraw.draw(batch);
+ */
+
+        // Quit button
+        float exitX = (1280 - buttonStart.getWidth()) / 2f;
+        float exitY =  (1280 - buttonStart.getHeight()) / 2f - 200;
+        Sprite quitToDraw = buttonExit.getBoundingRectangle().contains(mouse.x, mouse.y)
+            ? buttonExitHover : buttonExit;
+        quitToDraw.setPosition(exitX, exitY);
+        quitToDraw.draw(batch);
+
+
+        // Version text
+        String version = "v1.0.0";
+        GlyphLayout layout = new GlyphLayout(fontBlack, version);
+        float x = (viewport.getWorldWidth() - layout.width) / 2f;
+        // 20px up from the very bottom
+        float y = 100f;
+        fontBlack.draw(batch, layout, x, y);
+
+        batch.end();
+        // Handle click
+        if (Gdx.input.justTouched()) {
+            if (buttonStart.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+                menuMusic.stop(); // Stop menu music
+                honu = new Honu();
+                honu.setPosition(0, 128);
+                loadLevel("map\\level1.txt");
+                gameState = STATE_HOWTO ; // Start game with How to Play
+            } else if (buttonOptions.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+                // Implement later
+            } else if (buttonExit.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+                Gdx.app.exit();
             }
         }
     }
     public void nextLevel() {
+        // on first frame, stop old BGM and start your transition cue:
+        if (!transitionStarted) {
+            transitionStarted = true;
+            if (bgMusic != null && bgMusic.isPlaying()) {
+                bgMusic.stop();
+            }
+            // assume you loaded `transitionMusic` in create()
+            transitionMusic.play();
+        }
 
-    }
-    public void gameOver() {
+        // clear & draw your “Level X Complete!” text
+        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        camera.position.set(viewport.getWorldWidth()/2f,
+            viewport.getWorldHeight()/2f,
+            0);
+        camera.update();
+
         batch.setProjectionMatrix(camera.combined);
-
         batch.begin();
-            //Center of the screen
-            float centerX = camera.position.x;
-            float centerY = camera.position.y / 2 + 200;
-            float retryX = centerX - 500;
-            float quitX = centerX + 100;
-            float buttonY = centerY - 50;
-
-            //Game over screen overlay
-            gameOverOverlay.setPosition(camera.position.x - camera.viewportWidth / 2f,
-                camera.position.y - camera.viewportHeight / 2f);
-            gameOverOverlay.draw(batch);
-
-            //GAME OVER TITLE
-            gameOver.setPosition(centerX - gameOver.getWidth() / 2, centerY + 100);
-            gameOver.draw(batch);
-
-            // Get mouse position
-            Vector3 mouse = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(mouse);
-
-            // Draw Retry button
-            if (buttonRetry.getBoundingRectangle().contains(mouse.x, mouse.y)) {
-                buttonRetryHighlight.setPosition(retryX, buttonY);
-                buttonRetry.getBoundingRectangle().setPosition(retryX, buttonY);
-                buttonRetryHighlight.draw(batch);
-            } else {
-                buttonRetry.setPosition(retryX, buttonY);
-                buttonRetry.draw(batch);
-            }
-            // Draw Quit button
-            if (buttonQuit.getBoundingRectangle().contains(mouse.x, mouse.y)) {
-                buttonQuitHighlight.setPosition(quitX, buttonY);
-                buttonQuit.getBoundingRectangle().setPosition(quitX, buttonY);
-                buttonQuitHighlight.draw(batch);
-            } else {
-                buttonQuit.setPosition(quitX, buttonY);
-                buttonQuit.draw(batch);
-            }
+        String msg = "Level " + level + " Complete!";
+        // center it:
+        GlyphLayout layout = new GlyphLayout(fontWhite, msg);
+        float x = (viewport.getWorldWidth() - layout.width) / 2f;
+        float y = viewport.getWorldHeight()/2f + 50;
+        fontWhite.draw(batch, layout, x, y);
         batch.end();
 
-        //Input handling
+        // when your cue finishes, actually load the next map:
+        if (!transitionMusic.isPlaying()) {
+            // bump the level index
+            level = nextLevelToLoad;
+
+            // reset Honu
+            honu = new Honu();
+            honu.setPosition(0, 128);
+
+            // load the new txt
+            loadLevel("map\\level" + level + ".txt");
+
+            // go back to either HOWTO or PLAYING
+            gameState = (level == 1 ? STATE_HOWTO : STATE_PLAYING);
+        }
+    }
+    public void gameOver() {
+        // --- play the jingle once on entry ---
+        if (!gameOverPlayed) {
+            gameOverSfx.play();
+            gameOverPlayed = true;
+            // also stop any level music
+            if (bgMusic != null && bgMusic.isPlaying()) {
+                bgMusic.stop();
+            }
+        }
+
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        //Center of the screen
+        float centerX = camera.position.x;
+        float centerY = camera.position.y / 2 + 200;
+        float retryX  = centerX - 500;
+        float quitX   = centerX + 100;
+        float buttonY = centerY - 50;
+
+        gameOverOverlay.setPosition(
+            camera.position.x - camera.viewportWidth / 2f,
+            camera.position.y - camera.viewportHeight / 2f
+        );
+        gameOverOverlay.draw(batch);
+
+        gameOver.setPosition(
+            centerX - gameOver.getWidth() / 2,
+            centerY + 100
+        );
+        gameOver.draw(batch);
+
+        Vector3 mouse = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(mouse);
+
+        // Retry
+        if (buttonRetry.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+            buttonRetryHighlight.setPosition(retryX, buttonY);
+            buttonRetryHighlight.draw(batch);
+        } else {
+            buttonRetry.setPosition(retryX, buttonY);
+            buttonRetry.draw(batch);
+        }
+
+        // Quit
+        if (buttonQuit.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+            buttonQuitHighlight.setPosition(quitX, buttonY);
+            buttonQuitHighlight.draw(batch);
+        } else {
+            buttonQuit.setPosition(quitX, buttonY);
+            buttonQuit.draw(batch);
+        }
+        batch.end();
+
         if (Gdx.input.justTouched()) {
             if (buttonRetry.getBoundingRectangle().contains(mouse.x, mouse.y)) {
+                // reset the flag so it can play again next time
+                gameOverPlayed = false;
                 resetGame();
             } else if (buttonQuit.getBoundingRectangle().contains(mouse.x, mouse.y)) {
                 Gdx.app.exit();
             }
         }
-
     }
 
     private void resetGame() {
@@ -946,25 +1043,80 @@ public class ReefGuardian implements ApplicationListener {
             fontWhite.draw(batch, "How to Play", cx - 250, cy + 400);
 
             // draw the three controls underneath
-            howToWASD.setPosition(cx - howToWASD.getWidth()/2 - 150 , cy);
+            howToWASD.setPosition(cx - howToWASD.getWidth()/2 - 350 , cy);
             howToWASD.draw(batch);
+            howToArrows.setPosition(cx - howToWASD.getWidth()/2 + 350, cy);
+            howToArrows.draw(batch);
             fontWhite.getData().setScale(1.5f);
-            fontWhite.draw(batch, "- Move", cx + 100 , cy + 150);
+            fontWhite.draw(batch, "- Move -", cx - 100, cy + 150);
 
-            howToSpace.setPosition(cx - 300, cy - 90);
+            howToSpace.setPosition(cx - 300, cy - 120);
             howToSpace.draw(batch);
             fontWhite.getData().setScale(1.5f);
-            fontWhite.draw(batch, "- Shoot", cx + 100 , cy - 45);
+            fontWhite.draw(batch, "- Shoot", cx + 100 , cy - 75);
 
-            howToESC.setPosition(cx - 360, cy - 405);
+            howToESC.setPosition(cx - 360, cy - 450);
             howToESC.draw(batch);
             fontWhite.getData().setScale(1.5f);
-            fontWhite.draw(batch, "- Pause Game", cx + 100 , cy - 190);
+            fontWhite.draw(batch, "- Pause Game", cx + 100 , cy - 245);
 
             // reset tint
             batch.setColor(1,1,1,1);
         batch.end();
     }
+    // Ending Screen
+    private void showEnding() {
+        //grab the frame‐delta
+        float delta = Gdx.graphics.getDeltaTime();
 
+        //on the very first call, start the music & zero the timer
+        if (!endingPlayed) {
+            endingMusic.play();
+            endingPlayed  = true;
+            endingTimer   = 0f;
+        }
+
+        // advance clock
+        endingTimer += delta;
+
+        // draw the ending screen
+        camera.position.set(viewport.getWorldWidth()/2f,
+            viewport.getWorldHeight()/2f,
+            0);
+        camera.update();
+
+        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        endingScreen.setPosition(
+            camera.position.x - endingScreen.getWidth()/2f,
+            camera.position.y - endingScreen.getHeight()/2f
+        );
+        endingScreen.draw(batch);
+        batch.end();
+
+        // only allow skipping after 15 seconds have elapsed
+        boolean canSkip = endingTimer >= 15f;
+
+        // if the music ran out, or (once you're past 15s and the player taps/presses a key),
+        //    tear everything down and go back to the menu
+        if (!endingMusic.isPlaying()
+            || (canSkip && (Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)
+            || Gdx.input.justTouched()))) {
+
+            endingMusic.stop();
+            endingPlayed = false;
+
+            gameObjectsList.clear();
+            projectiles.clear();
+
+            if (menuMusic != null && !menuMusic.isPlaying()) {
+                menuMusic.play();
+            }
+
+            gameState = STATE_MENU;
+        }
+    }
 
 }
