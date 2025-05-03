@@ -15,10 +15,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import io.github.ReefGuardianProject.objects.Checkpoint;
-import io.github.ReefGuardianProject.objects.GameObjects;
-import io.github.ReefGuardianProject.objects.LiveCollectible;
-import io.github.ReefGuardianProject.objects.NextLevelDoor;
+import io.github.ReefGuardianProject.objects.*;
 import io.github.ReefGuardianProject.objects.enemy.*;
 import io.github.ReefGuardianProject.objects.environment.KelpBlock;
 import io.github.ReefGuardianProject.objects.environment.RockBlock;
@@ -296,6 +293,12 @@ public class ReefGuardian implements ApplicationListener {
                         Integer.parseInt(tokens.nextToken()),
                         Integer.parseInt(tokens.nextToken())));
                     break;
+                case "BlueClam":
+                    gameObjectsList.add(new BlueClam(
+                        Integer.parseInt(tokens.nextToken()),
+                        Integer.parseInt(tokens.nextToken())
+                    ));
+                    break;
                 case "Live":
                     gameObjectsList.add(new LiveCollectible(
                         Integer.parseInt(tokens.nextToken()),
@@ -550,11 +553,15 @@ public class ReefGuardian implements ApplicationListener {
                         break;
                     case 3: // Collect item
                         if (honuCollision != -1) {
-                            // Remove the collectible if touched
-                            iterator.remove();   // Delete collectible after collecting
-                            honu.gainLife();     // restore one life
-                            // Play sfx
-                            if (collectLifeSound != null) collectLifeSound.play();
+                            // if it's a BlueClam...
+                            if (o instanceof BlueClam) {
+                                ((BlueClam)o).playCollectSfx();
+                                honu.activateShield();      // new method on Honu
+                            } else {
+                                honu.gainLife();
+                                if (collectLifeSound != null) collectLifeSound.play();
+                            }
+                            iterator.remove();
                         }
                         break;
                     case 4: // Checkpoint logic

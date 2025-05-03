@@ -166,8 +166,258 @@ RockBlock 3968 832
 RockBlock 3968 896
 RockBlock 3968 960
 
+#kelp obstacle- pyramid
+KelpBlock 1984 64
+KelpBlock 2048 64
+KelpBlock 2112 64
+KelpBlock 2176 64
+KelpBlock 2240 64
+KelpBlock 2304 64
+KelpBlock 2304 64
+KelpBlock 2368 64
+
+
+KelpBlock 2048 128
+KelpBlock 2112 128
+KelpBlock 2176 128
+KelpBlock 2240 128
+KelpBlock 2304 128
+KelpBlock 2304 128
+
+
+KelpBlock 2112 192
+KelpBlock 2176 192
+KelpBlock 2240 192
+
+KelpBlock 2176 256
+
+
+#rock block - L
+
+RockBlock 2048 576
+RockBlock 2112 640
+RockBlock 2176 704
+RockBlock 2240 768
+RockBlock 2304 832
+RockBlock 2304 896
+
+#Enemies
+OilBarrel 2048 640
+OilBarrel 2112 704
+NuclearWaste 2176 768
+OilBarrel 2240 832
+
+TrashBag 2304 416
+TrashBag 2432 192
+
+#rock block - stairs
+
+
+RockBlock 1856 64
+RockBlock 1856 128
+RockBlock 1856 192
+RockBlock 1856 256
+RockBlock 1856 320
+
+RockBlock 1792 64
+RockBlock 1792 128
+RockBlock 1792 192
+RockBlock 1792 256
+
+RockBlock 1728 64
+RockBlock 1728 128
+RockBlock 1728 192
+
+RockBlock 1664 64
+RockBlock 1664 128
+
+RockBlock 1600 64
+
+#enemies for stairs
+NuclearWaste 1920 64
+TrashBag 2176 640
+
+# kelp block - one way out
+
+NuclearWaste 1216 768
+TrashBag 1408 896
+OilBarrel 1152 576
+
+KelpBlock 512 512
+KelpBlock 576 512
+KelpBlock 640 576
+KelpBlock 704 576
+KelpBlock 768 640
+KelpBlock 832 640
+KelpBlock 896 640
+KelpBlock 960 640
+KelpBlock 1024 640
+KelpBlock 1088 640
+KelpBlock 1152 640
+KelpBlock 1152 704
+KelpBlock 1152 768
+KelpBlock 1152 896
+
+KelpBlock 960 896
+KelpBlock 960 832
+KelpBlock 960 832
+KelpBlock 896 832
+KelpBlock 832 832
+KelpBlock 768 832
+KelpBlock 704 832
+KelpBlock 640 768
+KelpBlock 576 704
+KelpBlock 512 704
+
+#collectibles (SEASHELLS)
+Live 544 608
+Live 608 608
+
+Live 672 672
+Live 736 672
+
+Live 768 736
+Live 832 736
+Live 896 736
+Live 960 736
+Live 1024 736
+
+# rock block in middle
+RockBlock 1152 448
+#RockBlock 1152 384
+RockBlock 1152 320
+RockBlock 1216 320
+RockBlock 1280 320
+RockBlock 1344 320
+RockBlock 1408 320
+RockBlock 1408 384
+#RockBlock 1408 448
+RockBlock 1408 512
+RockBlock 1344 512
+RockBlock 1280 512
+RockBlock 1216 512
+RockBlock 1152 512
+
+#Section 3 - Which Path?
+#top row
+RockBlock 2752 704
+RockBlock 2816 704
+RockBlock 2880 704
+RockBlock 2944 704
+RockBlock 3008 704
+RockBlock 3072 704
+RockBlock 3136 704
+RockBlock 3200 704
+RockBlock 3264 704
+RockBlock 3328 704
+RockBlock 3392 704
+RockBlock 3456 704
+RockBlock 3520 704
+RockBlock 3584 704
+RockBlock 3648 704
+RockBlock 3712 704
+RockBlock 3776 704
+RockBlock 3840 704
+RockBlock 3904 704
+
+#top row enemies
+NuclearWaste 2752 768
+NuclearWaste 2752 832
+NuclearWaste 2752 896
+
+OilBarrel 2752 640
+OilBarrel 2752 576
+OilBarrel 2752 512
+
+#top middle row collectibles (SEA SHELLS)
+Live 3872 640
+Live 3872 576
+
+Live 3840 640
+Live 3840 576
+
+Live 3808 640
+Live 3808 576
+
+Live 3776 640
+Live 3776 576
+
+Live 3744 640
+Live 3744 576
+
+#middle row
+RockBlock 2752 448
+RockBlock 2816 448
+RockBlock 2880 448
+RockBlock 2944 448
+RockBlock 3008 448
+RockBlock 3072 448
+RockBlock 3136 448
+RockBlock 3200 448
+RockBlock 3264 448
+RockBlock 3328 448
+RockBlock 3392 448
+RockBlock 3456 448
+RockBlock 3520 448
+RockBlock 3584 448
+RockBlock 3648 448
+RockBlock 3712 448
+RockBlock 3776 448
+RockBlock 3840 448
+RockBlock 3904 448
+
+#bottom middle row enemies
+NuclearWaste 2752 256
+OilBarrel 2752 320
+
+NuclearWaste 3904 256
+OilBarrel 3904 320
+NuclearWaste 3840 320
+OilBarrel 3840 256
+TrashBag 3776 320
+OilBarrel 3776 256
+NuclearWaste 3712 256
+OilBarrel 3712 320
+WaterBottle 3712 384
+BeerBottle 3776 384
+WaterBottle 3840 384
+TrashBag 3904 384
+
+#bottom row
+RockBlock 2752 192
+RockBlock 2816 192
+RockBlock 2880 192
+RockBlock 2944 192
+RockBlock 3008 192
+RockBlock 3072 192
+RockBlock 3136 192
+RockBlock 3200 192
+RockBlock 3264 192
+RockBlock 3328 192
+RockBlock 3392 192
+RockBlock 3456 192
+RockBlock 3520 192
+RockBlock 3584 192
+RockBlock 3648 192
+RockBlock 3712 192
+RockBlock 3776 192
+RockBlock 3840 192
+RockBlock 3904 192
+
+#bottom row - enemies
+NuclearWaste 2752 64
+NuclearWaste 2752 128
+
+NuclearWaste 3904 64
+NuclearWaste 3904 128
+NuclearWaste 3840 64
+NuclearWaste 3840 128
+NuclearWaste 3776 64
+NuclearWaste 3776 128
+
+
 # Exit
-NextLevelDoor 320 64
+NextLevelDoor 3840 768
 
 Live 320 320
 Live 320 640

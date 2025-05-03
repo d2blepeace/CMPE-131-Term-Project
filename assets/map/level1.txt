@@ -191,11 +191,11 @@ KelpBlock 832 256
 TrashBag 896 384
 BeerBottle 960 768
 
-#Section 1 (Pyramid) - SEA SHELLS
-Live 848 336
-Live 784 272
-Live 704 208
-Live 640 144
+#Section 1 (Pyramid) - BLUE CLAM
+BlueClam 848 336
+BlueClam 784 272
+BlueClam 704 208
+BlueClam 640 144
 
 
 #Obstacle Section 1 - Top Upside Down Pyramid

@@ -36,6 +36,15 @@ public class Honu extends GameObjects {
     float gameTime = 0f;
     boolean shoot = false;
     private Sound shootSound;
+    // Shield animation fields
+    private Animation<TextureRegion> shieldActivateAnim;
+    private Animation<TextureRegion> shieldLoopAnim;
+
+    private boolean activatingShield = false;
+    private float activateTimer = 0f;
+
+    private boolean hasShield = false;
+    private float shieldLoopTime = 0f;
     //Honu animation
     Animation<TextureRegion> armAnimation, headAnimation;
     TextureRegion headIdle = new TextureRegion(new Texture("sprite\\head\\head1.png"));
@@ -68,6 +77,15 @@ public class Honu extends GameObjects {
 
         //Setup gravity
         velocityY = 0;
+        // Shield animation
+        // load the 3 frames once:
+        TextureRegion f1 = new TextureRegion(new Texture("sprite\\shield\\BubbleStage_1.png"));
+        TextureRegion f2 = new TextureRegion(new Texture("sprite\\shield\\BubbleStage_2.png"));
+        TextureRegion f3 = new TextureRegion(new Texture("sprite\\shield\\BubbleStage_3.png"));
+        shieldActivateAnim = new Animation<>(0.1f, f1, f2, f3);
+        // once activate finishes, loop on frame 3
+        shieldLoopAnim = new Animation<>(0.1f, f3);
+        shieldLoopAnim.setPlayMode(Animation.PlayMode.LOOP);
 
         //Load shooting sound
         shootSound = Gdx.audio.newSound(Gdx.files.internal("sfx\\pixelShoot.wav"));
@@ -140,6 +158,11 @@ public class Honu extends GameObjects {
         return lives;
     }
     public void loseLife() {
+        if (hasShield) {
+            // consume the shield instead of a life
+            hasShield = false;
+            return;
+        }
         if (lives > 0) {
             lives--;
         }
@@ -153,6 +176,8 @@ public class Honu extends GameObjects {
             isHurt = true;
             hurtTimer = 0f;
         }
+
+
     }
 
     public void gainLife() {
@@ -242,6 +267,18 @@ public class Honu extends GameObjects {
         if (shootTimer < shootCooldown) {
             shootTimer += delta;
         }
+        // shield activation
+        if (activatingShield) {
+            activateTimer += delta;
+            // once activation animation is done, switch into steady‐shield mode:
+            if (shieldActivateAnim.isAnimationFinished(activateTimer)) {
+                activatingShield = false;
+                hasShield = true;
+            }
+        } else if (hasShield) {
+            shieldLoopTime += delta;
+        }
+
         setPosition(full.x, full.y);
     }
     public void setPosition(float x, float y) {
@@ -311,7 +348,20 @@ public class Honu extends GameObjects {
             batch.draw(defeatFrame, full.x, full.y);
         }
 
-
+        // Shield sprite on top:
+        if (activatingShield) {
+            TextureRegion frame = shieldActivateAnim.getKeyFrame(activateTimer, false);
+            batch.draw(frame,
+                full.x + (full.width - frame.getRegionWidth())/2f,
+                full.y + (full.height - frame.getRegionHeight())/2f
+            );
+        } else if (hasShield) {
+            TextureRegion frame = shieldLoopAnim.getKeyFrame(shieldLoopTime, true);
+            batch.draw(frame,
+                full.x + (full.width - frame.getRegionWidth())/2f,
+                full.y + (full.height - frame.getRegionHeight())/2f
+            );
+        }
     }
 
     @Override
@@ -341,6 +391,13 @@ public class Honu extends GameObjects {
         if (isDefeated) return false;
         if (isHurt && hurtTimer < 0.5f) return false;
         return true;
+    }
+
+    public void activateShield() {
+        activatingShield = true;
+        activateTimer = 0f;
+        hasShield = false;        // not yet “ready” until activateAnim finishes
+        shieldLoopTime = 0f;
     }
 
 }
