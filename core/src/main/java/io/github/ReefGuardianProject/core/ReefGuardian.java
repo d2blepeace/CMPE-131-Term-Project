@@ -39,6 +39,8 @@ public class ReefGuardian implements ApplicationListener {
     private Sprite gameOver, gameOverOverlay;
     private Sprite buttonRetry, buttonQuit;
     private Sprite buttonRetryHighlight, buttonQuitHighlight;
+    private Sound gameOverSfx;
+    private boolean gameOverPlayed = false; // only play the sound once
     //Main Menu Assets
     private Sprite menuBackground, menuTitle;
     private Sprite buttonStart, buttonOptions, buttonExit;
@@ -58,6 +60,8 @@ public class ReefGuardian implements ApplicationListener {
     private final float HOWTO_TOTAL     = FADE_IN_TIME + DISPLAY_TIME + FADE_OUT_TIME;
     //Game background music
     private Music bgMusic;
+    private Music bossDefeatMusic;
+    private boolean bossDefeatedPlayed = false;
     private Viewport viewport;
     private SpriteBatch batch;
     //private Texture texture;
@@ -91,6 +95,7 @@ public class ReefGuardian implements ApplicationListener {
         viewport.apply();
         camera.setToOrtho(false, 1280, 1024);
         batch = new SpriteBatch();
+
         //Game font
         fontBlack = new BitmapFont(Gdx.files.internal("font\\fontBlack.fnt"),
             Gdx.files.internal("font\\fontBlack.png"), false);
@@ -101,6 +106,7 @@ public class ReefGuardian implements ApplicationListener {
 
         //Honu healthbar
         honuHealthBar = new HonuHealthBar();
+
         //Load Sounds:
             //Load sfx of collecting live
             collectLifeSound = Gdx.audio.newSound(Gdx.files.internal("sfx\\CollectLive_SFX.mp3"));
@@ -112,6 +118,7 @@ public class ReefGuardian implements ApplicationListener {
         gameOver = new Sprite(new Texture("gameUI\\GameOver.png"));
         gameOverOverlay = new Sprite(new Texture("gameUI\\1280x1024_grey_background.jpg"));
         gameOverOverlay.setAlpha(0.045f);
+        gameOverSfx = Gdx.audio.newSound(Gdx.files.internal("sfx/GameOver_Sfx.mp3"));
 
         buttonRetry = new Sprite(new Texture("gameUI\\Retry.png"));
         buttonQuit = new Sprite(new Texture("gameUI\\Quit.png"));
@@ -127,10 +134,12 @@ public class ReefGuardian implements ApplicationListener {
         buttonOptionsHover = new Sprite(new Texture("gameUI\\mainMenu\\540x145_OptionsHighlighted.png"));
         buttonExit = new Sprite(new Texture("gameUI\\mainMenu\\420x180_Exit.png"));
         buttonExitHover = new Sprite(new Texture("gameUI\\mainMenu\\420x180_ExitHighlighted.png"));
+
         //Main Menu Music
         menuMusic = Gdx.audio.newMusic(Gdx.files.internal("music\\MainMenuTheme.mp3"));
         menuMusic.setLooping(true);
         menuMusic.play();
+
         //Pause Screen
         pauseText = new Sprite(new Texture("gameUI\\pause\\600x280_PauseText.png"));
         returnButton = new Sprite(new Texture("gameUI\\pause\\540x145_ReturnPause.png"));
@@ -139,10 +148,15 @@ public class ReefGuardian implements ApplicationListener {
         mainMenuButtonHover = new Sprite(new Texture("gameUI\\pause\\700x145_MainMenuPauseHighlighted.png"));
         pauseStuckButton = new Sprite(new Texture("gameUI\\pause\\700x145_Stuck.png"));
         pauseStuckButtonHover = new Sprite(new Texture("gameUI\\Pause\\700x145_StuckHighlighted.png"));
+
         //How to play Screen
         howToWASD  = new Sprite(new Texture("gameUI\\howToPlay\\430x265_WASD.png"));
         howToSpace = new Sprite(new Texture("gameUI\\howToPlay\\285x55_Spacebar.png"));
         howToESC   = new Sprite(new Texture("gameUI\\howToPlay\\430x265_ESC.png"));
+
+        //Boss Defeat cue audio
+        bossDefeatMusic = Gdx.audio.newMusic(Gdx.files.internal("music\\BossDefeat_Cue.mp3"));
+        bossDefeatMusic.setLooping(false);
 
         //Set game state to menu
         gameState = STATE_MENU;
@@ -196,7 +210,6 @@ public class ReefGuardian implements ApplicationListener {
 
     @Override
     public void resume() {
-
     }
 
     public void updateCamera() {
@@ -448,6 +461,30 @@ public class ReefGuardian implements ApplicationListener {
         //Honu
         honu.update(Gdx.graphics.getDeltaTime());
 
+        // Activation of Boss
+        final float ACTIVATION_DISTANCE = 500f;
+        for (GameObjects obj : gameObjectsList) {
+            if (obj instanceof FinalBoss) {
+                FinalBoss boss = (FinalBoss)obj;
+
+                // if not yet activated and Honu is within range…
+                if (!boss.isActive() &&
+                    Math.abs(honu.getHitBox().x - boss.getHitBox().x) < ACTIVATION_DISTANCE) {
+
+                    // 1) flip the boss on
+                    boss.activate();
+
+                    // 2) start your level-3 music
+                    if (bgMusic != null && !bgMusic.isPlaying()) {
+                        bgMusic.play();
+                    }
+
+                    // only need to do this once
+                    break;
+                }
+            }
+        }
+
         // Waterball of Honu and Boss Projectiles
         for (Projectile p : projectiles) {
             p.update(Gdx.graphics.getDeltaTime());
@@ -631,7 +668,6 @@ public class ReefGuardian implements ApplicationListener {
                 }
             }
         }
-
         // Disable the boss barrier
         if (bossDefeated) {
             for (GameObjects obj : gameObjectsList) {
@@ -639,8 +675,16 @@ public class ReefGuardian implements ApplicationListener {
                     ((BossBarrier) obj).deactivate();
                 }
             }
+            // play BossDefeat_Cue music once
+            if (!bossDefeatedPlayed) {
+                bossDefeatMusic.play();
+                bossDefeatedPlayed = true;
+            }
+            // stop the level-3 music
+            if (bgMusic != null && bgMusic.isPlaying()) {
+                bgMusic.stop();
+            }
         }
-
         //Change level test
         if (changeLevel) {
             level++;
@@ -659,7 +703,15 @@ public class ReefGuardian implements ApplicationListener {
 
         // Check if Honu's defeat animation has finished to show Game Over screen
         if (honu.isDefeated() && honu.isDefeatAnimationFinished()) {
-            gameState = 4;
+            if (!gameOverPlayed) {
+                gameOverSfx.play();
+                gameOverPlayed = true;
+            }
+            // stop level music
+            if (bgMusic != null && bgMusic.isPlaying()) {
+                bgMusic.stop();
+            }
+            gameState = STATE_GAME_OVER;
             return;
         }
 
@@ -685,6 +737,7 @@ public class ReefGuardian implements ApplicationListener {
                 }
             }
         }
+
         if (honu.canMove()) {
             //Handling Input Controls
             if (Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -783,6 +836,7 @@ public class ReefGuardian implements ApplicationListener {
             obj.dispose();
         }
         if (menuMusic != null) menuMusic.dispose();
+        if (bossDefeatMusic != null) bossDefeatMusic.dispose();
     }
     public static ReefGuardian getInstance() {
         return instance;

@@ -1,6 +1,7 @@
 package io.github.ReefGuardianProject.objects.finalBoss;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 
 public class FinalBoss extends GameObjects {
     private float x, y;
+    private boolean active = false;
     //Health field
     private int health;
     private int initialHealth;
@@ -29,6 +31,11 @@ public class FinalBoss extends GameObjects {
     private float timeUntilNextPause = 2f;
     private float pauseCooldownTimer = 0f;
     private final float pauseDuration = 1.8f; // seconds
+    private boolean isHurt = false;
+    private float hurtTimer = 0f;
+    private static final float HURT_DURATION = 0.75f;  // how long to flash
+    private Sound damageSfx;
+
     //Projectile field
     private ArrayList<SubmarineProjectile> projectiles = new ArrayList<>();
     private boolean hasFired = false;
@@ -44,6 +51,7 @@ public class FinalBoss extends GameObjects {
         //Load Sprite
         this.texture = new Texture(Gdx.files.internal("sprite\\finalboss\\SubmarineBoss\\256x128_SubmarineBoss.png"));
         this.damagedTexture = new Texture(Gdx.files.internal("sprite\\finalboss\\SubmarineBoss\\256x128_Damaged_SubmarineBoss.png"));
+        damageSfx = Gdx.audio.newSound(Gdx.files.internal("sfx\\Pixel_Honu_Dmg_SFX.mp3"));
 
         this.sprite = new Sprite(texture, 0, 0, 256, 128);
         sprite.setPosition(x, y);
@@ -55,6 +63,10 @@ public class FinalBoss extends GameObjects {
         }
         return -1;
     }
+    // Call when Honu gets close enough
+    public void activate() {
+        active = true;
+    }
 
     @Override
     public void action(int type, float x, float y) {
@@ -64,6 +76,8 @@ public class FinalBoss extends GameObjects {
     //Boss AI update according to game time
     @Override
     public void update(float delta) {
+        if (!active) return;
+
         if (isPaused) {
             pauseTimer += delta;
 
@@ -100,6 +114,13 @@ public class FinalBoss extends GameObjects {
                 velocityY = -velocityY;
             }
         }
+        // Check if the boss is hurt
+        if (isHurt) {
+            hurtTimer += delta;
+            if (hurtTimer >= HURT_DURATION) {
+                isHurt = false;
+            }
+        }
 
         // Update projectiles
         for (SubmarineProjectile p : projectiles) {
@@ -110,7 +131,6 @@ public class FinalBoss extends GameObjects {
 
     private void fireProjectile() {
         // Adjust the location of the projectile's animation
-        // NOTE: DO NOT ADJUST xFixingPixel and yFixingPixel
         float xFixingPixel = 30;
         float yFixingPixel = ((float) 128 / 2) - 38;
         float projectileStartX = this.x + xFixingPixel ;
@@ -157,6 +177,18 @@ public class FinalBoss extends GameObjects {
 
     @Override
     public void draw(SpriteBatch batch) {
+        // flicker during hurt: skip every other 0.1s
+        if (isHurt) {
+            int frame = (int)(hurtTimer * 10) % 2;
+            if (frame == 1) return;
+        }
+        if (!active) {
+            // draw just the idle sprite
+            sprite.setPosition(x, y);
+            sprite.draw(batch);
+            return;
+        }
+
         sprite.draw(batch);
         for (SubmarineProjectile p : projectiles) {
             p.draw(batch);
@@ -173,15 +205,14 @@ public class FinalBoss extends GameObjects {
         return 2; // Create damage to Honu
     }
     public void receiveDamage() {
+        // Play sounds
+        if (damageSfx != null) damageSfx.play();
         health--;
-        // If health is half or less, switch to damaged
-        if (health <= initialHealth / 2 && !isDamaged) {
+        isHurt = true;
+        hurtTimer = 0f;
+        if (health <= initialHealth/2 && !isDamaged) {
             sprite.setTexture(damagedTexture);
             isDamaged = true;
-        }
-
-        if (health <= 0) {
-            // Handle death
         }
     }
     @Override
@@ -196,6 +227,9 @@ public class FinalBoss extends GameObjects {
 
     @Override
     public void dispose() {
-
+        if (damageSfx != null) damageSfx.dispose();
+    }
+    public boolean isActive() {
+        return active;
     }
 }

@@ -193,10 +193,6 @@ BeerBottle 960 768
 
 #Section 1 (Pyramid) - BLUE CLAM
 BlueClam 848 336
-BlueClam 784 272
-BlueClam 704 208
-BlueClam 640 144
-
 
 #Obstacle Section 1 - Top Upside Down Pyramid
 KelpBlock 1024 896
@@ -220,13 +216,8 @@ KelpBlock 1280 768
 KelpBlock 1216 704
 
 #Section 1 (Pyramid Upside Down) - Collectibles (SEA SHELLS)
-Live 1232 656
-Live 1040 848
-Live 1424 848
-Live 1104 784
-Live 1360 784
-Live 1168 720
-Live 1296 720
+BlueClam 1232 656
+
 
 #Section 1 - Enemies between pyramid and pillars
 BeerBottle 1600 64
@@ -267,11 +258,8 @@ BeerBottle 2368 640
 WaterBottle 2496 576
 BeerBottle 2496 512
 
-#Section 2 - Collectibles (SEA SHELLS)
+#Section 2 - Collectibles
 Live 1872 272
-Live 2000 326
-Live 2128 400
-Live 2256 464
 
 #Section 2 - Kelp Columns and rows
 #Rows
@@ -325,8 +313,6 @@ TrashBag 2624 640
 KelpBlock 2752 896
 KelpBlock 2752 832
 KelpBlock 2752 768
-
-
 #Section 3 - Obstacles Cave
 RockBlock 2944 64
 RockBlock 3008 64
@@ -390,14 +376,7 @@ RockBlock 3392 320
 RockBlock 3456 320
 RockBlock 3520 320
 
-Live 3088 400
-Live 3152 400
-Live 3216 400
-Live 3280 400
-Live 3344 400
-Live 3408 400
-Live 3472 400
-Live 3536 400
+BlueClam 3536 400
 
 #Section 3 - Kelp Vines
 KelpBlock 2752 896
@@ -484,10 +463,6 @@ KelpBlock 3136 640
 KelpBlock 3200 640
 KelpBlock 3264 640
 KelpBlock 3328 640
-
-
-#COLLECTIBLE - HAT
-Live 3520 832
 
 #Heart
 Live 3520 768
