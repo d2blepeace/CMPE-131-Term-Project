@@ -20,8 +20,11 @@ apply plugin: 'io.github.fourlastor.construo'
 import io.github.fourlastor.construo.Target
 
 sourceSets.main.resources.srcDirs += [ rootProject.file('assets').path ]
-mainClassName = 'io.github.ReefGuardianProject.lwjgl3.Lwjgl3Launcher'
+mainClassName = 'io.github.ReefGuardianProject.lwjgl3.GameLauncher'
 application.setMainClass(mainClassName)
+application {
+  mainClass = 'io.github.ReefGuardianProject.lwjgl3.GameLauncher'
+  }
 eclipse.project.name = appName + '-lwjgl3'
 java.sourceCompatibility = 8
 java.targetCompatibility = 8
@@ -120,6 +123,9 @@ tasks.register('dist') {
 distributions {
   main {
     contents {
+      from("$rootProject.projectDir/assets") {
+        into "assets"
+      }
       into('libs') {
         project.configurations.runtimeClasspath.files.findAll { file ->
           file.getName() != project.tasks.jar.outputs.files.singleFile.name
