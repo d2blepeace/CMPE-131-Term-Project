@@ -1,0 +1,403 @@
+Level2_Background map/Level2_Background.png
+LevelMusic music/Level2_Music.mp3
+
+#BOTTOM WALL
+
+RockBlock 0 0
+RockBlock 64 0
+RockBlock 128 0
+RockBlock 192 0
+RockBlock 256 0
+RockBlock 320 0
+RockBlock 384 0
+RockBlock 448 0
+RockBlock 512 0
+RockBlock 576 0
+RockBlock 640 0
+RockBlock 704 0
+RockBlock 768 0
+RockBlock 832 0
+RockBlock 896 0
+RockBlock 960 0
+RockBlock 1024 0
+RockBlock 1088 0
+RockBlock 1152 0
+RockBlock 1216 0
+RockBlock 1280 0
+RockBlock 1344 0
+RockBlock 1408 0
+RockBlock 1472 0
+RockBlock 1536 0
+RockBlock 1600 0
+RockBlock 1664 0
+RockBlock 1728 0
+RockBlock 1792 0
+RockBlock 1856 0
+RockBlock 1920 0
+RockBlock 1984 0
+RockBlock 2048 0
+RockBlock 2112 0
+RockBlock 2176 0
+RockBlock 2240 0
+RockBlock 2304 0
+RockBlock 2368 0
+RockBlock 2432 0
+RockBlock 2496 0
+RockBlock 2560 0
+RockBlock 2624 0
+RockBlock 2688 0
+RockBlock 2752 0
+RockBlock 2816 0
+RockBlock 2880 0
+RockBlock 2944 0
+RockBlock 3008 0
+RockBlock 3072 0
+RockBlock 3136 0
+RockBlock 3200 0
+RockBlock 3264 0
+RockBlock 3328 0
+RockBlock 3392 0
+RockBlock 3456 0
+RockBlock 3520 0
+RockBlock 3584 0
+RockBlock 3648 0
+RockBlock 3712 0
+RockBlock 3776 0
+RockBlock 3840 0
+RockBlock 3904 0
+
+# TOP WALL
+KelpBlock 0 960
+KelpBlock 64 960
+KelpBlock 128 960
+KelpBlock 192 960
+KelpBlock 256 960
+KelpBlock 320 960
+KelpBlock 384 960
+KelpBlock 448 960
+KelpBlock 512 960
+KelpBlock 576 960
+KelpBlock 640 960
+KelpBlock 704 960
+KelpBlock 768 960
+KelpBlock 832 960
+KelpBlock 896 960
+KelpBlock 960 960
+KelpBlock 1024 960
+KelpBlock 1088 960
+KelpBlock 1152 960
+KelpBlock 1216 960
+KelpBlock 1280 960
+KelpBlock 1344 960
+KelpBlock 1408 960
+KelpBlock 1472 960
+KelpBlock 1536 960
+RockBlock 1600 960
+RockBlock 1664 960
+RockBlock 1728 960
+RockBlock 1792 960
+RockBlock 1856 960
+RockBlock 1920 960
+RockBlock 1984 960
+RockBlock 2048 960
+RockBlock 2112 960
+RockBlock 2176 960
+RockBlock 2240 960
+RockBlock 2304 960
+RockBlock 2368 960
+RockBlock 2432 960
+RockBlock 2496 960
+RockBlock 2560 960
+RockBlock 2624 960
+RockBlock 2688 960
+RockBlock 2752 960
+RockBlock 2816 960
+RockBlock 2880 960
+RockBlock 2944 960
+RockBlock 3008 960
+RockBlock 3072 960
+RockBlock 3136 960
+RockBlock 3200 960
+RockBlock 3264 960
+RockBlock 3328 960
+RockBlock 3392 960
+RockBlock 3456 960
+RockBlock 3520 960
+RockBlock 3584 960
+RockBlock 3648 960
+RockBlock 3712 960
+RockBlock 3776 960
+RockBlock 3840 960
+RockBlock 3904 960
+
+# LEFT WALL
+RockBlock 0 0
+RockBlock 0 64
+RockBlock 0 128
+RockBlock 0 192
+RockBlock 0 256
+RockBlock 0 320
+RockBlock 0 384
+RockBlock 0 448
+RockBlock 0 512
+RockBlock 0 576
+RockBlock 0 640
+RockBlock 0 704
+RockBlock 0 768
+RockBlock 0 832
+RockBlock 0 896
+RockBlock 0 960
+
+# RIGHT WALL
+RockBlock 3968 0
+RockBlock 3968 64
+RockBlock 3968 128
+RockBlock 3968 192
+RockBlock 3968 256
+RockBlock 3968 320
+RockBlock 3968 384
+RockBlock 3968 448
+RockBlock 3968 512
+RockBlock 3968 576
+RockBlock 3968 640
+RockBlock 3968 704
+RockBlock 3968 768
+RockBlock 3968 832
+RockBlock 3968 896
+RockBlock 3968 960
+
+#kelp obstacle- pyramid
+KelpBlock 1984 64
+KelpBlock 2048 64
+KelpBlock 2112 64
+KelpBlock 2176 64
+KelpBlock 2240 64
+KelpBlock 2304 64
+KelpBlock 2304 64
+KelpBlock 2368 64
+
+
+KelpBlock 2048 128
+KelpBlock 2112 128
+KelpBlock 2176 128
+KelpBlock 2240 128
+KelpBlock 2304 128
+KelpBlock 2304 128
+
+
+KelpBlock 2112 192
+KelpBlock 2176 192
+KelpBlock 2240 192
+
+KelpBlock 2176 256
+
+
+#rock block - L
+
+RockBlock 2048 576
+RockBlock 2112 640
+RockBlock 2176 704
+RockBlock 2240 768
+RockBlock 2304 832
+RockBlock 2304 896
+
+#Enemies
+OilBarrel 2048 640
+OilBarrel 2112 704
+NuclearWaste 2176 768
+OilBarrel 2240 832
+
+TrashBag 2304 416
+TrashBag 2432 192
+
+#rock block - stairs
+
+
+RockBlock 1856 64
+RockBlock 1856 128
+RockBlock 1856 192
+RockBlock 1856 256
+RockBlock 1856 320
+
+RockBlock 1792 64
+RockBlock 1792 128
+RockBlock 1792 192
+RockBlock 1792 256
+
+RockBlock 1728 64
+RockBlock 1728 128
+RockBlock 1728 192
+
+RockBlock 1664 64
+RockBlock 1664 128
+
+RockBlock 1600 64
+
+#enemies for stairs
+NuclearWaste 1920 64
+TrashBag 2176 640
+
+# kelp block - one way out
+
+NuclearWaste 1216 768
+TrashBag 1408 896
+OilBarrel 1152 576
+
+KelpBlock 512 512
+KelpBlock 576 512
+KelpBlock 640 576
+KelpBlock 704 576
+KelpBlock 768 640
+KelpBlock 832 640
+KelpBlock 896 640
+KelpBlock 960 640
+KelpBlock 1024 640
+KelpBlock 1088 640
+KelpBlock 1152 640
+KelpBlock 1152 704
+KelpBlock 1152 768
+KelpBlock 1152 896
+
+KelpBlock 960 896
+KelpBlock 960 832
+KelpBlock 960 832
+KelpBlock 896 832
+KelpBlock 832 832
+KelpBlock 768 832
+
+
+
+#collectibles (SEASHELLS)
+WaterBottle 544 608
+
+TrashBag 672 672
+
+NuclearWaste 768 736
+NuclearWaste 832 736
+OilBarrel 896 736
+BlueClam 960 736
+OilBarrel 1024 736
+
+# rock block in middle
+RockBlock 1152 448
+#RockBlock 1152 384
+RockBlock 1152 320
+RockBlock 1216 320
+RockBlock 1280 320
+RockBlock 1344 320
+RockBlock 1408 320
+RockBlock 1408 384
+#RockBlock 1408 448
+RockBlock 1408 512
+RockBlock 1344 512
+RockBlock 1280 512
+RockBlock 1216 512
+RockBlock 1152 512
+
+#Section 3 - Which Path?
+#top row
+RockBlock 2752 704
+RockBlock 2816 704
+RockBlock 2880 704
+RockBlock 2944 704
+RockBlock 3008 704
+RockBlock 3072 704
+RockBlock 3136 704
+RockBlock 3200 704
+RockBlock 3264 704
+RockBlock 3328 704
+RockBlock 3392 704
+RockBlock 3456 704
+RockBlock 3520 704
+RockBlock 3584 704
+RockBlock 3648 704
+RockBlock 3712 704
+RockBlock 3776 704
+RockBlock 3840 704
+RockBlock 3904 704
+
+#top row enemies
+NuclearWaste 2752 768
+NuclearWaste 2752 832
+NuclearWaste 2752 896
+
+OilBarrel 2752 640
+OilBarrel 2752 576
+OilBarrel 2752 512
+
+#middle row
+RockBlock 2752 448
+RockBlock 2816 448
+RockBlock 2880 448
+RockBlock 2944 448
+RockBlock 3008 448
+RockBlock 3072 448
+RockBlock 3136 448
+RockBlock 3200 448
+RockBlock 3264 448
+RockBlock 3328 448
+RockBlock 3392 448
+RockBlock 3456 448
+RockBlock 3520 448
+RockBlock 3584 448
+RockBlock 3648 448
+RockBlock 3712 448
+RockBlock 3776 448
+RockBlock 3840 448
+RockBlock 3904 448
+
+#bottom middle row enemies
+NuclearWaste 2752 256
+OilBarrel 2752 320
+
+NuclearWaste 3904 256
+OilBarrel 3904 320
+NuclearWaste 3840 320
+OilBarrel 3840 256
+TrashBag 3776 320
+OilBarrel 3776 256
+NuclearWaste 3712 256
+OilBarrel 3712 320
+WaterBottle 3712 384
+BeerBottle 3776 384
+WaterBottle 3840 384
+TrashBag 3904 384
+
+#bottom row
+RockBlock 2752 192
+RockBlock 2816 192
+RockBlock 2880 192
+RockBlock 2944 192
+RockBlock 3008 192
+RockBlock 3072 192
+RockBlock 3136 192
+RockBlock 3200 192
+RockBlock 3264 192
+RockBlock 3328 192
+RockBlock 3392 192
+RockBlock 3456 192
+RockBlock 3520 192
+RockBlock 3584 192
+RockBlock 3648 192
+RockBlock 3712 192
+RockBlock 3776 192
+RockBlock 3840 192
+RockBlock 3904 192
+
+#bottom row - enemies
+NuclearWaste 2752 64
+NuclearWaste 2752 128
+
+NuclearWaste 3904 64
+NuclearWaste 3904 128
+NuclearWaste 3840 64
+NuclearWaste 3840 128
+NuclearWaste 3776 64
+NuclearWaste 3776 128
+
+
+# Exit
+NextLevelDoor 3840 768
+
+WaterBottle 320 320
+Checkpoint 64 64

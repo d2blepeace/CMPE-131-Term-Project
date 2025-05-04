@@ -1,0 +1,479 @@
+Level1_Background map/Level1_Background.png
+LevelMusic music/Level1_Music.mp3
+
+#BOTTOM WALL
+RockBlock 0 0
+RockBlock 64 0
+RockBlock 128 0
+RockBlock 192 0
+RockBlock 256 0
+RockBlock 320 0
+RockBlock 384 0
+RockBlock 448 0
+RockBlock 512 0
+RockBlock 576 0
+RockBlock 640 0
+RockBlock 704 0
+RockBlock 768 0
+RockBlock 832 0
+RockBlock 896 0
+RockBlock 960 0
+RockBlock 1024 0
+RockBlock 1088 0
+RockBlock 1152 0
+RockBlock 1216 0
+RockBlock 1280 0
+RockBlock 1344 0
+RockBlock 1408 0
+RockBlock 1472 0
+RockBlock 1536 0
+RockBlock 1600 0
+RockBlock 1664 0
+RockBlock 1728 0
+RockBlock 1792 0
+RockBlock 1856 0
+RockBlock 1920 0
+RockBlock 1984 0
+RockBlock 2048 0
+RockBlock 2112 0
+RockBlock 2176 0
+RockBlock 2240 0
+RockBlock 2304 0
+RockBlock 2368 0
+RockBlock 2432 0
+RockBlock 2496 0
+RockBlock 2560 0
+RockBlock 2624 0
+RockBlock 2688 0
+RockBlock 2752 0
+RockBlock 2816 0
+RockBlock 2880 0
+RockBlock 2944 0
+RockBlock 3008 0
+RockBlock 3072 0
+RockBlock 3136 0
+RockBlock 3200 0
+RockBlock 3264 0
+RockBlock 3328 0
+RockBlock 3392 0
+RockBlock 3456 0
+RockBlock 3520 0
+RockBlock 3584 0
+RockBlock 3648 0
+RockBlock 3712 0
+RockBlock 3776 0
+RockBlock 3840 0
+RockBlock 3904 0
+
+# TOP WALL
+KelpBlock 0 960
+KelpBlock 64 960
+KelpBlock 128 960
+KelpBlock 192 960
+KelpBlock 256 960
+KelpBlock 320 960
+KelpBlock 384 960
+KelpBlock 448 960
+KelpBlock 512 960
+KelpBlock 576 960
+KelpBlock 640 960
+KelpBlock 704 960
+KelpBlock 768 960
+KelpBlock 832 960
+KelpBlock 896 960
+KelpBlock 960 960
+KelpBlock 1024 960
+KelpBlock 1088 960
+KelpBlock 1152 960
+KelpBlock 1216 960
+KelpBlock 1280 960
+KelpBlock 1344 960
+KelpBlock 1408 960
+KelpBlock 1472 960
+KelpBlock 1536 960
+KelpBlock 1600 960
+KelpBlock 1664 960
+KelpBlock 1728 960
+KelpBlock 1792 960
+KelpBlock 1856 960
+KelpBlock 1920 960
+KelpBlock 1984 960
+KelpBlock 2048 960
+KelpBlock 2112 960
+KelpBlock 2176 960
+KelpBlock 2240 960
+KelpBlock 2304 960
+KelpBlock 2368 960
+KelpBlock 2432 960
+KelpBlock 2496 960
+KelpBlock 2560 960
+KelpBlock 2624 960
+KelpBlock 2688 960
+KelpBlock 2752 960
+KelpBlock 2816 960
+KelpBlock 2880 960
+KelpBlock 2944 960
+KelpBlock 3008 960
+KelpBlock 3072 960
+KelpBlock 3136 960
+KelpBlock 3200 960
+KelpBlock 3264 960
+KelpBlock 3328 960
+KelpBlock 3392 960
+KelpBlock 3456 960
+KelpBlock 3520 960
+KelpBlock 3584 960
+KelpBlock 3648 960
+KelpBlock 3712 960
+KelpBlock 3776 960
+KelpBlock 3840 960
+KelpBlock 3904 960
+
+# LEFT WALL
+RockBlock 0 0
+RockBlock 0 64
+RockBlock 0 128
+RockBlock 0 192
+RockBlock 0 256
+RockBlock 0 320
+RockBlock 0 384
+RockBlock 0 448
+RockBlock 0 512
+RockBlock 0 576
+RockBlock 0 640
+RockBlock 0 704
+RockBlock 0 768
+RockBlock 0 832
+RockBlock 0 896
+KelpBlock 0 960
+
+# RIGHT WALL
+RockBlock 3968 0
+RockBlock 3968 64
+RockBlock 3968 128
+RockBlock 3968 192
+RockBlock 3968 256
+RockBlock 3968 320
+RockBlock 3968 384
+RockBlock 3968 448
+RockBlock 3968 512
+RockBlock 3968 576
+RockBlock 3968 640
+RockBlock 3968 704
+RockBlock 3968 768
+RockBlock 3968 832
+RockBlock 3968 896
+KelpBlock 3968 960
+
+
+#Obstacles Section 1 - Pyramid
+KelpBlock 640 64
+KelpBlock 704 64
+KelpBlock 768 64
+KelpBlock 832 64
+KelpBlock 896 64
+KelpBlock 960 64
+KelpBlock 1024 64
+
+KelpBlock 704 128
+KelpBlock 768 128
+
+
+KelpBlock 768 192
+KelpBlock 832 192
+KelpBlock 896 192
+
+KelpBlock 832 256
+
+#Enemies for Section 1
+TrashBag 896 384
+BeerBottle 960 768
+
+#Section 1 (Pyramid) - BLUE CLAM
+BlueClam 848 336
+
+#Obstacle Section 1 - Top Upside Down Pyramid
+KelpBlock 1024 896
+KelpBlock 1088 896
+KelpBlock 1152 896
+KelpBlock 1216 896
+KelpBlock 1280 896
+KelpBlock 1344 896
+KelpBlock 1408 896
+
+KelpBlock 1088 832
+KelpBlock 1152 832
+KelpBlock 1216 832
+KelpBlock 1280 832
+KelpBlock 1344 832
+
+KelpBlock 1152 768
+KelpBlock 1216 768
+KelpBlock 1280 768
+KelpBlock 1216 704
+
+#Section 1 (Pyramid Upside Down) - Collectibles (SEA SHELLS)
+TrashBag 1232 656
+
+
+#Section 1 - Enemies between pyramid and pillars
+BeerBottle 1600 64
+BeerBottle 1536 192
+WaterBottle 1792 320
+WaterBottle 1728 448
+
+
+#Enemies for Section 1
+WaterBottle 1216 512
+
+#Obstacle Section 2 - Pillars of Rock
+RockBlock 1856 64
+RockBlock 1856 128
+RockBlock 1856 192
+
+RockBlock 1984 64
+RockBlock 1984 128
+RockBlock 1984 192
+RockBlock 1984 256
+
+RockBlock 2112 64
+RockBlock 2112 128
+RockBlock 2112 192
+RockBlock 2112 256
+RockBlock 2112 320
+
+RockBlock 2240 64
+RockBlock 2240 128
+RockBlock 2240 192
+RockBlock 2240 256
+RockBlock 2240 320
+RockBlock 2240 384
+TrashBag 2240 384
+
+BeerBottle 2368 640
+WaterBottle 2496 576
+BeerBottle 2496 512
+
+#Section 2 - Collectibles
+Live 1872 272
+
+#Section 2 - Kelp Columns and rows
+#Rows
+KelpBlock 2560 896
+KelpBlock 2496 896
+KelpBlock 2432 896
+KelpBlock 2368 896
+KelpBlock 2304 896
+KelpBlock 2240 896
+KelpBlock 2176 896
+KelpBlock 2112 896
+
+KelpBlock 2560 832
+KelpBlock 2496 832
+KelpBlock 2432 832
+KelpBlock 2368 832
+KelpBlock 2304 832
+KelpBlock 2240 832
+
+
+#Columns
+KelpBlock 2560 896
+KelpBlock 2560 832
+KelpBlock 2560 768
+KelpBlock 2560 704
+KelpBlock 2560 640
+
+KelpBlock 2624 896
+KelpBlock 2624 832
+KelpBlock 2624 768
+KelpBlock 2624 704
+
+KelpBlock 2688 896
+KelpBlock 2688 832
+KelpBlock 2688 768
+KelpBlock 2688 704
+KelpBlock 2688 640
+KelpBlock 2688 576
+KelpBlock 2688 512
+KelpBlock 2688 448
+KelpBlock 2688 384
+KelpBlock 2688 320
+KelpBlock 2688 256
+KelpBlock 2688 192
+TrashBag 2688 256
+WaterBottle 2688 128
+WaterBottle 2688 64
+TrashBag 2624 640
+
+#Section 2 - Enemies between Pillars and Falling Vines
+KelpBlock 2752 896
+KelpBlock 2752 832
+KelpBlock 2752 768
+
+#Section 3 - Obstacles Cave
+RockBlock 2944 64
+RockBlock 3008 64
+RockBlock 3072 64
+RockBlock 3136 64
+RockBlock 3200 64
+RockBlock 3264 64
+RockBlock 3328 64
+RockBlock 3392 64
+RockBlock 3456 64
+RockBlock 3520 64
+RockBlock 3584 64
+RockBlock 3648 64
+RockBlock 3712 64
+RockBlock 3776 64
+
+
+RockBlock 3008 128
+RockBlock 3072 128
+RockBlock 3136 128
+RockBlock 3200 128
+RockBlock 3264 128
+RockBlock 3328 128
+RockBlock 3392 128
+RockBlock 3456 128
+RockBlock 3520 128
+RockBlock 3584 128
+RockBlock 3648 128
+RockBlock 3712 128
+
+RockBlock 3008 192
+RockBlock 3072 192
+RockBlock 3136 192
+RockBlock 3200 192
+RockBlock 3264 192
+RockBlock 3328 192
+RockBlock 3392 192
+RockBlock 3456 192
+RockBlock 3520 192
+RockBlock 3584 192
+RockBlock 3648 192
+
+RockBlock 3008 256
+RockBlock 3072 256
+RockBlock 3136 256
+RockBlock 3200 256
+RockBlock 3264 256
+RockBlock 3328 256
+RockBlock 3392 256
+RockBlock 3456 256
+RockBlock 3520 256
+RockBlock 3584 256
+
+BeerBottle 3008 320
+RockBlock 3072 320
+RockBlock 3136 320
+RockBlock 3200 320
+RockBlock 3264 320
+RockBlock 3328 320
+RockBlock 3392 320
+RockBlock 3456 320
+RockBlock 3520 320
+
+OilBarrel 3536 400
+
+#Section 3 - Kelp Vines
+KelpBlock 2752 896
+KelpBlock 2816 896
+KelpBlock 2880 896
+KelpBlock 2944 896
+KelpBlock 3008 896
+KelpBlock 3072 896
+KelpBlock 3136 896
+KelpBlock 3200 896
+KelpBlock 3264 896
+KelpBlock 3328 896
+KelpBlock 3392 896
+KelpBlock 3456 896
+KelpBlock 3520 896
+KelpBlock 3584 896
+KelpBlock 3648 896
+KelpBlock 3712 896
+KelpBlock 3776 896
+KelpBlock 3840 896
+KelpBlock 3904 896
+
+#Falling Kelp
+KelpBlock 3904 832
+KelpBlock 3904 768
+KelpBlock 3904 704
+KelpBlock 3904 640
+KelpBlock 3904 576
+KelpBlock 3904 512
+KelpBlock 3904 448
+KelpBlock 3904 384
+KelpBlock 3904 320
+KelpBlock 3904 256
+KelpBlock 3904 192
+
+KelpBlock 3840 832
+KelpBlock 3840 768
+KelpBlock 3840 704
+KelpBlock 3840 640
+KelpBlock 3840 576
+KelpBlock 3840 512
+KelpBlock 3840 448
+KelpBlock 3840 384
+KelpBlock 3840 320
+KelpBlock 3840 256
+
+
+KelpBlock 3776 832
+KelpBlock 3776 768
+KelpBlock 3776 704
+KelpBlock 3776 640
+KelpBlock 3776 576
+KelpBlock 3776 512
+KelpBlock 3776 448
+KelpBlock 3776 384
+KelpBlock 3776 320
+TrashBag 3776 448
+TrashBag 3658 640
+
+KelpBlock 3712 832
+KelpBlock 3712 768
+
+KelpBlock 3648 832
+KelpBlock 3648 768
+KelpBlock 3648 704
+
+#Section 3 - Obstacle for Hat
+KelpBlock 3584 832
+KelpBlock 3584 768
+KelpBlock 3584 704
+KelpBlock 3008 704
+KelpBlock 3072 704
+KelpBlock 3136 704
+KelpBlock 3200 704
+KelpBlock 3264 704
+KelpBlock 3328 704
+KelpBlock 3392 704
+KelpBlock 3456 704
+KelpBlock 3520 704
+
+KelpBlock 3008 640
+KelpBlock 3072 640
+KelpBlock 3136 640
+KelpBlock 3200 640
+KelpBlock 3264 640
+KelpBlock 3328 640
+
+#Heart
+Live 3520 768
+
+#Enemies Blocking Collectible
+TrashBag 3584 832
+BeerBottle 3200 832
+WaterBottle 3136 768
+
+# Checkpoint (Safe Zone)
+Checkpoint 192 64
+Checkpoint 2464 64
+
+# Exit
+NextLevelDoor 3840 64
+
+
