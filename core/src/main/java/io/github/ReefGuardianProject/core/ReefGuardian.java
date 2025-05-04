@@ -133,7 +133,7 @@ public class ReefGuardian implements ApplicationListener {
         gameOver = new Sprite(new Texture("gameUI\\GameOver.png"));
         gameOverOverlay = new Sprite(new Texture("gameUI\\1280x1024_grey_background.jpg"));
         gameOverOverlay.setAlpha(0.045f);
-        gameOverSfx = Gdx.audio.newSound(Gdx.files.internal("sfx/GameOver_Sfx.mp3"));
+        gameOverSfx = Gdx.audio.newSound(Gdx.files.internal("sfx\\GameOver_Sfx.mp3"));
 
         buttonRetry = new Sprite(new Texture("gameUI\\Retry.png"));
         buttonQuit = new Sprite(new Texture("gameUI\\Quit.png"));
