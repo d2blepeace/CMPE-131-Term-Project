@@ -174,11 +174,11 @@ KelpBlock 832 64
 KelpBlock 896 64
 KelpBlock 960 64
 KelpBlock 1024 64
-
 KelpBlock 704 128
 KelpBlock 768 128
-
-
+KelpBlock 832 128
+KelpBlock 896 128
+KelpBlock 960 128
 KelpBlock 768 192
 KelpBlock 832 192
 KelpBlock 896 192

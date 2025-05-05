@@ -468,22 +468,23 @@ public class ReefGuardian implements ApplicationListener {
         while (projectileIter.hasNext()) {
             Projectile p = projectileIter.next();
             for (GameObjects obj : gameObjectsList) {
-
-                if (p.getHitBox().overlaps(obj.getHitBox())) {
-                    if (obj instanceof BossBarrier) {
-                        // Skip barrier when checking projectiles (allow waterball to pass)
-                        continue;
-                    }
-                    if (obj.isEnemy() || obj.hitAction() == 1) {
-                        projectileIter.remove(); // remove projectile
-
-                        if (obj instanceof FinalBoss) {
-                            ((FinalBoss) obj).receiveDamage(); // Boss takes damage
-                        } else if (obj.isEnemy()) {
-                            objectsToRemove.add(obj); // Normal enemy gets marked for deletion
+                if (p.getHitBox() != null && obj.getHitBox() != null && p.getHitBox().overlaps(obj.getHitBox())) {
+                    if (p.getHitBox().overlaps(obj.getHitBox())) {
+                        if (obj instanceof BossBarrier) {
+                            // Skip barrier when checking projectiles (allow waterball to pass)
+                            continue;
                         }
+                        if (obj.isEnemy() || obj.hitAction() == 1) {
+                            projectileIter.remove(); // remove projectile
 
-                        break;
+                            if (obj instanceof FinalBoss) {
+                                ((FinalBoss) obj).receiveDamage(); // Boss takes damage
+                            } else if (obj.isEnemy()) {
+                                objectsToRemove.add(obj); // Normal enemy gets marked for deletion
+                            }
+
+                            break;
+                        }
                     }
                 }
             }
@@ -761,15 +762,6 @@ public class ReefGuardian implements ApplicationListener {
             ? buttonStartHover : buttonStart;
         startToDraw.setPosition(startX, startY);
         startToDraw.draw(batch);
-/*
-        // Options button
-        float optionsX = (1280 - buttonStart.getWidth()) / 2f;
-        float optionsY =  (1280 - buttonStart.getHeight()) / 2f - 150;
-        Sprite optionsToDraw = buttonOptions.getBoundingRectangle().contains(mouse.x, mouse.y)
-            ? buttonOptionsHover : buttonOptions;
-        optionsToDraw.setPosition(optionsX, optionsY);
-        optionsToDraw.draw(batch);
- */
 
         // Quit button
         float exitX = (1280 - buttonStart.getWidth()) / 2f;
@@ -840,8 +832,10 @@ public class ReefGuardian implements ApplicationListener {
             level = nextLevelToLoad;
 
             // reset Honu
+            int currentLives = honu.getLives();
             honu = new Honu();
             honu.setPosition(0, 128);
+            honu.setLives(currentLives);
 
             // load the new txt
             loadLevel("map\\level" + level + ".txt");
@@ -851,7 +845,7 @@ public class ReefGuardian implements ApplicationListener {
         }
     }
     public void gameOver() {
-        // --- play the jingle once on entry ---
+        // play the jingle once on entry
         if (!gameOverPlayed) {
             gameOverSfx.play();
             gameOverPlayed = true;
